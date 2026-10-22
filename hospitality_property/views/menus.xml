@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Property inventory setup must be visible to Property
+             Managers. The shared Configuration parent is
+             administrator-only, so this branch belongs under the Rooms
+             root instead.
+
+             menu_property_inventory is gone: these entries sit DIRECTLY
+             under Rooms rather than behind an "Inventory" dropdown, so
+             the sub-menu bar shows the whole app in one row. Each one
+             keeps its own manager/corporate/admin groups, so flattening
+             changes what is visible to nobody.
+
+             Order across the whole root: All Rooms, Room Types,
+             Buildings, Floors, Sections, Floor Plan, Features. The two
+             things staff open daily come first; Buildings, Floors and
+             Sections are setup and sit behind them. All Rooms is first
+             because the Rooms root carries no action of its own, so
+             opening the app lands on whichever child sorts first.
+
+             The first child is "All Rooms", not "Rooms": the root itself
+             is already called Rooms, and a child with the same label
+             would reproduce the Front Office > Front Office duplicate
+             that was removed from this suite earlier.
+
+             All menus here carry the corporate group as well. -->
+        <menuitem id="menu_property_buildings"
+                  name="Buildings"
+                  action="action_property_building"
+                  parent="hospitality_base.menu_hm_rooms"
+                  groups="hospitality_property.group_property_manager,hospitality_base.group_hospitality_corporate,hospitality_base.group_hospitality_admin"
+                  sequence="30"/>
+        <menuitem id="menu_property_floors"
+                  name="Floors"
+                  action="action_property_floor"
+                  parent="hospitality_base.menu_hm_rooms"
+                  groups="hospitality_property.group_property_manager,hospitality_base.group_hospitality_corporate,hospitality_base.group_hospitality_admin"
+                  sequence="40"/>
+        <menuitem id="menu_property_sections"
+                  name="Sections"
+                  action="action_property_section"
+                  parent="hospitality_base.menu_hm_rooms"
+                  groups="hospitality_property.group_property_manager,hospitality_base.group_hospitality_corporate,hospitality_base.group_hospitality_admin"
+                  sequence="50"/>
+        <menuitem id="menu_property_space_types"
+                  name="Room Types"
+                  action="action_property_space_type"
+                  parent="hospitality_base.menu_hm_rooms"
+                  groups="hospitality_property.group_property_manager,hospitality_base.group_hospitality_corporate,hospitality_base.group_hospitality_admin"
+                  sequence="20"/>
+        <menuitem id="menu_property_features"
+                  name="Features"
+                  action="action_property_space_feature"
+                  parent="hospitality_base.menu_hm_rooms"
+                  groups="hospitality_property.group_property_manager,hospitality_base.group_hospitality_corporate,hospitality_base.group_hospitality_admin"
+                  sequence="70"/>
+
+        <!-- ============================================================
+             OPERATIONS menus
+             Parent: menu_hospitality_operations (defined in hospitality_base)
+        ============================================================ -->
+
+        <menuitem id="menu_property_spaces"
+                  name="All Rooms"
+                  action="action_hospitality_space"
+                  parent="hospitality_base.menu_hm_rooms"
+                  groups="hospitality_property.group_property_user,hospitality_property.group_property_manager,hospitality_base.group_hospitality_corporate"
+                  sequence="10"/>
+        <menuitem id="menu_property_floor_plan"
+                  name="Floor Plan"
+                  action="action_floor_plan_client"
+                  parent="hospitality_base.menu_hm_rooms"
+                  groups="hospitality_property.group_property_user,hospitality_property.group_property_manager,hospitality_base.group_hospitality_corporate"
+                  sequence="60"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for displaying all night audit runs. -->
+    <record id="view_night_audit_run_list" model="ir.ui.view">
+        <field name="name">hospitality.night.audit.run.list</field>
+        <field name="model">hospitality.night.audit.run</field>
+        <field name="arch" type="xml">
+            <list string="Night Audit Runs">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="business_date"/>
+                <field name="next_business_date"/>
+                <field name="started_at"/>
+                <field name="ended_at"/>
+                <field name="run_by"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'posted'"
+                       decoration-info="state == 'in_progress'"
+                       decoration-danger="state == 'error'"
+                       decoration-muted="state in ('draft', 'closed')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for managing a night audit run and its execution details. -->
+    <record id="view_night_audit_run_form" model="ir.ui.view">
+        <field name="name">hospitality.night.audit.run.form</field>
+        <field name="model">hospitality.night.audit.run</field>
+        <field name="arch" type="xml">
+            <form string="Night Audit Run">
+                <header>
+                    <button name="action_start" type="object"
+                            string="Start Audit"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_resume" type="object"
+                            string="Resume"
+                            class="oe_highlight"
+                            invisible="state not in ('in_progress', 'error')"/>
+                    <button name="action_force_close" type="object"
+                            string="Force Close"
+                            confirm="Force close this audit run? This bypasses any outstanding step failures and will be logged to the chatter."
+                            groups="hospitality_night_audit.group_night_audit_supervisor"
+                            invisible="state in ('draft', 'closed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_progress,posted,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="business_date"/>
+                            <field name="next_business_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="run_by"/>
+                            <field name="started_at"/>
+                            <field name="ended_at"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="reservation_no_shows"/>
+                            <field name="rooms_posted"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="taxes_posted"/>
+                            <field name="variance_report_id"
+                                   domain="[('res_model', '=', 'hospitality.night.audit.run'), ('res_id', '=', id)]"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Steps" name="steps">
+                            <field name="step_ids">
+                                <list string="Steps" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="status" widget="badge"
+                                           decoration-success="status == 'ok'"
+                                           decoration-danger="status == 'failed'"
+                                           decoration-muted="status in ('pending', 'skipped')"/>
+                                    <field name="started_at"/>
+                                    <field name="ended_at"/>
+                                    <field name="message"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Log" name="log">
+                            <field name="log_text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view with filters and grouping options for night audit runs. -->
+    <record id="view_night_audit_run_search" model="ir.ui.view">
+        <field name="name">hospitality.night.audit.run.search</field>
+        <field name="model">hospitality.night.audit.run</field>
+        <field name="arch" type="xml">
+            <search string="Night Audit Runs">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="business_date"/>
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="filter_in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Error" name="filter_error" domain="[('state', '=', 'error')]"/>
+                <filter string="Posted" name="filter_posted" domain="[('state', '=', 'posted')]"/>
+                <filter string="Closed" name="filter_closed" domain="[('state', '=', 'closed')]"/>
+                <filter string="Property" name="group_by_property" context="{'group_by': 'property_id'}"/>
+                <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+</odoo>

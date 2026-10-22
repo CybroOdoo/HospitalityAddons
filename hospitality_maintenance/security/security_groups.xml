@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Maintenance User ───────────────────────────────────
+         Read/write work orders assigned to themselves only.
+    ─────────────────────────────────────────────────────────── -->
+    <record id="group_maintenance_user" model="res.groups">
+        <field name="name">Maintenance User</field>
+        <field name="implied_ids" eval="[
+            (4, ref('hospitality_base.group_hospitality_user'))
+        ]"/>
+        <field name="comment">
+            Can read and update work orders assigned to themselves.
+        </field>
+    </record>
+
+    <!-- ── Maintenance Supervisor ─────────────────────────────
+         Inherits Maintenance User; manages all work orders and assets.
+    ─────────────────────────────────────────────────────────── -->
+    <record id="group_maintenance_supervisor" model="res.groups">
+        <field name="name">Maintenance Supervisor</field>
+        <field name="implied_ids" eval="[(4, ref('group_maintenance_user'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="comment">
+            Inherits Maintenance User rights. Additionally allowed to
+            manage all work orders and assets across the property.
+        </field>
+    </record>
+
+    <!-- ── Maintenance Admin ───────────────────────────────────
+         Inherits Maintenance Supervisor; full configuration access
+         — assets and PPM templates.
+    ─────────────────────────────────────────────────────────── -->
+    <record id="group_maintenance_admin" model="res.groups">
+        <field name="name">Maintenance Admin</field>
+        <field name="implied_ids" eval="[(4, ref('group_maintenance_supervisor'))]"/>
+        <field name="comment">
+            Inherits Maintenance Supervisor rights. Additionally allowed
+            full configuration access: assets, PPM templates, and all
+            work orders.
+        </field>
+    </record>
+</odoo>

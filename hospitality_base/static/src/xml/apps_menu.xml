@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        Apps button -> brass plate that opens the drawer.
+
+        Only the .o_navbar_apps_menu div is replaced. The small-screen
+        branch above it (env.isSmall) is left alone so the mobile sidebar
+        still works.
+
+        The original <div t-else="" class="mx-2"/> that follows this div
+        is NOT reproduced here: it is a sibling that the xpath leaves in
+        place, and emitting a second t-else makes QWeb reject the whole
+        template with "t-elif and t-else directives must be preceded by
+        a t-if".
+    -->
+    <t t-inherit="web.NavBar.AppsMenu" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('o_navbar_apps_menu')]" position="replace">
+            <div t-if="!isScopedApp" class="o_navbar_apps_menu ht_apps_btn_wrap">
+                <!-- fa-bed ships with Odoo's own FontAwesome 4.7
+                     (web/static/src/libs/fontawesome); no webfont or CDN
+                     is pulled in for it. -->
+                <button class="ht_apps_btn" data-hotkey="h" title="Home"
+                        t-on-click="_onClickHomeDrawer">
+                    <i class="fa fa-bed ht_apps_btn_icon" aria-hidden="true"/>
+                </button>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

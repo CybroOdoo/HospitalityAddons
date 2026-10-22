@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hospitality_front_desk.FrontDeskDashboard" owl="1">
+        <div class="o_fd_dashboard">
+            <div class="o_fd_dashboard_header">
+                <h2>Front Desk Dashboard</h2>
+                <div class="o_fd_dashboard_controls">
+                    <select t-on-change="onPropertyChange" t-att-value="state.propertyId">
+                        <t t-foreach="state.properties" t-as="prop" t-key="prop.id">
+                            <option t-att-value="prop.id"><t t-esc="prop.name"/></option>
+                        </t>
+                    </select>
+                    <button class="btn btn-secondary" t-on-click="onRefresh">Refresh</button>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="o_fd_dashboard_loading">Loading…</div>
+
+            <div t-else="" class="o_fd_dashboard_grid">
+
+                <div class="o_fd_card" t-on-click="onOpenArrivals">
+                    <span class="o_fd_card_label">Arrivals</span>
+                    <span class="o_fd_card_value"><t t-esc="state.data.arrivals_count"/></span>
+                    <button class="btn btn-link">View Arrivals</button>
+                </div>
+
+                <div class="o_fd_card" t-on-click="onOpenInHouse">
+                    <span class="o_fd_card_label">In-House</span>
+                    <span class="o_fd_card_value"><t t-esc="state.data.in_house_count"/></span>
+                    <button class="btn btn-link">View In-House</button>
+                </div>
+
+                <div class="o_fd_card" t-on-click="onOpenDepartures">
+                    <span class="o_fd_card_label">Departures</span>
+                    <span class="o_fd_card_value"><t t-esc="state.data.departures_count"/></span>
+                    <button class="btn btn-link">View Departures</button>
+                </div>
+
+                <div class="o_fd_card" t-on-click="onOpenAr">
+                    <span class="o_fd_card_label">Outstanding AR</span>
+                    <span class="o_fd_card_value"><t t-esc="state.data.outstanding_ar_count"/></span>
+                    <button class="btn btn-link">View AR</button>
+                </div>
+
+                <div class="o_fd_card o_fd_card_wide">
+                    <span class="o_fd_card_label">Available Rooms by Type (Today)</span>
+                    <table class="o_fd_table">
+                        <tr t-foreach="state.data.available_by_type" t-as="row" t-key="row.space_type_id">
+                            <td><t t-esc="row.name"/></td>
+                            <td class="o_fd_table_value"><t t-esc="row.available"/></td>
+                        </tr>
+                        <tr t-if="!state.data.available_by_type.length">
+                            <td colspan="2">No space types configured.</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="o_fd_card">
+                    <span class="o_fd_card_label">Occupancy</span>
+                    <div class="o_fd_gauge">
+                        <div class="o_fd_gauge_fill" t-attf-style="width: {{state.data.occupancy_pct}}%"/>
+                    </div>
+                    <span class="o_fd_card_value"><t t-esc="state.data.occupancy_pct"/>%</span>
+                </div>
+
+                <div class="o_fd_card o_fd_card_wide">
+                    <span class="o_fd_card_label">Open FD Shifts</span>
+                    <table class="o_fd_table">
+                        <tr t-foreach="state.data.open_shifts" t-as="shift" t-key="shift.id">
+                            <td><t t-esc="shift.user"/></td>
+                            <td><t t-esc="shift.started_at"/></td>
+                        </tr>
+                        <tr t-if="!state.data.open_shifts.length">
+                            <td colspan="2">No open shifts.</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

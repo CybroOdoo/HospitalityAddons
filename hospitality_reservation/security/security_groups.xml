@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         Group: Reservation Agent
+    ================================================================ -->
+    <record id="group_reservation_agent" model="res.groups">
+        <field name="name">Reservation Agent</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('hospitality_base.group_hospitality_user')), (4, ref('hospitality_property.group_property_user'))]"/>
+        <field name="comment">
+            Can create and edit reservations for properties they are assigned to.
+        </field>
+    </record>
+
+    <!-- ================================================================
+         Group: Reservation Supervisor
+    ================================================================ -->
+    <record id="group_reservation_supervisor" model="res.groups">
+        <field name="name">Reservation Supervisor</field>
+        <field name="implied_ids" eval="[(4, ref('group_reservation_agent'))]"/>
+        <field name="comment">
+            Supervisor-level access: inherits Agent rights and may additionally
+            override no-show/walk-out states, force-confirm without deposit,
+            and view/use stored payment token (cc_token).
+        </field>
+    </record>
+
+</odoo>

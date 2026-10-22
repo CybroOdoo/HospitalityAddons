@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Check-In Wizard — dialog form
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_front_desk_check_in_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.front.desk.check.in.wizard.form</field>
+        <field name="model">hospitality.front.desk.check.in.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Check-In">
+
+                <group string="Step 1 — Room / Room Assignment">
+                    <field name="reservation_id" readonly="id != False"/>
+                    <field name="partner_id"/>
+                    <field name="property_id" invisible="1"/>
+                    <field name="space_id"
+                           domain="[('property_id', '=', property_id)]"
+                           options="{'no_create': True}"/>
+                    <field name="expected_departure"/>
+                </group>
+
+                <group string="Step 2 — Guest ID &amp; Documents">
+                    <field name="registration_signed" widget="signature"/>
+                    <div class="alert alert-info" role="status"
+                         groups="!hospitality_guest_profile.group_guest_user,!hospitality_base.group_hospitality_admin">
+                        You can view this guest's existing ID documents, but cannot
+                        add or edit them. Ask an administrator to grant you the
+                        Guest User access group if document maintenance is part of
+                        your role. Guest PII Access is required to view ID numbers,
+                        scans, or verify documents.
+                    </div>
+                    <field name="id_document_ids"
+                           context="{'default_partner_id': partner_id}"
+                           domain="[('partner_id', '=', partner_id)]"
+                           groups="hospitality_guest_profile.group_guest_user,hospitality_base.group_hospitality_admin">
+                        <list editable="bottom">
+                            <field name="type"/>
+                            <field name="number"
+                                   groups="hospitality_guest_profile.group_guest_pii"/>
+                            <field name="number_masked"
+                                   groups="!hospitality_guest_profile.group_guest_pii"/>
+                            <field name="issuing_country_id"/>
+                            <field name="expiry_date"/>
+                            <field name="verified" readonly="1"/>
+                        </list>
+                    </field>
+                    <field name="id_document_ids"
+                           context="{'default_partner_id': partner_id}"
+                           domain="[('partner_id', '=', partner_id)]"
+                           groups="!hospitality_guest_profile.group_guest_user,!hospitality_base.group_hospitality_admin"
+                           readonly="1">
+                        <list>
+                            <field name="type"/>
+                            <field name="number"
+                                   groups="hospitality_guest_profile.group_guest_pii"/>
+                            <field name="number_masked"
+                                   groups="!hospitality_guest_profile.group_guest_pii"/>
+                            <field name="issuing_country_id"/>
+                            <field name="expiry_date"/>
+                            <field name="verified"/>
+                        </list>
+                    </field>
+                </group>
+
+                <group string="Step 3 — Deposit &amp; Payment">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="deposit_amount"/>
+                    <field name="payment_method"/>
+                </group>
+
+                <group string="Step 4 — Confirm">
+                    <field name="print_reg_card"/>
+                </group>
+
+                <footer>
+                    <button name="action_check_in"
+                            string="Check In"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Window action that opens the wizard
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="action_front_desk_check_in_wizard" model="ir.actions.act_window">
+        <field name="name">Check In</field>
+        <field name="res_model">hospitality.front.desk.check.in.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_front_desk_check_in_wizard_form"/>
+        <field name="target">new</field>
+        <field name="context">{'default_reservation_id': active_id}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Inherit reservation form (view_reservation_form) — replace the
+         direct Check In button with the wizard action button
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_reservation_form_fd_check_in_button" model="ir.ui.view">
+        <field name="name">hospitality.reservation.form.fd.check.in</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="inherit_id" ref="hospitality_reservation.view_reservation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_check_in']" position="replace">
+                <button name="%(hospitality_front_desk.action_front_desk_check_in_wizard)d"
+                        string="Check In"
+                        type="action"
+                        class="btn-primary"
+                        invisible="state != 'confirmed'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Inherit arrivals list (view_reservation_arrivals_list) — replace
+         the Check In button in the Arrivals front-office view too
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_reservation_arrivals_fd_check_in_button" model="ir.ui.view">
+        <field name="name">hospitality.reservation.arrivals.fd.check.in</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="inherit_id" ref="hospitality_reservation.view_reservation_arrivals_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_check_in']" position="replace">
+                <button name="%(hospitality_front_desk.action_front_desk_check_in_wizard)d"
+                        string="Check In"
+                        type="action"
+                        class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

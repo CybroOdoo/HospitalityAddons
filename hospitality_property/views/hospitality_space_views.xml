@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ======================================================
+             SPACE — Search view
+        ====================================================== -->
+        <record id="view_hospitality_space_search" model="ir.ui.view">
+            <field name="name">hospitality.space.search</field>
+            <field name="model">hospitality.space</field>
+            <field name="arch" type="xml">
+                <search string="Rooms">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="space_type_id"/>
+                    <field name="floor_id"/>
+                    <field name="building_id"/>
+                    <field name="property_id"/>
+                    <filter string="Vacant" name="filter_vacant"
+                            domain="[('status','in',['vacant_clean','vacant_dirty','inspected','pickup'])]"/>
+                    <filter string="Occupied" name="filter_occupied"
+                            domain="[('status','in',['occupied_clean','occupied_dirty'])]"/>
+                    <filter string="Out of Order" name="filter_ooo"
+                            domain="[('status','=','ooo')]"/>
+                    <filter string="Out of Service" name="filter_oos"
+                            domain="[('status','=','oos')]"/>
+                    <filter string="Virtual Rooms" name="filter_virtual"
+                            domain="[('is_virtual','=',True)]"/>
+                    <filter string="Archived" name="filter_archived"
+                            domain="[('active','=',False)]"/>
+                    <filter string="Room Type" name="group_space_type"
+                            context="{'group_by': 'space_type_id'}"/>
+                    <filter string="Floor" name="group_floor"
+                            context="{'group_by': 'floor_id'}"/>
+                    <filter string="Building" name="group_building"
+                            context="{'group_by': 'building_id'}"/>
+                    <filter string="Status" name="group_status"
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Property" name="group_property"
+                            context="{'group_by': 'property_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE — List view
+        ====================================================== -->
+        <record id="view_hospitality_space_list" model="ir.ui.view">
+            <field name="name">hospitality.space.list</field>
+            <field name="model">hospitality.space</field>
+            <field name="arch" type="xml">
+                <list string="Rooms"
+                      decoration-danger="status in ('ooo','oos')"
+                      decoration-warning="status in ('vacant_dirty','pickup')"
+                      decoration-success="status in ('vacant_clean','inspected')"
+                      decoration-info="status in ('occupied_clean','occupied_dirty')"
+                      decoration-muted="active == False">
+                    <field name="code" class="fw-bold"/>
+                    <field name="name"/>
+                    <field name="space_type_id"/>
+                    <field name="building_id" optional="hide"/>
+                    <field name="floor_id"/>
+                    <field name="section_id" optional="hide"/>
+                    <field name="bed_count"/>
+                    <field name="status" widget="badge"
+                           decoration-success="status in ('vacant_clean','inspected')"
+                           decoration-warning="status in ('vacant_dirty','pickup')"
+                           decoration-info="status in ('occupied_clean','occupied_dirty')"
+                           decoration-danger="status in ('ooo','oos')"/>
+                    <field name="feature_ids" widget="many2many_tags" optional="hide"/>
+                    <field name="property_id" optional="hide"/>
+                    <field name="is_virtual" optional="hide"/>
+                    <field name="active" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE — Kanban view (colored by status, grouped by floor)
+        ====================================================== -->
+        <record id="view_hospitality_space_kanban" model="ir.ui.view">
+            <field name="name">hospitality.space.kanban</field>
+            <field name="model">hospitality.space</field>
+            <field name="arch" type="xml">
+                <!--
+                    A room has no photograph of its own - that was a
+                    deliberate decision, since a guest books a TYPE and
+                    never sees a specific room before arrival. The card
+                    therefore borrows the type's cover: every room has a
+                    space_type_id (required=True), so the image is always
+                    resolvable.
+
+                    The URL is built from record.space_type_id.raw_value,
+                    which for a many2one is the ID - the same pattern
+                    Odoo uses in hr_holidays. The type's image field is
+                    NOT read into the kanban: that would pull a full
+                    base64 payload per row for a list that can run to
+                    hundreds of rooms.
+                -->
+                <kanban quick_create="False" class="o_hm_room_kanban">
+                    <field name="id"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="status"/>
+                    <field name="space_type_id"/>
+                    <field name="floor_id"/>
+                    <field name="bed_count"/>
+                    <field name="is_virtual"/>
+                    <field name="feature_ids"/>
+                    <templates>
+                        <t t-name="card" class="o_hm_room_card p-0">
+                            <div class="o_hm_room_media">
+                                <img class="o_hm_room_img"
+                                     t-attf-src="/web/image/hospitality.space.type/#{record.space_type_id.raw_value}/image/640x360"
+                                     t-att-alt="record.space_type_id.value"/>
+
+                                <span t-attf-class="o_hm_room_status o_hm_room_st_#{record.status.raw_value}"
+                                      t-out="record.status.value"/>
+
+                                <span t-if="record.is_virtual.raw_value"
+                                      class="o_hm_room_virtual"
+                                      title="Pseudo room, not a physical room">
+                                    Virtual
+                                </span>
+
+                                <div class="o_hm_room_scrim">
+                                    <!-- The room TYPE leads: in a
+                                         showcase view "Deluxe King" is
+                                         the commercial identity, while
+                                         the code only identifies the
+                                         unit operationally. Brass
+                                         small-caps above the number is
+                                         the brochure convention. -->
+                                    <div class="o_hm_room_typeline"
+                                         t-out="record.space_type_id.value"/>
+                                    <div class="o_hm_room_code"
+                                         t-out="record.code.value"/>
+                                    <!-- Only when it adds something: this
+                                         data often repeats the code, and
+                                         "ROOM 100 / ROOM 100" is noise. -->
+                                    <div t-if="record.name.value and record.name.value !== record.code.value"
+                                         class="o_hm_room_name"
+                                         t-out="record.name.value"/>
+                                </div>
+                            </div>
+
+                            <div class="o_hm_room_body">
+                                <span t-if="record.floor_id.raw_value"
+                                      class="o_hm_room_floor">
+                                    <i class="fa fa-building-o me-1" title="Floor"
+                                       aria-hidden="true"/>
+                                    <t t-out="record.floor_id.value"/>
+                                </span>
+                                <span t-else=""
+                                      class="o_hm_room_floor o_hm_room_muted">
+                                    <i class="fa fa-building-o me-1" title="Floor"
+                                       aria-hidden="true"/>
+                                    No floor
+                                </span>
+                                <span class="o_hm_room_beds"
+                                      t-attf-title="#{record.bed_count.value} beds">
+                                    <i class="fa fa-bed me-1" aria-hidden="true"/>
+                                    <t t-out="record.bed_count.value"/>
+                                </span>
+                            </div>
+
+                            <div t-if="record.feature_ids.raw_value.length"
+                                 class="o_hm_room_foot">
+                                <field name="feature_ids"
+                                       widget="many2many_tags"
+                                       class="o_hm_room_tags"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE — Form view
+        ====================================================== -->
+        <record id="view_hospitality_space_form" model="ir.ui.view">
+            <field name="name">hospitality.space.form</field>
+            <field name="model">hospitality.space</field>
+            <field name="arch" type="xml">
+                <form string="Room">
+                    <header>
+                        <button name="action_set_vacant_clean"
+                                string="✓ Vacant Clean" type="object"
+                                class="btn-success"
+                                groups="hospitality_property.group_property_user"
+                                invisible="status not in ('vacant_dirty','inspected')"/>
+                        <button name="action_set_vacant_dirty"
+                                string="Vacant Dirty" type="object"
+                                class="btn-warning"
+                                groups="hospitality_property.group_property_user"
+                                invisible="status not in ('occupied_clean','occupied_dirty','ooo','oos')"/>
+                        <button name="action_set_occupied_clean"
+                                string="Check In" type="object"
+                                class="btn-primary"
+                                groups="hospitality_property.group_property_user"
+                                invisible="status not in ('vacant_clean','occupied_dirty')"/>
+                        <button name="action_set_occupied_dirty"
+                                string="Check Out" type="object"
+                                class="btn-secondary"
+                                groups="hospitality_property.group_property_user"
+                                invisible="status != 'occupied_clean'"/>
+                        <button name="action_set_inspected"
+                                string="Inspected" type="object"
+                                class="btn-info"
+                                groups="hospitality_property.group_property_user"
+                                invisible="status != 'vacant_clean'"/>
+                        <button name="action_set_pickup"
+                                string="Pickup" type="object"
+                                class="btn-secondary"
+                                groups="hospitality_property.group_property_user"
+                                invisible="status not in ('vacant_clean','vacant_dirty')"/>
+                        <button name="action_open_ooo_wizard"
+                                string="Out of Order" type="object"
+                                class="btn-danger"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="status == 'ooo'"/>
+                        <button name="action_release_ooo"
+                                string="Release OOO" type="object"
+                                class="btn-success"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="status != 'ooo'"/>
+                        <button name="action_open_oos_wizard"
+                                string="Out of Service" type="object"
+                                class="btn-danger"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="status == 'oos'"/>
+                        <button name="action_release_oos"
+                                string="Release OOS" type="object"
+                                class="btn-success"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="status != 'oos'"/>
+                        <button name="action_archive_space"
+                                string="Archive" type="object"
+                                class="btn-secondary"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="not active"/>
+                        <button name="action_unarchive_space"
+                                string="Unarchive" type="object"
+                                class="btn-primary"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="active"/>
+                        <field name="status" widget="statusbar"
+                               statusbar_visible="vacant_clean,occupied_clean,inspected,ooo"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived"
+                                bg_color="text-bg-danger"
+                                invisible="active"/>
+                        <div class="alert alert-danger d-flex align-items-center gap-2" role="alert"
+                             invisible="status != 'ooo'">
+                            <i class="fa fa-exclamation-triangle fa-lg" title="Out of Order"/>
+                            <div>
+                                <strong>Out of Order</strong>
+                                <span invisible="not ooo_from">—</span>
+                                <field name="ooo_from" readonly="1" nolabel="1" invisible="not ooo_from"/>
+                                <span invisible="not ooo_to">to</span>
+                                <field name="ooo_to" readonly="1" nolabel="1" invisible="not ooo_to"/>
+                                <div>
+                                    <field name="ooo_reason" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning d-flex align-items-center gap-2" role="alert"
+                             invisible="status != 'oos'">
+                            <i class="fa fa-wrench fa-lg" title="Out of Service"/>
+                            <div>
+                                <strong>Out of Service</strong>
+                                <span invisible="not oos_from">—</span>
+                                <field name="oos_from" readonly="1" nolabel="1" invisible="not oos_from"/>
+                                <span invisible="not oos_to">to</span>
+                                <field name="oos_to" readonly="1" nolabel="1" invisible="not oos_to"/>
+                                <div>
+                                    <field name="oos_reason" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="oe_title">
+                            <label for="code"/>
+                            <h1>
+                                <field name="code" placeholder="ROOM-101"/>
+                                <span class="text-muted">—</span>
+                                <field name="name" placeholder="Display Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Identity">
+                                <field name="space_type_id"/>
+                                <field name="property_id"/>
+                                <field name="is_virtual"/>
+                            </group>
+                            <group string="Location">
+                                <field name="building_id"
+                                       domain="[('property_id','=',property_id)]"/>
+                                <field name="floor_id"
+                                       domain="[('building_id','=',building_id)]"/>
+                                <field name="section_id"
+                                       domain="[('building_id','=',building_id)]"/>
+                                <field name="bed_count"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Features" name="features">
+                                <field name="feature_ids" widget="many2many_tags"
+                                       nolabel="1"
+                                       placeholder="Add features specific to this room…"/>
+                            </page>
+                            <page string="Status Details" name="status_details">
+                                <group>
+                                    <group string="Out of Order"
+                                           invisible="status != 'ooo'">
+                                        <field name="ooo_reason"/>
+                                        <field name="ooo_from"/>
+                                        <field name="ooo_to"/>
+                                    </group>
+                                    <group string="Out of Service"
+                                           invisible="status != 'oos'">
+                                        <field name="oos_reason"/>
+                                        <field name="oos_from"/>
+                                        <field name="oos_to"/>
+                                    </group>
+                                </group>
+                                <div class="text-muted"
+                                     invisible="status in ('ooo','oos')">
+                                    No active status restrictions.
+                                </div>
+                            </page>
+                            <page string="Connecting Rooms" name="connecting" invisible="id == 0">
+                                <group>
+                                    <field name="parent_space_id"/>
+                                    <field name="lock_parent_when_child_booked"/>
+                                </group>
+                                <field name="child_space_ids" context="{
+                                   'default_property_id': property_id,
+                                   'default_building_id': building_id,
+                                   'default_floor_id': floor_id,
+                                   'default_section_id': section_id,
+                                   'default_parent_space_id': id
+                               }">
+                                    <list>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="space_type_id"/>
+                                        <field name="status" widget="badge"
+                                               decoration-success="status in ('vacant_clean','inspected')"
+                                               decoration-warning="status in ('vacant_dirty','pickup')"
+                                               decoration-info="status in ('occupied_clean','occupied_dirty')"
+                                               decoration-danger="status in ('ooo','oos')"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             WIZARD — OOO / OOS Status
+        ====================================================== -->
+        <record id="view_hospitality_space_status_wizard_form" model="ir.ui.view">
+            <field name="name">hospitality.space.status.wizard.form</field>
+            <field name="model">hospitality.space.status.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Set Room Status">
+                    <group>
+                        <field name="space_ids" widget="many2many_tags" readonly="1"
+                               string="Affected Rooms"/>
+                        <field name="mode" invisible="1"/>
+                        <field name="reason" placeholder="Describe the reason for this status change…"/>
+                        <field name="date_from" string="From"/>
+                        <field name="date_to" string="To"/>
+                    </group>
+                    <footer>
+                        <button string="Apply" name="action_apply"
+                                type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE — Window Action
+        ====================================================== -->
+        <record id="action_hospitality_space" model="ir.actions.act_window">
+            <field name="name">Rooms</field>
+            <field name="res_model">hospitality.space</field>
+            <!-- Kanban first: the card shows the room type cover and
+                 its status at a glance, which is what this view is for.
+                 The list is still one click away. -->
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="view_hospitality_space_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first space
+                </p>
+                <p>
+                    Add rooms, suites, or any bookable unit to this property.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

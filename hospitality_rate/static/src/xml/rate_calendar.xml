@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hospitality_rate.RateCalendar">
+        <div class="o_rate_calendar o_action h-100 d-flex flex-column">
+
+            <!-- ── Toolbar ─────────────────────────────────────────────── -->
+            <div class="o_rate_calendar_toolbar d-flex flex-wrap align-items-end gap-3 p-3 border-bottom bg-white">
+                <div>
+                    <label class="form-label mb-0 small text-muted">Rate Code</label>
+                    <select class="form-select form-select-sm"
+                            t-on-change="onRateCodeChange"
+                            t-att-value="state.rateCodeId">
+                        <t t-foreach="state.rateCodes" t-as="rc" t-key="rc.id">
+                            <option t-att-value="rc.id"
+                                    t-att-selected="rc.id === state.rateCodeId">
+                                <t t-esc="rc.code + ' — ' + rc.name"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label mb-0 small text-muted">Start Date</label>
+                    <input type="date" class="form-control form-control-sm"
+                           t-att-value="state.startDate"
+                           t-on-change="onStartDateChange"/>
+                </div>
+                <div>
+                    <label class="form-label mb-0 small text-muted">Window</label>
+                    <select class="form-select form-select-sm"
+                            t-on-change="onWindowChange">
+                        <t t-foreach="windowOptions" t-as="w" t-key="w">
+                            <option t-att-value="w"
+                                    t-att-selected="w === state.windowDays">
+                                <t t-esc="w + ' days'"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label mb-0 small text-muted">Adults</label>
+                    <input type="number" min="1" class="form-control form-control-sm"
+                           style="width: 80px;"
+                           t-att-value="state.occupancy.adults"
+                           t-on-change="onAdultsChange"/>
+                </div>
+                <div>
+                    <label class="form-label mb-0 small text-muted">Children</label>
+                    <input type="number" min="0" class="form-control form-control-sm"
+                           style="width: 80px;"
+                           t-att-value="state.occupancy.children"
+                           t-on-change="onChildrenChange"/>
+                </div>
+                <div class="ms-auto">
+                    <button class="btn btn-sm btn-primary o_rate_calendar_copy_btn"
+                            t-on-click="onOpenCopyDialog">
+                        <i class="fa fa-copy me-1"/> Copy from … to …
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── Grid ────────────────────────────────────────────────── -->
+            <div class="o_rate_calendar_grid_wrap flex-grow-1 overflow-auto p-2">
+                <t t-if="state.loading">
+                    <div class="text-center text-muted p-5">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                    </div>
+                </t>
+                <t t-elif="!state.rateCodeId">
+                    <div class="text-center text-muted p-5">
+                        No rate code available.
+                    </div>
+                </t>
+                <t t-elif="!state.spaceTypes.length">
+                    <div class="text-center text-muted p-5">
+                        No space types found for this property.
+                    </div>
+                </t>
+                <t t-else="">
+                    <table class="o_rate_calendar_grid table table-bordered table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th class="o_rate_calendar_corner sticky-top sticky-start bg-light">
+                                    Space Type
+                                </th>
+                                <t t-foreach="state.dates" t-as="ds" t-key="ds">
+                                    <th class="o_rate_calendar_date_header text-center sticky-top bg-light"
+                                        t-att-class="isWeekend(ds) ? 'o_rate_calendar_weekend' : ''"
+                                        t-on-click="() => this.onColumnBulk(ds)"
+                                        t-att-title="'Click to bulk-edit ' + ds">
+                                        <small style="white-space: pre-line;">
+                                            <t t-esc="dateLabel(ds)"/>
+                                        </small>
+                                    </th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.spaceTypes" t-as="st" t-key="st.id">
+                                <tr>
+                                    <th class="o_rate_calendar_row_header sticky-start bg-light"
+                                        t-on-click="() => this.onRowBulk(st.id)"
+                                        t-att-title="'Click to bulk-edit row'">
+                                        <t t-esc="st.name"/>
+                                    </th>
+                                    <t t-foreach="state.dates" t-as="ds" t-key="ds">
+                                        <td class="o_rate_calendar_cell text-end"
+                                            t-att-style="cellStyle(st.id, ds)"
+                                            t-att-data-key="cellKey(st.id, ds)"
+                                            t-on-click="() => this.onCellClick(st.id, ds)">
+                                            <t t-if="isEditing(st.id, ds)">
+                                                <input type="number" step="0.01" min="0"
+                                                       class="form-control form-control-sm o_rate_calendar_input"
+                                                       t-ref="editInput"
+                                                       t-att-value="state.editValue"
+                                                       t-on-input="onEditInput"
+                                                       t-on-blur="() => this.onEditBlur(st.id, ds)"
+                                                       t-on-keydown="(ev) => this.onEditKeydown(ev, st.id, ds)"
+                                                       t-on-click.stop=""/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-esc="cellPrice(st.id, ds)"/>
+                                            </t>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+            </div>
+
+            <!-- ── Copy range dialog ───────────────────────────────────── -->
+            <t t-if="state.copyDialog.open">
+                <div class="modal fade show d-block o_rate_calendar_modal"
+                     tabindex="-1" role="dialog"
+                     style="background-color: rgba(0,0,0,0.4);">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Copy Date Range</h5>
+                                <button type="button" class="btn-close"
+                                        t-on-click="onCloseCopyDialog"/>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small">Source From</label>
+                                        <input type="date" class="form-control form-control-sm o_rcc_src_from"
+                                               t-att-value="state.copyDialog.srcFrom"
+                                               t-on-change="(ev) => state.copyDialog.srcFrom = ev.target.value"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Source To</label>
+                                        <input type="date" class="form-control form-control-sm o_rcc_src_to"
+                                               t-att-value="state.copyDialog.srcTo"
+                                               t-on-change="(ev) => state.copyDialog.srcTo = ev.target.value"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Destination From</label>
+                                        <input type="date" class="form-control form-control-sm o_rcc_dst_from"
+                                               t-att-value="state.copyDialog.dstFrom"
+                                               t-on-change="(ev) => state.copyDialog.dstFrom = ev.target.value"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small">Destination To</label>
+                                        <input type="date" class="form-control form-control-sm o_rcc_dst_to"
+                                               t-att-value="state.copyDialog.dstTo"
+                                               t-on-change="(ev) => state.copyDialog.dstTo = ev.target.value"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary"
+                                        t-on-click="onCloseCopyDialog">Cancel</button>
+                                <button class="btn btn-primary o_rcc_confirm"
+                                        t-on-click="onConfirmCopy">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+        </div>
+    </t>
+
+</templates>

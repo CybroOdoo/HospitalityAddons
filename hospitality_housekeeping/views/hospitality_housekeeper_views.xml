@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for managing housekeepers, displaying assigned
+     employees, properties, daily credit targets, and active
+     status for quick administration. -->
+    <record id="view_hk_housekeeper_list" model="ir.ui.view">
+        <field name="name">hospitality.housekeeper.list</field>
+        <field name="model">hospitality.housekeeper</field>
+        <field name="arch" type="xml">
+            <list string="Housekeepers">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="property_id"/>
+                <field name="daily_credit_target"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for creating and maintaining housekeeper
+     records, including employee details, assigned property,
+     workload target, and active status. -->
+    <record id="view_hk_housekeeper_form" model="ir.ui.view">
+        <field name="name">hospitality.housekeeper.form</field>
+        <field name="model">hospitality.housekeeper</field>
+        <field name="arch" type="xml">
+            <form string="Housekeeper">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="employee_id"/>
+                        <field name="property_id"/>
+                        <field name="daily_credit_target"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Window action for managing housekeeper records through
+     list and form views. Used to maintain housekeeping staff,
+     including those without Odoo user accounts. -->
+    <record id="action_hk_housekeeper" model="ir.actions.act_window">
+        <field name="name">Housekeepers</field>
+        <field name="res_model">hospitality.housekeeper</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add housekeeping staff who don't have an Odoo user account.
+            </p>
+        </field>
+    </record>
+
+</odoo>

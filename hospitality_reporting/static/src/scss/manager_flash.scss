@@ -1,0 +1,211 @@
+.of-mf {
+    --of-mf-color-0: #714B67;
+    --of-mf-color-1: #00A09D;
+    --of-mf-color-2: #F1C40F;
+    --of-mf-color-3: #E67E22;
+    --of-mf-color-4: #3498DB;
+    --of-mf-color-5: #9B59B6;
+    --of-mf-color-6: #2ECC71;
+    --of-mf-color-7: #E74C3C;
+    --of-mf-donut-empty: #E0E0E0;
+    --of-mf-up: #2ECC71;
+    --of-mf-down: #E74C3C;
+    --of-mf-flat: #909090;
+
+    padding: 16px 24px;
+
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 16px;
+
+        h2 {
+            margin: 0;
+        }
+    }
+
+    &-business-date {
+        color: var(--of-mf-flat);
+        font-size: 0.9em;
+    }
+
+    &-header-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    &-loading, &-empty {
+        padding: 32px;
+        text-align: center;
+        color: var(--of-mf-flat);
+    }
+
+    &-kpi-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    &-kpi-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 14px 16px;
+        background: #fff;
+    }
+
+    &-kpi-label {
+        font-size: 0.85em;
+        color: var(--of-mf-flat);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    &-kpi-value {
+        font-size: 1.6em;
+        font-weight: 600;
+        margin: 4px 0;
+    }
+
+    &-kpi-delta {
+        font-size: 0.85em;
+        font-weight: 600;
+    }
+
+    &-delta-up { color: var(--of-mf-up); }
+    &-delta-down { color: var(--of-mf-down); }
+    &-delta-flat { color: var(--of-mf-flat); }
+
+    &-mid-row {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    &-panel {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 14px 16px;
+        background: #fff;
+
+        h3 {
+            margin: 0 0 10px 0;
+            font-size: 1em;
+            color: var(--of-mf-flat);
+        }
+    }
+
+    &-inhouse-stat {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+
+        &:last-child { margin-bottom: 0; }
+    }
+
+    &-inhouse-value {
+        font-size: 1.5em;
+        font-weight: 600;
+    }
+
+    &-inhouse-label {
+        font-size: 0.85em;
+        color: var(--of-mf-flat);
+    }
+
+    &-flow-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+
+    &-flow-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    &-flow-value {
+        font-size: 1.4em;
+        font-weight: 600;
+    }
+
+    &-flow-label {
+        font-size: 0.8em;
+        color: var(--of-mf-flat);
+    }
+
+    &-donut-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    &-donut-body {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    &-donut {
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        border-radius: 50%;
+        position: relative;
+
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 22px;
+            background: #fff;
+            border-radius: 50%;
+        }
+    }
+
+    &-legend {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        flex: 1;
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+    }
+
+    &-legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    &-legend-label {
+        flex: 1;
+    }
+
+    &-legend-share {
+        color: var(--of-mf-flat);
+    }
+
+    &-legend-empty {
+        color: var(--of-mf-flat);
+    }
+
+    @for $i from 0 through 7 {
+        .of-mf-color-#{$i} {
+            background: var(--of-mf-color-#{$i});
+        }
+    }
+}

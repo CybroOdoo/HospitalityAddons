@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================
+             Brand hierarchy
+        ============================================================ -->
+        <record id="demo_brand_group" model="hospitality.brand">
+            <field name="name">Demo Hotels Group</field>
+            <field name="code">DHG</field>
+            <field name="sequence">10</field>
+            <field name="description">
+                Demo Hotels Group — parent brand used for demonstration.
+            </field>
+        </record>
+
+        <record id="demo_brand_boutique" model="hospitality.brand">
+            <field name="name">Demo Boutique</field>
+            <field name="code">DBQ</field>
+            <field name="parent_id" ref="demo_brand_group"/>
+            <field name="sequence">10</field>
+            <field name="description">
+                Demo Boutique — child brand under Demo Hotels Group.
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Demo Property — NYC01
+        ============================================================ -->
+        <record id="demo_property_nyc01" model="hospitality.property">
+            <field name="property_image" type="base64" file="hospitality_base/static/src/img/demo/prop_nyc.jpg"/>
+            <field name="name">Demo Boutique NYC</field>
+            <field name="code">NYC01</field>
+            <!-- Give the demo administrator this property's allowed-property
+                 membership so property-scoped demo records are visible. -->
+            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="brand_id" ref="demo_brand_boutique"/>
+            <field name="property_type">hotel</field>
+            <field name="star_rating">4</field>
+            <field name="timezone">America/New_York</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="default_check_in_time">14.0</field>
+            <field name="default_check_out_time">12.0</field>
+            <field name="auto_audit">False</field>
+        </record>
+
+        <!-- ============================================================
+             Wire seed policies to NYC01
+        ============================================================ -->
+
+        <!-- Cancellation policies → NYC01 -->
+        <record id="hospitality_base.cancel_policy_flex24"
+                model="hospitality.cancellation.policy">
+            <field name="property_id" ref="demo_property_nyc01"/>
+        </record>
+        <record id="hospitality_base.cancel_policy_nr"
+                model="hospitality.cancellation.policy">
+            <field name="property_id" ref="demo_property_nyc01"/>
+        </record>
+        <record id="hospitality_base.cancel_policy_std48"
+                model="hospitality.cancellation.policy">
+            <field name="property_id" ref="demo_property_nyc01"/>
+        </record>
+
+        <!-- Deposit policies → NYC01 -->
+        <record id="hospitality_base.deposit_policy_no_dep"
+                model="hospitality.deposit.policy">
+            <field name="property_id" ref="demo_property_nyc01"/>
+        </record>
+        <record id="hospitality_base.deposit_policy_first_night"
+                model="hospitality.deposit.policy">
+            <field name="property_id" ref="demo_property_nyc01"/>
+        </record>
+        <record id="hospitality_base.deposit_policy_half_pct"
+                model="hospitality.deposit.policy">
+            <field name="property_id" ref="demo_property_nyc01"/>
+        </record>
+
+    </data>
+</odoo>

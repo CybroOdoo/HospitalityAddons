@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--
+            Odoo's own Maintenance app is superseded by this module's
+            Maintenance root, which covers work orders, WO aging and
+            assets for a property. Two apps called "Maintenance" in the
+            drawer is the duplicate this removes.
+
+            Run as a <function> rather than a <record> overwriting
+            another module's data, so the helper can refuse when its
+            guards are not met. It re-runs on every upgrade of this
+            module, so the menu stays hidden even if the maintenance
+            module is updated afterwards and reactivates it.
+        -->
+        <function model="ir.ui.menu" name="_hm_hide_superseded_menu"
+                  eval="('maintenance.menu_maintenance_title',
+                         'hospitality_maintenance.menu_hospitality_maintenance_root')"/>
+
+    </data>
+</odoo>

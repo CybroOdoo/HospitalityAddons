@@ -1,0 +1,271 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// RES-03 — Tape Chart / Reservation Calendar styling
+//
+// NOTE: colours are defined as local literals/variables below rather than
+// referencing Odoo theme SCSS variables (e.g. $o-view-background-color,
+// $o-brand-primary, $o-tooltip-color-*). Those names are not guaranteed
+// to exist in every Odoo 19 build's web.assets_backend SCSS scope, and a
+// single undefined variable fails compilation for the *entire* asset
+// bundle, not just this file. Keeping this file self-contained avoids
+// that fragility; swap in real theme variables later if you want the
+// chart to inherit a custom theme's palette.
+
+$tc-border-color: #d8dadd;
+$tc-bg-subtle: #f8f9fa;
+$tc-text-muted: #6c757d;
+$tc-white: #ffffff;
+$tc-gray-500: #adb5bd;
+
+$tc-color-yellow-bg: #f4c430;
+$tc-color-yellow-text: #4d3800;
+$tc-color-blue-bg: #4a7fd6;
+$tc-color-green-bg: #3fa66e;
+$tc-color-grey-bg: #6c757d;
+$tc-color-red-bg: #d9534f;
+
+$tc-accent: #714b67;
+
+.o_tape_chart_view {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.o_tape_chart_root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    user-select: none; // dragging bars shouldn't select text
+}
+
+.o_tape_chart_toolbar {
+    flex: 0 0 auto;
+    background-color: $tc-white;
+    z-index: 3;
+}
+
+.o_tape_chart_legend {
+    .o_tape_legend_swatch {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+    }
+}
+
+.o_tape_chart_loading {
+    flex: 1 1 auto;
+}
+
+// ── Body layout: fixed label column + scrollable grid ─────────────────────
+
+.o_tape_chart_body {
+    flex: 1 1 auto;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.o_tape_chart_row_labels {
+    flex: 0 0 auto;
+    width: 160px;
+    border-right: 1px solid $tc-border-color;
+    overflow: hidden;
+}
+
+.o_tape_chart_corner {
+    border-bottom: 1px solid $tc-border-color;
+    background-color: $tc-white;
+}
+
+.o_tape_chart_row_label {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border-bottom: 1px solid $tc-border-color;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.o_tape_row_label_out_of_order,
+    &.o_tape_row_label_out_of_service {
+        background-color: rgba($tc-color-red-bg, 0.15);
+        color: #8c2a27; // darken($tc-color-red-bg, 15%), precomputed
+    }
+}
+
+.o_tape_chart_grid_scroll {
+    flex: 1 1 auto;
+    overflow: auto;
+    position: relative;
+}
+
+.o_tape_chart_grid_inner {
+    position: relative;
+}
+
+// ── Date header ─────────────────────────────────────────────────────────
+
+.o_tape_chart_date_header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: $tc-white;
+    border-bottom: 1px solid $tc-border-color;
+}
+
+.o_tape_chart_date_col {
+    flex: 0 0 auto;
+    text-align: center;
+    border-right: 1px solid $tc-border-color;
+    font-size: 0.75rem;
+    padding-top: 4px;
+
+    &.o_tape_weekend {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    .o_tape_date_dow {
+        text-transform: uppercase;
+        color: $tc-text-muted;
+    }
+
+    .o_tape_date_num {
+        font-weight: 600;
+    }
+}
+
+// ── Rows / cells ────────────────────────────────────────────────────────
+
+.o_tape_chart_rows {
+    position: relative;
+}
+
+.o_tape_chart_row {
+    border-bottom: 1px solid $tc-border-color;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.015);
+    }
+}
+
+.o_tape_chart_cell {
+    flex: 0 0 auto;
+    border-right: 1px solid #e3e5e7; // lighten($tc-border-color, 5%), precomputed
+    cursor: cell;
+
+    &.o_tape_weekend {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+}
+
+// ── Reservation bars ────────────────────────────────────────────────────
+
+.o_tape_chart_bar {
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    cursor: grab;
+    color: $tc-white;
+    font-size: 0.78rem;
+    padding: 0 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+
+    &:active {
+        cursor: grabbing;
+    }
+
+    .o_tape_bar_label {
+        flex: 1 1 auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        pointer-events: none;
+    }
+
+    .o_tape_bar_edge {
+        flex: 0 0 6px;
+        align-self: stretch;
+        cursor: ew-resize;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+    }
+}
+
+// State colour scheme, per RES-03 spec
+.o_tape_bar_yellow {
+    background-color: $tc-color-yellow-bg;
+    color: $tc-color-yellow-text;
+}
+
+.o_tape_bar_blue {
+    background-color: $tc-color-blue-bg;
+    color: $tc-white;
+}
+
+.o_tape_bar_green {
+    background-color: $tc-color-green-bg;
+    color: $tc-white;
+}
+
+.o_tape_bar_grey {
+    background-color: $tc-color-grey-bg;
+    color: $tc-white;
+}
+
+.o_tape_bar_red {
+    background-color: $tc-color-red-bg;
+    color: $tc-white;
+}
+
+// cancelled: diagonal stripe pattern over a red base
+.o_tape_bar_stripe-red {
+    background-color: $tc-color-red-bg;
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.25),
+        rgba(255, 255, 255, 0.25) 4px,
+        transparent 4px,
+        transparent 8px
+    );
+    color: $tc-white;
+    text-decoration: line-through;
+}
+
+.o_tape_bar_default {
+    background-color: $tc-gray-500;
+    color: $tc-white;
+}
+
+// ── OOO / OOS blocks ────────────────────────────────────────────────────
+
+.o_tape_ooo_block {
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.12),
+        rgba(0, 0, 0, 0.12) 6px,
+        rgba(0, 0, 0, 0.05) 6px,
+        rgba(0, 0, 0, 0.05) 12px
+    );
+    pointer-events: none;
+    z-index: 0;
+}
+
+// ── Drag ghost ──────────────────────────────────────────────────────────
+
+.o_tape_drag_ghost {
+    position: absolute;
+    background-color: rgba($tc-accent, 0.35);
+    border: 2px dashed $tc-accent;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 5;
+}

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        hospitality_base.PropertySwitcher
+        Systray dropdown — mirrors Odoo's company switcher UX.
+    -->
+    <t t-name="hospitality_base.PropertySwitcher">
+
+        <!-- ── Systray trigger button ─────────────────────────────────── -->
+        <div class="o_hospitality_property_switcher o_dropdown"
+             t-on-click="toggleDropdown"
+             t-on-keydown="(ev) => ev.key === 'Escape' &amp;&amp; closeDropdown()">
+
+            <button class="o_hospitality_switcher_btn btn btn-secondary dropdown-toggle"
+                    type="button"
+                    aria-haspopup="true"
+                    t-att-aria-expanded="state.isOpen ? 'true' : 'false'">
+
+                <i class="fa fa-building-o me-1" aria-hidden="true"/>
+
+                <t t-if="state.currentProperty">
+                    <span class="o_property_name">
+                        <t t-esc="state.currentProperty.name"/>
+                    </span>
+                    <span class="o_property_date text-muted ms-1 small">
+                        (<t t-esc="formatBusinessDate(state.currentProperty.business_date)"/>)
+                    </span>
+                </t>
+                <t t-else="">
+                    <span class="o_property_name text-muted">No Property</span>
+                </t>
+
+            </button>
+
+            <!-- ── Dropdown panel ──────────────────────────────────────── -->
+            <div t-if="state.isOpen"
+                 class="o_hospitality_switcher_dropdown dropdown-menu dropdown-menu-end show">
+
+                <!-- Empty state -->
+                <t t-if="!state.properties.length">
+                    <div class="o_property_empty px-3 py-2 text-muted small">
+                        No property assigned — contact administrator.
+                    </div>
+                </t>
+
+                <!-- Property list -->
+                <t t-else="">
+                    <t t-foreach="state.properties" t-as="prop" t-key="prop.id">
+                        <button
+                            type="button"
+                            class="dropdown-item o_property_item d-flex align-items-center gap-2"
+                            t-att-class="{
+                                'active o_current_property':
+                                    state.currentProperty &amp;&amp;
+                                    prop.id === state.currentProperty.id
+                            }"
+                            t-on-click.stop="() => selectProperty(prop)">
+
+                            <!-- Checkmark for active property -->
+                            <span class="o_property_check" style="width:1rem;">
+                                <t t-if="state.currentProperty and prop.id === state.currentProperty.id">
+                                    <i class="fa fa-check text-primary" aria-hidden="true"/>
+                                </t>
+                            </span>
+
+                            <span class="o_property_item_info flex-grow-1">
+                                <span class="fw-semibold d-block">
+                                    <t t-esc="prop.name"/>
+                                </span>
+                                <span class="text-muted small">
+                                    <t t-esc="prop.code"/> ·
+                                    <t t-esc="formatBusinessDate(prop.business_date)"/>
+                                </span>
+                            </span>
+
+                        </button>
+                    </t>
+                </t>
+
+            </div>
+        </div>
+
+    </t>
+
+</templates>

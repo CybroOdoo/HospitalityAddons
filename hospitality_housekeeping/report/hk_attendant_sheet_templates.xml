@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Attendant Sheet report grouped by assigned attendant -->
+    <template id="report_hk_attendant_sheet_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs._get_attendant_sheet_groups()" t-as="group">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Attendant Sheet</h2>
+                        <h4>
+                            <span t-esc="group['attendant_name']"/>
+                        </h4>
+                        <table class="table table-sm table-bordered o_report_hk_attendant_sheet_table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">Done</th>
+                                    <th>Business Date</th>
+                                    <th>Floor</th>
+                                    <th>Room</th>
+                                    <th>Task Type</th>
+                                    <th>Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="group['tasks']" t-as="task">
+                                    <td style="text-align: center; font-size: 16px;">&#9744;</td>
+                                    <td><span t-esc="task.business_date"/></td>
+                                    <td><span t-esc="task.space_id.floor_id.name or ''"/></td>
+                                    <td><span t-esc="task.space_id.code"/></td>
+                                    <td><span t-esc="dict(task._fields['task_type'].selection).get(task.task_type)"/></td>
+                                    <td><span t-esc="dict(task._fields['priority'].selection).get(task.priority)"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

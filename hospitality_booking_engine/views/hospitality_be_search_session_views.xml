@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Booking Search Session List View -->
+    <record id="view_hospitality_be_search_session_list" model="ir.ui.view">
+        <field name="name">hospitality.be.search.session.list</field>
+        <field name="model">hospitality.be.search.session</field>
+        <field name="arch" type="xml">
+            <list string="Search Sessions">
+                <field name="property_id"/>
+                <field name="contact_email"/>
+                <field name="arrival"/>
+                <field name="departure"/>
+                <field name="last_activity_at"/>
+                <field name="recovery_attempts"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'recovered'"
+                       decoration-warning="state == 'abandoned'"
+                       decoration-danger="state == 'lost'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Booking Search Session Form View -->
+    <record id="view_hospitality_be_search_session_form" model="ir.ui.view">
+        <field name="name">hospitality.be.search.session.form</field>
+        <field name="model">hospitality.be.search.session</field>
+        <field name="arch" type="xml">
+            <form string="Search Session">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="property_id"/>
+                        <h1>
+                            <field name="property_id" options="{'no_create': True}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Search">
+                            <field name="visitor_id"/>
+                            <field name="arrival"/>
+                            <field name="departure"/>
+                            <field name="adults"/>
+                            <field name="children"/>
+                            <field name="selected_rate_code_id"/>
+                            <field name="selected_space_type_id"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="contact_email"/>
+                            <field name="contact_phone"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Timing">
+                            <field name="started_at" readonly="1"/>
+                            <field name="last_activity_at"/>
+                        </group>
+                        <group string="Recovery">
+                            <field name="state"/>
+                            <field name="recovery_attempts" readonly="1"/>
+                            <field name="recovered" readonly="1"/>
+                            <field name="access_token" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Raw Search Payload">
+                        <field name="search_payload" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Booking Search Session Window Action -->
+    <record id="action_hospitality_be_search_session" model="ir.actions.act_window">
+        <field name="name">Search Sessions</field>
+        <field name="res_model">hospitality.be.search.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smart_action">
+                Search sessions are normally created automatically when
+                a visitor searches on the public booking engine. Create
+                one manually here to test the abandoned-cart recovery
+                cron.
+            </p>
+        </field>
+    </record>
+</odoo>

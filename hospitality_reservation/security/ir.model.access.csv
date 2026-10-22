@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reservation_agent,hospitality.reservation.agent,model_hospitality_reservation,group_reservation_agent,1,1,1,0
+access_reservation_supervisor,hospitality.reservation.supervisor,model_hospitality_reservation,group_reservation_supervisor,1,1,1,1
+access_share_wizard_agent,hospitality.reservation.share.wizard.agent,model_hospitality_reservation_share_wizard,group_reservation_agent,1,1,1,1
+access_share_wizard_supervisor,hospitality.reservation.share.wizard.supervisor,model_hospitality_reservation_share_wizard,group_reservation_supervisor,1,1,1,1
+
+access_rate_code_reservation_agent,hospitality.rate.code reservation agent,hospitality_rate.model_hospitality_rate_code,group_reservation_agent,1,0,0,0
+access_reservation_hospitality_admin,hospitality.reservation.hospitality.admin,model_hospitality_reservation,hospitality_base.group_hospitality_admin,1,1,1,1

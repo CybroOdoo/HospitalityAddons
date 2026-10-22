@@ -1,0 +1,397 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Login - 53/47 split, ink brand panel left, ivory sign-in right.
+//
+// The page has two DOM shapes depending on what is installed:
+//   website absent  -> #wrapwrap > main > .container > .card.o_database_list
+//   website present -> #wrapwrap > main > .oe_website_login_container
+// Anchoring on either alone silently breaks the other, so the page
+// scope keys on .oe_login_form, which is present in both, and the two
+// wrapper shapes are neutralised side by side. The inline
+// `max-width: 300px` on the card needs !important to beat.
+
+body:has(.oe_login_form) {
+    background: $ht-ivory;
+    margin: 0;
+
+    #wrapwrap > header,
+    #wrapwrap > footer,
+    > header,
+    > footer { display: none !important; }
+
+    #wrapwrap,
+    #wrapwrap > main {
+        min-height: 100vh;
+        padding: 0 !important;
+        margin: 0;
+        max-width: none;
+        background: $ht-ivory;
+    }
+
+    > #wrapwrap > main > .container,
+    .oe_website_login_container {
+        max-width: none !important;
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0 24px 0 calc(53% + 48px) !important;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+
+        > .oe_structure:empty { display: none; }
+
+        @media (max-width: 900px) {
+            padding: 0 24px !important;
+            align-items: stretch;
+        }
+    }
+
+    // Strip Odoo's login card to a plain block; the ivory panel behind
+    // it is the surface now. The white fill lives on .card-body, not
+    // on .card.
+    .card.o_database_list {
+        max-width: none !important;
+        width: 440px;
+        margin: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+
+        @media (max-width: 900px) { width: 100%; }
+    }
+
+    .card.o_database_list > .card-body {
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+    }
+
+    // Odoo stacks the company logo above the form; the brand panel
+    // already carries it.
+    .card-body > .text-center.border-bottom { display: none !important; }
+
+    // The design shows email and password only. .o_login_auth holds the
+    // passkey link and any OAuth buttons; .o_user_switch_btn is the
+    // "Choose a user" shortcut, injected into the Email label once a
+    // login is remembered in the browser.
+    .o_login_auth,
+    .oe_login_buttons > a.btn-link,
+    .o_user_switch_btn { display: none !important; }
+}
+
+// ── Left: brand panel ─────────────────────────────────────────────────
+
+.ht_login_brand {
+    position: fixed;
+    inset: 0 47% 0 0;
+    background: $ht-ink;
+    overflow: hidden;
+    padding: 44px 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: 900px) {
+        position: static;
+        inset: auto;
+        background: transparent;
+        padding: 32px 0 20px;
+    }
+}
+
+.ht_login_glow {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+
+    @media (max-width: 900px) { display: none; }
+}
+
+.ht_login_glow_brass {
+    width: 620px;
+    height: 620px;
+    right: -120px;
+    top: -170px;
+    background: $ht-glow-brass;
+}
+
+.ht_login_glow_blue {
+    width: 560px;
+    height: 560px;
+    left: -200px;
+    bottom: -260px;
+    background: $ht-glow-blue;
+}
+
+// Centred stack. The panel has nothing else in it now, so the lockup is
+// the composition rather than a mark parked in a corner.
+.ht_login_lockup {
+    position: relative;      // above the glows
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 460px;
+}
+
+// A light plate, not a brass one: company logos are artwork of unknown
+// colour and Odoo's own placeholder is dark, so the logo needs a light
+// field behind it to stay legible on ink. The brass ring and the glow
+// under it are what make it read as deliberate rather than as a sticker.
+.ht_login_logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    // Fixed height, free width: a company logo is usually a wide
+    // wordmark, and boxing one into a square shrinks it to nothing to
+    // make it fit. The plate grows sideways with the artwork instead,
+    // so a wordmark and a square emblem both arrive full size.
+    height: 104px;
+    min-width: 104px;
+    max-width: 300px;
+    padding: 16px 24px;
+    border-radius: 22px;
+    overflow: hidden;
+
+    background: $ht-surface;
+    border: 1px solid rgba(181, 138, 69, .55);
+    box-shadow:
+        0 0 0 6px rgba(181, 138, 69, .10),
+        0 18px 40px -12px rgba(0, 0, 0, .55);
+
+    img {
+        display: block;
+        height: 100%;
+        width: auto;
+        max-width: 252px;
+        object-fit: contain;
+    }
+
+    @media (max-width: 900px) {
+        height: 76px;
+        min-width: 76px;
+        max-width: 220px;
+        padding: 12px 16px;
+        border-radius: 18px;
+        box-shadow: 0 0 0 5px rgba(181, 138, 69, .10);
+
+        img { max-width: 180px; }
+    }
+}
+
+// Two-class selectors throughout: a bare h1/h2 rule in the frontend
+// bundle outranks a single class and would paint these ink-on-ink.
+.ht_login_brand .ht_login_company {
+    margin-top: 22px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.015em;
+    line-height: 1.15;
+    color: $ht-on-ink;
+
+    @media (max-width: 900px) {
+        color: $ht-text;
+        font-size: 22px;
+        margin-top: 16px;
+    }
+}
+
+// Brass hairline with a centred diamond - the divider motif hotel
+// collateral has used forever, and a good deal more considered than a
+// plain bar. The diamond's box-shadow is painted in the panel colour to
+// punch a clean gap in the line rather than sitting on top of it, which
+// is why it has to be restated for the light mobile background.
+.ht_login_brand .ht_login_rule {
+    position: relative;
+    display: block;
+    width: 120px;
+    height: 1px;
+    margin: 26px 0 26px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(181, 138, 69, .9) 22%,
+        rgba(181, 138, 69, .9) 78%,
+        transparent
+    );
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 7px;
+        height: 7px;
+        transform: translate(-50%, -50%) rotate(45deg);
+        background: $ht-brass;
+        box-shadow: 0 0 0 5px $ht-ink;
+    }
+
+    @media (max-width: 900px) {
+        margin: 18px 0 16px;
+        &::after { box-shadow: 0 0 0 5px $ht-ivory; }
+    }
+}
+
+// A serif italic, set against the sans everywhere else on the page. The
+// suite loads no webfont by design, so this is a system serif stack -
+// nothing to download, and every platform in the list ships a proper
+// italic rather than a synthesised slant.
+.ht_login_brand .ht_login_slogan {
+    margin: 0;
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype",
+                 "Times New Roman", Times, serif;
+    font-size: 30px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.38;
+    letter-spacing: -.005em;
+    color: rgba(255, 255, 255, .93);
+    // Keeps a two-line slogan from leaving one orphaned word.
+    text-wrap: balance;
+
+    @media (max-width: 900px) {
+        color: $ht-text-2;
+        font-size: 20px;
+    }
+}
+
+// ── Right: sign-in ────────────────────────────────────────────────────
+
+.ht_login_head { margin-bottom: 26px; }
+
+.oe_login_form .ht_login_title {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    color: $ht-ink;
+    margin: 0;
+}
+
+.ht_login_forgot {
+    margin-left: auto;
+    color: $ht-brass !important;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    padding: 0;
+    @include ht-nowrap;
+
+    &:hover { color: #8A6A1E !important; }
+}
+
+.oe_login_form {
+    background: transparent;
+    width: 440px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+
+    // Odoo spaces its field blocks with bootstrap margins; the flex gap
+    // handles rhythm, so those are zeroed.
+    > .mb-3,
+    > .o_caps_lock_warning,
+    > .oe_login_buttons {
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    label,
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: $ht-text-2;
+        margin-bottom: 7px;
+        @include ht-nowrap;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    .form-control {
+        height: 50px;
+        border-radius: $ht-radius-control;
+        border: 1px solid $ht-line;
+        background: $ht-surface;
+        font-size: 14px;
+        padding-inline: 16px;
+
+        &::placeholder { color: $ht-text-4; }
+
+        &:focus {
+            border-color: $ht-brass;
+            box-shadow: $ht-focus-ring;
+            outline: none;
+        }
+    }
+
+    // The password field ships as an input-group with a separate
+    // bordered eye button; collapse them into one rounded control.
+    .input-group {
+        border: 1px solid $ht-line;
+        border-radius: $ht-radius-control;
+        background: $ht-surface;
+        overflow: hidden;
+
+        .form-control {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent;
+        }
+
+        .o_show_password {
+            border: none !important;
+            background: transparent;
+            color: $ht-text-4;
+
+            &:hover { color: $ht-ink; }
+        }
+
+        &:focus-within {
+            border-color: $ht-brass;
+            box-shadow: $ht-focus-ring;
+        }
+    }
+
+    button[type="submit"],
+    .btn-primary {
+        width: 100%;
+        height: 52px;
+        margin-top: 4px;
+        border-radius: $ht-radius-control;
+        background: $ht-ink;
+        border-color: $ht-ink;
+        color: $ht-on-ink;
+        font-size: 15px;
+        font-weight: 700;
+        @include ht-nowrap;
+
+        &:hover,
+        &:focus {
+            background: #0E1729;
+            border-color: #0E1729;
+        }
+    }
+
+    .alert,
+    .alert-danger {
+        order: 99;
+        background: #F7E0DA;
+        border: none;
+        border-radius: 10px;
+        color: #9E3A25;
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+}

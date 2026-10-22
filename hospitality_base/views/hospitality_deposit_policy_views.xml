@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================
+             DEPOSIT POLICY — Tree
+        ================================================================ -->
+        <record id="view_hospitality_deposit_policy_tree" model="ir.ui.view">
+            <field name="name">hospitality.deposit.policy.tree</field>
+            <field name="model">hospitality.deposit.policy</field>
+            <field name="arch" type="xml">
+                <list string="Deposit Policies">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="due_at"/>
+                    <field name="amount_type"/>
+                    <field name="amount_value"/>
+                    <field name="property_id"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             DEPOSIT POLICY — Form
+        ================================================================ -->
+        <record id="view_hospitality_deposit_policy_form" model="ir.ui.view">
+            <field name="name">hospitality.deposit.policy.form</field>
+            <field name="model">hospitality.deposit.policy</field>
+            <field name="arch" type="xml">
+                <form string="Deposit Policy">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="Policy Name"/></h1>
+                        </div>
+                        <group>
+                            <group string="Identity">
+                                <field name="code"/>
+                                <field name="property_id"/>
+                                <field name="active" widget="boolean_toggle"/>
+                            </group>
+                            <group string="When to Collect">
+                                <field name="due_at"/>
+                                <field name="due_offset_days"
+                                       invisible="due_at != 'x_days_before_arrival'"
+                                       required="due_at == 'x_days_before_arrival'"/>
+                            </group>
+                        </group>
+                        <group string="Amount">
+                            <field name="amount_type"/>
+                            <field name="amount_value"
+                                   invisible="amount_type == 'first_night'"/>
+                            <field name="currency_id"
+                                   invisible="amount_type != 'fixed'"
+                                   required="amount_type == 'fixed'"/>
+                        </group>
+                        <field name="description" placeholder="Description..."/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             DEPOSIT POLICY — Search
+        ================================================================ -->
+        <record id="view_hospitality_deposit_policy_search" model="ir.ui.view">
+            <field name="name">hospitality.deposit.policy.search</field>
+            <field name="model">hospitality.deposit.policy</field>
+            <field name="arch" type="xml">
+                <search string="Search Deposit Policies">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="property_id"/>
+                <filter name="active" string="Active"
+                            domain="[('active','=',True)]"/>
+                    <filter name="global" string="Global (No Property)"
+                            domain="[('property_id','=',False)]"/>
+                <filter name="due_booking" string="Due at Booking"
+                            domain="[('due_at','=','booking')]"/>
+                    <filter name="due_arrival" string="Due at Arrival"
+                            domain="[('due_at','=','arrival')]"/>
+                <filter name="group_due_at" string="Due At"
+                            context="{'group_by': 'due_at'}"/>
+                    <filter name="group_property" string="Property"
+                            context="{'group_by': 'property_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             DEPOSIT POLICY — Action
+        ================================================================ -->
+        <record id="action_hospitality_deposit_policy" model="ir.actions.act_window">
+            <field name="name">Deposit Policies</field>
+            <field name="res_model">hospitality.deposit.policy</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id"
+                   ref="view_hospitality_deposit_policy_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first deposit policy!
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

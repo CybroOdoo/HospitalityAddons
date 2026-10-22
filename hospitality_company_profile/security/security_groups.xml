@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════
+         group_corporate_user
+    ═══════════════════════════════════════════════════════ -->
+    <record id="group_corporate_user" model="res.groups">
+        <field name="name">Corporate User</field>
+        <field name="implied_ids"
+               eval="[(4, ref('hospitality_base.group_hospitality_user'))]"/>
+        <field name="comment">
+            Can view corporate, Travel Agent and OTA account records.
+            No write access to contracts, flags or credit settings.
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         group_corporate_manager
+    ═══════════════════════════════════════════════════════ -->
+    <record id="group_corporate_manager" model="res.groups">
+        <field name="name">Corporate Manager</field>
+        <field name="implied_ids" eval="[(4, ref('group_corporate_user'))]"/>
+        <!-- Same grant the other hospitality modules make; without it nobody
+             holds this group on a fresh install and Contracts is unreachable. -->
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="comment">
+            Inherits Corporate User rights. Additionally may create/edit
+            contracts and toggle the is_corporate, is_ta and is_ota flags
+            on partner records.
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════
+         group_corporate_finance
+    ═══════════════════════════════════════════════════════ -->
+    <record id="group_corporate_finance" model="res.groups">
+        <field name="name">Corporate Finance</field>
+        <field name="implied_ids" eval="[(4, ref('group_corporate_user'))]"/>
+        <field name="comment">
+            Inherits Corporate User rights. Additionally may set credit
+            limits and override the credit hold status on accounts.
+        </field>
+    </record>
+
+</odoo>

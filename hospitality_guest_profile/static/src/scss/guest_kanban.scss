@@ -1,0 +1,189 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Guest kanban: an avatar card.
+//
+// Deliberately NOT the 16:9 media card used by rooms and room types - a
+// guest is a person, and a person's card leads with a face and a name,
+// not a photograph of a place.
+//
+// Scoped under .o_hm_guest_kanban so nothing here reaches any other
+// kanban in the database.
+//
+// WIDTH: --KanbanRecord-width must be set on the RENDERER, not on the
+// controller where <kanban class="..."> lands, because Odoo declares the
+// variable on the renderer and a value set above is overridden by it.
+.o_hm_guest_kanban .o_kanban_renderer {
+    --KanbanRecord-width: 330px;
+}
+
+.o_hm_guest_kanban {
+    .o_hm_guest_card {
+        overflow: hidden;
+        border-radius: 12px;
+        border: 1px solid rgba(181, 138, 69, .42);
+        box-shadow: 0 1px 2px rgba(22, 35, 59, .05);
+        transition: box-shadow .16s ease-in-out, transform .16s ease-in-out,
+                    border-color .16s ease-in-out;
+
+        &:hover {
+            transform: translateY(-2px);
+            border-color: rgba(181, 138, 69, .95);
+            box-shadow: 0 12px 26px -12px rgba(140, 102, 40, .55);
+        }
+    }
+
+    // ── Blacklist strip ───────────────────────────────────────────────
+    // Full width, top of the card, before anything else is read.
+    .o_hm_guest_flag {
+        padding: 5px 12px;
+        background: #B03A2E;
+        color: #FFFFFF;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    // ── Identity ──────────────────────────────────────────────────────
+    .o_hm_guest_head {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 12px 12px;
+    }
+
+    .o_hm_guest_avatar {
+        flex: 0 0 56px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #EDEDED;
+        border: 2px solid rgba(181, 138, 69, .45);
+    }
+
+    // Monogram, used whenever the guest has no photograph. Ink on ivory
+    // with the same brass ring as a real avatar, so a mixed column of
+    // photographed and un-photographed guests still reads as one set.
+    .o_hm_guest_mono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F6F3EC;
+        color: #16233B;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: .02em;
+        user-select: none;
+    }
+
+    .o_hm_guest_ident {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .o_hm_guest_name {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #1C1F26;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    // Monospace so a column of guest numbers lines up digit for digit.
+    .o_hm_guest_no {
+        font-family: 'SF Mono', 'JetBrains Mono', 'Consolas',
+                     'Liberation Mono', monospace;
+        font-size: 11.5px;
+        letter-spacing: .04em;
+        color: #6B6F78;
+        margin-top: 1px;
+    }
+
+    .o_hm_guest_nat {
+        font-size: 12px;
+        color: #4A4D55;
+        margin-top: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .o_hm_guest_unknown {
+        color: #A8ACB3;
+        font-style: italic;
+    }
+
+    // ── Tier ──────────────────────────────────────────────────────────
+    // Filled pills, not coloured text: the tier has to read at a glance
+    // against a white card, and metal names mean nothing without metal
+    // colours.
+    .o_hm_guest_tier {
+        flex: 0 0 auto;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        line-height: 1.5;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .o_hm_tier_silver   { background: #C8CCD2; color: #30353D; }
+    .o_hm_tier_gold     { background: #B58A45; color: #16233B; }
+    .o_hm_tier_platinum { background: #16233B; color: #E2C488; }
+
+    // ── Stay history ──────────────────────────────────────────────────
+    .o_hm_guest_stats {
+        display: flex;
+        border-top: 1px solid rgba(181, 138, 69, .28);
+    }
+
+    .o_hm_guest_stat {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 8px 10px;
+        text-align: center;
+
+        & + & {
+            border-left: 1px solid rgba(181, 138, 69, .18);
+        }
+    }
+
+    .o_hm_guest_val {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+        color: #1C1F26;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .o_hm_guest_lbl {
+        display: block;
+        margin-top: 1px;
+        font-size: 10px;
+        letter-spacing: .07em;
+        text-transform: uppercase;
+        color: #8A8F98;
+    }
+
+    // ── Dietary needs and preferences ─────────────────────────────────
+    .o_hm_guest_foot {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 8px 12px;
+        border-top: 1px solid rgba(181, 138, 69, .22);
+    }
+
+    .o_hm_guest_tags .o_tag {
+        max-width: 130px;
+    }
+}

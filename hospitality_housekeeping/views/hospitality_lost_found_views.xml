@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for Lost & Found items, displaying logged items
+     with their property, location found, finder, owner, and
+     current lifecycle status. -->
+    <record id="view_hk_lost_found_list" model="ir.ui.view">
+        <field name="name">hospitality.lost.found.list</field>
+        <field name="model">hospitality.lost.found</field>
+        <field name="arch" type="xml">
+            <list string="Lost &amp; Found"
+                  decoration-muted="state in ('returned', 'donated', 'disposed')">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="found_in_space_id"/>
+                <field name="found_at"/>
+                <field name="finder_id"/>
+                <field name="owner_partner_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban view for Lost & Found items, grouping records by
+     status and displaying item photos, descriptions, found
+     locations, and current lifecycle state. -->
+    <record id="view_hk_lost_found_kanban" model="ir.ui.view">
+        <field name="name">hospitality.lost.found.kanban</field>
+        <field name="model">hospitality.lost.found</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="photo"/>
+                <field name="found_in_space_id"/>
+                <field name="found_at"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_image_fill_left d-flex align-items-center justify-content-center"
+                                 t-if="record.photo.value">
+                                <img t-att-src="kanban_image('hospitality.lost.found', 'photo', record.id.raw_value)"
+                                     class="o_kanban_image img img-fluid"
+                                     alt="Item photo"/>
+                            </div>
+                            <strong><field name="name"/></strong>
+                            <div>
+                                <field name="description"/>
+                            </div>
+                            <div>
+                                <span class="badge text-bg-secondary"
+                                      t-if="record.found_in_space_id.value">
+                                    <field name="found_in_space_id"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-info float-end">
+                                    <field name="state"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Form view for managing Lost & Found items, supporting
+     item details, photo uploads, storage information,
+     ownership tracking, and lifecycle actions such as
+     storing, returning, donating, and disposing. -->
+    <record id="view_hk_lost_found_form" model="ir.ui.view">
+        <field name="name">hospitality.lost.found.form</field>
+        <field name="model">hospitality.lost.found</field>
+        <field name="arch" type="xml">
+            <form string="Lost &amp; Found Item">
+                <header>
+                    <button name="action_store" type="object"
+                            string="Store" class="oe_highlight"
+                            invisible="state != 'logged'"/>
+                    <button name="action_return" type="object"
+                            string="Return to Owner" class="oe_highlight"
+                            invisible="state != 'stored'"/>
+                    <button name="action_donate" type="object"
+                            string="Donate"
+                            invisible="state != 'stored'"/>
+                    <button name="action_dispose" type="object"
+                            string="Dispose"
+                            invisible="state not in ('logged', 'stored')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="logged,stored,returned"/>
+                </header>
+                <sheet>
+                    <field name="photo" widget="image"
+                           class="oe_avatar" options="{'size': [120, 120]}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="found_in_space_id"/>
+                            <field name="found_at"/>
+                            <field name="finder_id"/>
+                        </group>
+                        <group>
+                            <field name="owner_partner_id"/>
+                            <field name="storage_location"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view for Lost & Found items, providing search
+     fields, status-based filters, and grouping options by
+     state and property. -->
+    <record id="view_hk_lost_found_search" model="ir.ui.view">
+        <field name="name">hospitality.lost.found.search</field>
+        <field name="model">hospitality.lost.found</field>
+        <field name="arch" type="xml">
+            <search string="Lost &amp; Found">
+                <field name="name"/>
+                <field name="found_in_space_id"/>
+                <field name="finder_id"/>
+                <field name="owner_partner_id"/>
+                <filter string="Logged" name="filter_logged"
+                        domain="[('state', '=', 'logged')]"/>
+                <filter string="Stored" name="filter_stored"
+                        domain="[('state', '=', 'stored')]"/>
+                <filter string="Returned" name="filter_returned"
+                        domain="[('state', '=', 'returned')]"/>
+                <separator/>
+                <filter string="State" name="group_by_state"
+                        context="{'group_by': 'state'}"/>
+                <filter string="Property" name="group_by_property"
+                        context="{'group_by': 'property_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action for managing Lost & Found records through
+     kanban, list, and form views, with integrated search and
+     filtering capabilities. -->
+    <record id="action_hk_lost_found" model="ir.actions.act_window">
+        <field name="name">Lost &amp; Found</field>
+        <field name="res_model">hospitality.lost.found</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_hk_lost_found_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No lost &amp; found items logged yet.
+            </p>
+        </field>
+    </record>
+
+</odoo>

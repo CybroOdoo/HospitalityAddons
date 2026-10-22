@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Room Move Wizard — dialog form
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_room_move_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.room.move.wizard.form</field>
+        <field name="model">hospitality.room.move.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Move Room">
+
+                <group>
+                    <field name="reservation_id" readonly="id != False"/>
+                    <field name="property_id" invisible="1"/>
+                    <field name="space_type_id" invisible="1"/>
+                    <field name="current_space_id" readonly="1"/>
+                    <field name="target_space_id"/>
+                </group>
+
+                <group>
+                    <field name="effective_at"/>
+                    <field name="move_charges_to_new"/>
+                </group>
+
+                <group string="Reason">
+                    <field name="reason" nolabel="1" placeholder="Why is this guest being moved?"/>
+                </group>
+
+                <footer>
+                    <button name="action_move"
+                            string="Move Room"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Window action that opens the wizard
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="action_room_move_wizard" model="ir.actions.act_window">
+        <field name="name">Move Room</field>
+        <field name="res_model">hospitality.room.move.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_room_move_wizard_form"/>
+        <field name="target">new</field>
+        <field name="context">{'default_reservation_id': active_id}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Inherit reservation form — add a "Move Room" button when checked in
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_reservation_form_fd_room_move_button" model="ir.ui.view">
+        <field name="name">hospitality.reservation.form.fd.room.move</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="inherit_id" ref="hospitality_reservation.view_reservation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(hospitality_front_desk.action_room_move_wizard)d"
+                        string="Move Room"
+                        type="action"
+                        class="btn-secondary"
+                        invisible="state != 'checked_in'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

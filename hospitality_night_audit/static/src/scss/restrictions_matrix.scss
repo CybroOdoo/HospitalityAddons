@@ -1,0 +1,99 @@
+// RATE-08 — Restrictions Matrix color-coded grid
+
+// ─── Cell color classes ───────────────────────────────────────────────────────
+
+.o_restrictions_matrix {
+
+    .o_rm_table {
+        table-layout: fixed;
+        min-width: max-content;
+    }
+
+    .o_rm_cell {
+        width: 36px;
+        min-width: 36px;
+        height: 32px;
+        cursor: pointer;
+        transition: filter 0.1s ease, outline 0.1s ease;
+        border: 1px solid #dee2e6;
+
+        &:hover {
+            filter: brightness(0.88);
+            outline: 2px solid #0d6efd;
+            outline-offset: -2px;
+            z-index: 1;
+        }
+    }
+
+    // ── Color coding ─────────────────────────────────────────────────────────
+
+    .o_rm_closed { background-color: #f8d7da; }  // red
+    .o_rm_cta    { background-color: #ffe0b2; }  // orange
+    .o_rm_ctd    { background-color: #fff9c4; }  // yellow
+    .o_rm_stay   { background-color: #cce5ff; }  // blue
+    .o_rm_open   { background-color: #ffffff; }  // white
+
+    // ── Selection highlight ──────────────────────────────────────────────────
+
+    .o_rm_selected {
+        outline: 2px solid #0d6efd !important;
+        outline-offset: -2px;
+        filter: brightness(0.82);
+        z-index: 2;
+    }
+
+    // ── Header / corner ──────────────────────────────────────────────────────
+
+    .o_rm_corner {
+        min-width: 130px;
+        width: 130px;
+        z-index: 3;
+    }
+
+    .o_rm_date_header {
+        min-width: 36px;
+        width: 36px;
+        font-size: 0.7rem;
+        z-index: 2;
+    }
+
+    .o_rm_weekend .o_rm_date_header,
+    th.o_rm_weekend {
+        background-color: #f8f9fa !important;
+        color: #6c757d;
+    }
+
+    .o_rm_row_header {
+        min-width: 130px;
+        width: 130px;
+        font-size: 0.8rem;
+        z-index: 1;
+    }
+
+    // ── Side panel ───────────────────────────────────────────────────────────
+
+    .o_rm_panel {
+        min-width: 260px;
+        max-width: 300px;
+        overflow-y: auto;
+    }
+
+    .o_rm_panel_slide {
+        animation: o_rm_slide_in 0.15s ease;
+    }
+
+    @keyframes o_rm_slide_in {
+        from { opacity: 0; transform: translateX(20px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    // ── Legend ───────────────────────────────────────────────────────────────
+
+    .o_rm_legend {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        border: 1px solid rgba(0,0,0,0.12);
+    }
+}

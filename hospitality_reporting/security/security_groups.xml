@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             Reporting User
+             Inherits base hospitality user.
+             Can view dashboards scoped to their own assigned property
+             only (no cross-property visibility, no export).
+        ============================================================ -->
+        <record id="group_reporting_user" model="res.groups">
+            <field name="name">Reporting User</field>
+            <field name="implied_ids" eval="[(4, ref('hospitality_base.group_hospitality_user'))]"/>
+        </record>
+
+        <!-- ============================================================
+             Reporting Manager
+             Inherits Reporting User (dashboard access) plus base
+             hospitality manager. Adds cross-segment drill-down across
+             properties and data export.
+        ============================================================ -->
+        <record id="group_reporting_manager" model="res.groups">
+            <field name="name">Reporting Manager</field>
+            <field name="implied_ids" eval="[(4, ref('group_reporting_user')),
+                                              (4, ref('hospitality_base.group_hospitality_manager'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>

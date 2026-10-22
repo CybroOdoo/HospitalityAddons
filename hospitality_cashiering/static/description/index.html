@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hospitality Management - Cashiering | Odoo 19</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+<body style="font-family:Montserrat,sans-serif;background-color:#FBFAF8;color:#3A4049;">
+<div class="container" style="padding-top:26px;padding-bottom:40px;">
+    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-radius:16px;padding:22px 28px;box-shadow:0 10px 26px rgba(22,35,59,.07);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;">
+            <img src="./assets/misc/cybrosys-logo.png" alt="Cybrosys Technologies" style="width:210px;max-width:100%;"/>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;">
+                    <span style="font-size:13.5px;font-weight:700;color:#16233B;margin-right:2px;">Supports:</span>
+                    <span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>Community</span><span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>Enterprise</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;">
+                    <span style="font-size:13.5px;font-weight:700;color:#16233B;margin-right:2px;">Availability:</span>
+                    <span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>On Premise</span><span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>Odoo.sh</span><span style="display:inline-flex;align-items:center;gap:7px;background-color:#FDECEA;border:1px solid #F5C6C0;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#B03A2E;white-space:nowrap;"><i class="fa fa-times-circle" style="font-size:14px;"></i>Odoo Online</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color:#16233B;border-radius:22px;padding:52px 48px;margin-top:26px;box-shadow:0 22px 50px rgba(22,35,59,.28);">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 style="color:#ffffff;font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:0;">Hospitality Management <span style="color:#E2C488;">- Cashiering</span></h1>
+                <p style="color:rgba(255,255,255,.80);font-size:17px;line-height:1.75;margin:20px 0 0;max-width:720px;">Cashier shift management and payment posting for the Hospitality Business Kit.</p>
+                <div style="margin-top:28px;">
+                    <a href="mailto:odoo@cybrosys.com" style="display:inline-block;background-color:#B58A45;color:#16233B;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:13px 24px;margin:5px 8px 5px 0;"><i class="fa fa-envelope" style="margin-right:8px;"></i>Email us</a>
+                    <a href="https://wa.me/919074270811" style="display:inline-block;background-color:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:13px 24px;margin:5px 8px 5px 0;"><i class="fa fa-whatsapp" style="margin-right:8px;"></i>WhatsApp</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center" style="margin-top:22px;">
+                <div style="background-color:#0F1A2E;border:1px solid rgba(226,196,136,.30);border-radius:18px;padding:28px 22px;">
+                    <div style="font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#E2C488;">Instant support</div>
+                    <div style="color:#ffffff;font-size:15px;line-height:1.7;margin-top:12px;">Questions before you install?<br/>We answer within one business day.</div>
+                    <div style="border-top:1px solid rgba(255,255,255,.14);margin-top:18px;padding-top:18px;">
+                        <div style="color:rgba(255,255,255,.62);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;">14 modules &middot; 12 apps</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">What you get</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Key <span style="color:#B58A45;">Highlights</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">Cashier shift management and payment posting for the Hospitality Business Kit.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-money" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:18px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Cashier Shifts</h3>
+                    <p style="font-size:14px;line-height:1.75;color:#5B6472;margin:0;">Open and close a drawer with opening float, takings and variance.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-ban" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:18px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Void Requests</h3>
+                    <p style="font-size:14px;line-height:1.75;color:#5B6472;margin:0;">Cashiers raise voids, supervisors approve them, nothing disappears silently.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-inbox" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:18px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Supervisor Inbox</h3>
+                    <p style="font-size:14px;line-height:1.75;color:#5B6472;margin:0;">A single queue of void requests waiting on a decision.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-lock" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:18px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Separation of Duties</h3>
+                    <p style="font-size:14px;line-height:1.75;color:#5B6472;margin:0;">Cashier and cashier-supervisor groups keep approval away from the person posting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">Inside the module</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Detailed <span style="color:#B58A45;">Screenshots</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">Cashier shifts, payment posting against folios and the supervisor void inbox, captured from a live Odoo 19 database.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:38px;">
+            <img src="./assets/screenshots/s01.jpg" alt="Cashier Shifts" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">01</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Cashier Shifts</span>
+            </div>
+        </div>
+        <div style="margin-bottom:38px;">
+            <img src="./assets/screenshots/s02.jpg" alt="Void Requests" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">02</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Void Requests</span>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/s03.jpg" alt="Void Request Inbox" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Void Request Inbox</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">Capabilities</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">What this module <span style="color:#B58A45;">does</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">Everything the module adds once it is installed.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:22px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-right:15px;">01</div>
+                        <p style="font-size:14.5px;line-height:1.7;color:#16233B;margin:5px 0 0;font-weight:600;">Cashier shift open and close</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:22px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-right:15px;">02</div>
+                        <p style="font-size:14.5px;line-height:1.7;color:#16233B;margin:5px 0 0;font-weight:600;">Opening float and closing count</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:22px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-right:15px;">03</div>
+                        <p style="font-size:14.5px;line-height:1.7;color:#16233B;margin:5px 0 0;font-weight:600;">Payment posting against folios</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:22px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-right:15px;">04</div>
+                        <p style="font-size:14.5px;line-height:1.7;color:#16233B;margin:5px 0 0;font-weight:600;">Void requests with supervisor approval</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:22px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-right:15px;">05</div>
+                        <p style="font-size:14.5px;line-height:1.7;color:#16233B;margin:5px 0 0;font-weight:600;">Supervisor void inbox</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:22px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;margin-right:15px;">06</div>
+                        <p style="font-size:14.5px;line-height:1.7;color:#16233B;margin:5px 0 0;font-weight:600;">Cashier and supervisor security groups</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">More from the suite</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Related <span style="color:#B58A45;">modules</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">Each module installs on top of Hospitality - Base and can be added when you need it.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" style="margin-bottom:22px;">
+                <a href="https://apps.odoo.com/apps/modules/19.0/hospitality_booking_engine" style="text-decoration:none;display:block;height:100%;">
+                    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(113,99,158,.12);height:100%;">
+                        <img src="./assets/modules/1.jpg" alt="Hospitality - Booking Engine" style="width:100%;display:block;"/>
+                        <div style="padding:22px 22px 26px;">
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;">Hospitality - Booking Engine</h3>
+                            <p style="font-size:13.5px;line-height:1.7;color:#5B6472;margin:0 0 14px;">Public-facing online booking engine for the Hospitality suite.</p>
+                            <span style="font-size:12.5px;font-weight:700;color:#71639e;letter-spacing:.06em;">View on Odoo Apps <i class="fa fa-angle-right" style="margin-left:4px;"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4" style="margin-bottom:22px;">
+                <a href="https://apps.odoo.com/apps/modules/19.0/hospitality_company_profile" style="text-decoration:none;display:block;height:100%;">
+                    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(113,99,158,.12);height:100%;">
+                        <img src="./assets/modules/2.jpg" alt="Hospitality - Company Profile" style="width:100%;display:block;"/>
+                        <div style="padding:22px 22px 26px;">
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;">Hospitality - Company Profile</h3>
+                            <p style="font-size:13.5px;line-height:1.7;color:#5B6472;margin:0 0 14px;">Corporate, Travel Agent and OTA account management for hospitality.</p>
+                            <span style="font-size:12.5px;font-weight:700;color:#71639e;letter-spacing:.06em;">View on Odoo Apps <i class="fa fa-angle-right" style="margin-left:4px;"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4" style="margin-bottom:22px;">
+                <a href="https://apps.odoo.com/apps/modules/19.0/hospitality_folio" style="text-decoration:none;display:block;height:100%;">
+                    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(113,99,158,.12);height:100%;">
+                        <img src="./assets/modules/3.jpg" alt="Hospitality - Folio" style="width:100%;display:block;"/>
+                        <div style="padding:22px 22px 26px;">
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;">Hospitality - Folio</h3>
+                            <p style="font-size:13.5px;line-height:1.7;color:#5B6472;margin:0 0 14px;">Guest folio management: charges, payments, adjustments and AR transfer</p>
+                            <span style="font-size:12.5px;font-weight:700;color:#71639e;letter-spacing:.06em;">View on Odoo Apps <i class="fa fa-angle-right" style="margin-left:4px;"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;margin-bottom:20px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">Cybrosys Technologies</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Our <span style="color:#B58A45;">services</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">An Odoo Gold Partner delivering implementation, customisation and support worldwide.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/tms.png" alt="Odoo Customization" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Customization</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/imple.png" alt="Odoo Implementation" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Implementation</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/support.png" alt="Odoo Support" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Support</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/transfer.png" alt="Odoo Migration" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Migration</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/setting.png" alt="Odoo Integration" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Integration</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/people.png" alt="Hire Odoo Developer" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Hire Odoo Developer</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/chart.png" alt="Odoo Consultancy" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Consultancy</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/idea.png" alt="Odoo Licensing Consultancy" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Licensing Consultancy</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color:#16233B;border-radius:22px;padding:46px 44px;margin-top:40px;box-shadow:0 22px 50px rgba(22,35,59,.26);">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div style="font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#E2C488;">Need a hand?</div>
+                <h2 style="color:#ffffff;font-size:30px;font-weight:800;letter-spacing:-.02em;margin:14px 0 0;">Tell us about your property</h2>
+                <p style="color:rgba(255,255,255,.76);font-size:15.5px;line-height:1.75;margin:14px 0 0;max-width:640px;">Implementation, customisation, migration and support for the whole suite &mdash; from a single boutique hotel to a multi-property group.</p>
+            </div>
+            <div class="col-lg-5 text-lg-end" style="margin-top:22px;">
+                <a href="mailto:odoo@cybrosys.com" style="display:inline-block;background-color:#B58A45;color:#16233B;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:14px 26px;margin:5px;"><i class="fa fa-envelope" style="margin-right:8px;"></i>odoo@cybrosys.com</a>
+                <a href="https://wa.me/919074270811" style="display:inline-block;background-color:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:14px 26px;margin:5px;"><i class="fa fa-whatsapp" style="margin-right:8px;"></i>WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align:center;padding:34px 0 10px;">
+        <img src="./assets/misc/cybrosys-logo.png" alt="Cybrosys Technologies" style="width:170px;max-width:100%;opacity:.75;"/>
+        <p style="font-size:12.5px;color:#5B6472;margin:14px 0 0;">Cybrosys Technologies &middot; Odoo Gold Partner</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hospitality_be_config_manager,hospitality.be.config.manager,model_hospitality_be_config,hospitality_booking_engine.group_be_manager,1,1,1,1
+access_hospitality_be_promo_code_manager,hospitality.be.promo.code.manager,model_hospitality_be_promo_code,hospitality_booking_engine.group_be_manager,1,1,1,1
+access_hospitality_be_upsell_manager,hospitality.be.upsell.manager,model_hospitality_be_upsell,hospitality_booking_engine.group_be_manager,1,1,1,1
+access_hospitality_be_search_session_manager,hospitality.be.search.session.manager,model_hospitality_be_search_session,hospitality_booking_engine.group_be_manager,1,1,1,1

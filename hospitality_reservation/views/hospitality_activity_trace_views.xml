@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hospitality_activity_trace_tree_reservation"
+            model="ir.ui.view">
+        <field name="name">hospitality.activity.trace.tree.reservation</field>
+        <field name="model">hospitality.activity.trace</field>
+        <field name="inherit_id"
+               ref="hospitality_base.view_hospitality_activity_trace_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='text']" position="after">
+                <field name="reservation_ref"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hospitality_activity_trace_form_reservation" model="ir.ui.view">
+        <field name="name">hospitality.activity.trace.form.reservation</field>
+        <field name="model">hospitality.activity.trace</field>
+        <field name="inherit_id" ref="hospitality_base.view_hospitality_activity_trace_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_id']" position="after">
+                <field name="reservation_ref"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hospitality_activity_trace_search_reservation" model="ir.ui.view">
+        <field name="name">hospitality.activity.trace.search.reservation</field>
+        <field name="model">hospitality.activity.trace</field>
+        <field name="inherit_id" ref="hospitality_base.view_hospitality_activity_trace_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="reservation_ref"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

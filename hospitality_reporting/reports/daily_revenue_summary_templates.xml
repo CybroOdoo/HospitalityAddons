@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Registers the Daily Revenue Summary PDF report for
+        hospitality.kpi.daily records. The report is exposed through
+        the Print menu of KPI snapshots and renders the associated
+        QWeb template.
+    -->
+    <template id="report_daily_revenue_summary">
+        <t t-call="web.html_container">
+            <t t-set="property" t-value="docs[:1].property_id"/>
+            <t t-set="min_date" t-value="min(docs.mapped('business_date')) if docs else False"/>
+            <t t-set="max_date" t-value="max(docs.mapped('business_date')) if docs else False"/>
+            <t t-set="sorted_docs" t-value="docs.sorted(key=lambda d: d.business_date)"/>
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Daily Revenue Summary</h2>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <strong>Property: </strong>
+                            <span t-esc="property.name or '—'"/>
+                        </div>
+                        <div class="col-6 text-end">
+                            <strong>Period: </strong>
+                            <span t-if="min_date and max_date">
+                                <span t-esc="min_date"/> – <span t-esc="max_date"/>
+                            </span>
+                            <span t-else="">—</span>
+                        </div>
+                    </div>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Business Date</th>
+                                <th>Property</th>
+                                <th class="text-end">Room Revenue</th>
+                                <th class="text-end">F&amp;B Revenue</th>
+                                <th class="text-end">Other Revenue</th>
+                                <th class="text-end">Total Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="sorted_docs" t-as="line">
+                                <td><span t-esc="line.business_date"/></td>
+                                <td><span t-esc="line.property_id.name"/></td>
+                                <td class="text-end">
+                                    <span t-esc="line.room_revenue"
+                                          t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="line.fnb_revenue"
+                                          t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="line.other_revenue"
+                                          t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="line.total_revenue"
+                                          t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="2">Totals</th>
+                                <th class="text-end">
+                                    <span t-esc="sum(docs.mapped('room_revenue'))"
+                                          t-options="{'widget': 'monetary', 'display_currency': property.currency_id}"/>
+                                </th>
+                                <th class="text-end">
+                                    <span t-esc="sum(docs.mapped('fnb_revenue'))"
+                                          t-options="{'widget': 'monetary', 'display_currency': property.currency_id}"/>
+                                </th>
+                                <th class="text-end">
+                                    <span t-esc="sum(docs.mapped('other_revenue'))"
+                                          t-options="{'widget': 'monetary', 'display_currency': property.currency_id}"/>
+                                </th>
+                                <th class="text-end">
+                                    <span t-esc="sum(docs.mapped('total_revenue'))"
+                                          t-options="{'widget': 'monetary', 'display_currency': property.currency_id}"/>
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

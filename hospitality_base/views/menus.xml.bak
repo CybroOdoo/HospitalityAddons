@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Root -->
+        <menuitem id="menu_hospitality_root" name="Hospitality"
+                  sequence="10"
+                  web_icon="hospitality_base,static/description/icon.png"
+                  groups="hospitality_base.group_hospitality_user"/>
+
+        <!-- Keep the root menu visible to a base Hospitality User even when
+             no feature-specific module contributes an accessible submenu.
+             The property record rule limits this list to allowed properties. -->
+        <menuitem id="menu_hospitality_my_properties" name=" Properties"
+                  parent="menu_hospitality_root" sequence="5"
+                  action="action_hospitality_property"
+                  groups="hospitality_base.group_hospitality_user"/>
+
+        <!-- ============================================================
+             Level 1 — now all have actions
+        ============================================================ -->
+        <menuitem id="menu_hospitality_operations" name="Operations"
+                  parent="menu_hospitality_root" sequence="10"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hospitality_guests" name="Guests"
+                  parent="menu_hospitality_root" sequence="20"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hospitality_partners" name="Partners"
+                  parent="menu_hospitality_root" sequence="30"
+                  groups="hospitality_base.group_hospitality_user"/>
+
+
+<!--        <menuitem id="menu_hospitality_rates" name="Rates"-->
+<!--                  parent="menu_hospitality_root" sequence="40"-->
+<!--                  groups="hospitality_rate.group_rate_user"/>-->
+
+
+        <menuitem id="menu_hospitality_reports" name="Reports"
+                  parent="menu_hospitality_root" sequence="80"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hospitality_config" name="Configuration"
+                  parent="menu_hospitality_root" sequence="90"
+                  groups="hospitality_base.group_hospitality_admin"/>
+
+        <!-- ============================================================
+             Configuration sub-menus
+        ============================================================ -->
+        <menuitem id="menu_hospitality_brands" name="Brands"
+                  parent="menu_hospitality_config" sequence="10"
+                  action="action_hospitality_brand"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_properties" name="Properties"
+                  parent="menu_hospitality_config" sequence="20"
+                  action="action_hospitality_property"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_market_segments" name="Market Segments"
+                  parent="menu_hospitality_config" sequence="30"
+                  action="action_hospitality_market_segment"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_source_codes" name="Source Codes"
+                  parent="menu_hospitality_config" sequence="40"
+                  action="action_hospitality_source_code"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_transaction_codes" name="Transaction Codes"
+                  parent="menu_hospitality_config" sequence="50"
+                  action="action_hospitality_transaction_code"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_cancellation_policies"
+                  name="Cancellation Policies"
+                  parent="menu_hospitality_config" sequence="60"
+                  action="action_hospitality_cancellation_policy"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_deposit_policies"
+                  name="Deposit Policies"
+                  parent="menu_hospitality_config" sequence="70"
+                  action="action_hospitality_deposit_policy"
+                  groups="hospitality_base.group_hospitality_admin"/>
+<!--        <menuitem id="menu_hospitality_settings"-->
+<!--                  name="Settings"-->
+<!--                  parent="menu_hospitality_config" sequence="100"-->
+<!--                  action="action_hospitality_settings"-->
+<!--                  groups="hospitality_base.group_hospitality_admin"/>-->
+
+    </data>
+</odoo>

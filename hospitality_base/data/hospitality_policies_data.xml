@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================
+             Cancellation Policies (3)
+        ============================================================ -->
+
+        <record id="cancel_policy_flex24" model="hospitality.cancellation.policy">
+            <field name="name">Flexible 24h</field>
+            <field name="code">FLEX24</field>
+            <field name="description">
+                Free cancellation up to 24 hours before arrival.
+                100% charge if cancelled within 24 hours.
+            </field>
+        </record>
+        <record id="cancel_rule_flex24_free" model="hospitality.cancellation.policy.rule">
+            <field name="policy_id" ref="cancel_policy_flex24"/>
+            <field name="sequence">10</field>
+            <field name="hours_before_arrival">24</field>
+            <field name="days_before_arrival">0</field>
+            <field name="charge_type">percent</field>
+            <field name="charge_value">0</field>
+        </record>
+        <record id="cancel_rule_flex24_charge" model="hospitality.cancellation.policy.rule">
+            <field name="policy_id" ref="cancel_policy_flex24"/>
+            <field name="sequence">20</field>
+            <field name="hours_before_arrival">1</field>
+            <field name="days_before_arrival">0</field>
+            <field name="charge_type">percent</field>
+            <field name="charge_value">100</field>
+        </record>
+
+        <record id="cancel_policy_nr" model="hospitality.cancellation.policy">
+            <field name="name">Non-Refundable</field>
+            <field name="code">NR</field>
+            <field name="description">
+                Non-refundable. 100% charge applies at time of booking.
+            </field>
+        </record>
+        <record id="cancel_rule_nr" model="hospitality.cancellation.policy.rule">
+            <field name="policy_id" ref="cancel_policy_nr"/>
+            <field name="sequence">10</field>
+            <field name="hours_before_arrival">1</field>
+            <field name="days_before_arrival">0</field>
+            <field name="charge_type">percent</field>
+            <field name="charge_value">100</field>
+        </record>
+
+        <record id="cancel_policy_std48" model="hospitality.cancellation.policy">
+            <field name="name">Standard 48h</field>
+            <field name="code">STD48</field>
+            <field name="description">
+                Free cancellation up to 48 hours before arrival.
+                First night charge applies if cancelled within 48 hours.
+            </field>
+        </record>
+        <record id="cancel_rule_std48_free" model="hospitality.cancellation.policy.rule">
+            <field name="policy_id" ref="cancel_policy_std48"/>
+            <field name="sequence">10</field>
+            <field name="days_before_arrival">2</field>
+            <field name="hours_before_arrival">0</field>
+            <field name="charge_type">nights</field>
+            <field name="charge_value">0</field>
+        </record>
+        <record id="cancel_rule_std48_charge" model="hospitality.cancellation.policy.rule">
+            <field name="policy_id" ref="cancel_policy_std48"/>
+            <field name="sequence">20</field>
+            <field name="hours_before_arrival">1</field>
+            <field name="days_before_arrival">0</field>
+            <field name="charge_type">nights</field>
+            <field name="charge_value">1</field>
+        </record>
+
+        <!-- ============================================================
+             Deposit Policies (3)
+             NO_DEP uses percent_total=0 to avoid requiring a currency_id
+        ============================================================ -->
+
+        <record id="deposit_policy_no_dep" model="hospitality.deposit.policy">
+            <field name="name">No Deposit</field>
+            <field name="code">NO_DEP</field>
+            <field name="due_at">booking</field>
+            <field name="amount_type">percent_total</field>
+            <field name="amount_value">0</field>
+            <field name="description">No deposit required at booking.</field>
+        </record>
+
+        <record id="deposit_policy_first_night" model="hospitality.deposit.policy">
+            <field name="name">First Night Deposit</field>
+            <field name="code">FIRST_NIGHT</field>
+            <field name="due_at">booking</field>
+            <field name="amount_type">first_night</field>
+            <field name="amount_value">0</field>
+            <field name="description">
+                First night's accommodation amount due at booking.
+            </field>
+        </record>
+
+        <record id="deposit_policy_half_pct" model="hospitality.deposit.policy">
+            <field name="name">50% at Booking</field>
+            <field name="code">HALF_PCT</field>
+            <field name="due_at">booking</field>
+            <field name="amount_type">percent_total</field>
+            <field name="amount_value">50</field>
+            <field name="description">
+                50% of total reservation amount due at booking.
+            </field>
+        </record>
+
+    </data>
+</odoo>

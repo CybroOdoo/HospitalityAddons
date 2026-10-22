@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             ROOT MENUS (apps)
+
+             The suite used to hang off a single "Hospitality" root, which
+             made the whole product read as one Odoo app. It is now
+             TWELVE roots so each functional area is its own app in the
+             drawer and the icon rail:
+
+               10 Front Office    (here)
+               20 Reservations    (hospitality_reservation)
+               30 Guests          (here)
+               40 Rooms           (here)
+               50 Housekeeping    (hospitality_housekeeping)
+               60 Maintenance     (hospitality_maintenance)
+               70 Finance & Rev.  (here)
+               80 Rates           (hospitality_rate)
+               90 Distribution    (hospitality_booking_engine)
+              100 Night Audit     (hospitality_night_audit)
+              110 Reports         (here)
+              120 Admin           (here)
+
+             A root lives HERE when its children come from more than one
+             module: every hospitality module depends on hospitality_base,
+             so this is the only place all of them can reference. A root
+             whose children all come from one module is declared in that
+             module instead, so the module stays self-contained.
+
+             Each root takes the icon of the module that owns its
+             domain. web_icon is resolved by ir.ui.menu._read_image(),
+             a plain filesystem read through tools.file_open() that
+             returns False on FileNotFoundError - so pointing at another
+             addon's file creates no module dependency and cannot break
+             an install where that addon is absent.
+
+             menu_hospitality_root keeps its id and is labelled
+             Properties: it already carried Configuration and the property
+             list, and keeping the id avoids breaking external references
+             to it. The label is only a label - nothing else moved.
+        ============================================================ -->
+        <menuitem id="menu_hm_front_office" name="Front Office"
+                  sequence="10"
+                  web_icon="hospitality_front_desk,static/description/icon.png"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hm_rooms" name="Rooms"
+                  sequence="40"
+                  web_icon="hospitality_property,static/description/icon.png"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hm_finance" name="Finance &amp; Revenue"
+                  sequence="70"
+                  web_icon="hospitality_folio,static/description/icon.png"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hospitality_reports" name="Reports"
+                  sequence="110"
+                  web_icon="hospitality_reporting,static/description/icon.png"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hospitality_root" name="Properties"
+                  sequence="120"
+                  web_icon="hospitality_base,static/description/icon.png"
+                  groups="hospitality_base.group_hospitality_user"/>
+
+        <!-- ============================================================
+             Containers re-parented onto the new roots
+        ============================================================ -->
+        <!-- Guests is a ROOT menu (an app of its own). Its children
+             come from hospitality_guest_profile, but the container has
+             always been declared here, so it keeps its id. -->
+        <menuitem id="menu_hospitality_guests" name="Guests"
+                  sequence="30"
+                  web_icon="hospitality_guest_profile,static/description/icon.png"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hospitality_partners" name="Partners"
+                  parent="menu_hm_finance" sequence="40"
+                  groups="hospitality_base.group_hospitality_user"/>
+
+        <!-- Root contents. The list entry is "All Properties", not
+             "Properties": the root carries that name now, and a child
+             repeating it reads as "Properties / Properties" in the
+             breadcrumb. Same reason Rooms calls its list "All Rooms". -->
+        <menuitem id="menu_hospitality_my_properties" name="All Properties"
+                  parent="menu_hospitality_root" sequence="5"
+                  action="action_hospitality_property"
+                  groups="hospitality_base.group_hospitality_user"/>
+        <menuitem id="menu_hospitality_config" name="Configuration"
+                  parent="menu_hospitality_root" sequence="90"
+                  groups="hospitality_base.group_hospitality_admin"/>
+
+        <!-- ============================================================
+             Configuration sub-menus
+        ============================================================ -->
+        <menuitem id="menu_hospitality_brands" name="Brands"
+                  parent="menu_hospitality_config" sequence="10"
+                  action="action_hospitality_brand"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <!-- menu_hospitality_properties is gone. It pointed at
+             action_hospitality_property - the SAME action as the
+             top-level Properties menu above, with the same empty domain
+             and context - so it was a second door to one screen. It also
+             added nothing for anyone: group_hospitality_admin implies
+             corporate -> manager -> user, so every admin already sees
+             the top-level entry. -->
+        <menuitem id="menu_hospitality_market_segments" name="Market Segments"
+                  parent="menu_hospitality_config" sequence="30"
+                  action="action_hospitality_market_segment"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_source_codes" name="Source Codes"
+                  parent="menu_hospitality_config" sequence="40"
+                  action="action_hospitality_source_code"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_transaction_codes" name="Transaction Codes"
+                  parent="menu_hospitality_config" sequence="50"
+                  action="action_hospitality_transaction_code"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_cancellation_policies"
+                  name="Cancellation Policies"
+                  parent="menu_hospitality_config" sequence="60"
+                  action="action_hospitality_cancellation_policy"
+                  groups="hospitality_base.group_hospitality_admin"/>
+        <menuitem id="menu_hospitality_deposit_policies"
+                  name="Deposit Policies"
+                  parent="menu_hospitality_config" sequence="70"
+                  action="action_hospitality_deposit_policy"
+                  groups="hospitality_base.group_hospitality_admin"/>
+<!--        <menuitem id="menu_hospitality_settings"-->
+<!--                  name="Settings"-->
+<!--                  parent="menu_hospitality_config" sequence="100"-->
+<!--                  action="action_hospitality_settings"-->
+<!--                  groups="hospitality_base.group_hospitality_admin"/>-->
+
+    </data>
+</odoo>

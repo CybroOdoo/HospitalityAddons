@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <!-- ================================================================
+         SpaceCard template
+    ================================================================ -->
+    <t t-name="hospitality_property.SpaceCard">
+        <div class="o_floor_space_card"
+             t-att-class="props.selected ? 'o_floor_space_card_selected' : ''"
+             t-att-data-space-id="props.space.id"
+             t-att-style="'border-top: 4px solid ' + props.space._statusColor"
+             t-on-click="(ev) => props.onSelect(props.space, ev)">
+            <div class="o_card_code fw-bold" t-esc="props.space.code"/>
+            <div class="o_card_type small text-muted"
+                 t-esc="props.space.space_type_id and props.space.space_type_id[1] or ''"/>
+            <div class="o_card_status mt-1">
+                <span class="badge rounded-pill"
+                      t-att-style="'background:' + props.space._statusColor + ';color:#fff'"
+                      t-esc="props.space._statusLabel"/>
+            </div>
+            <div class="o_card_features mt-1" t-if="props.space.feature_ids.length">
+                <i class="fa fa-star text-warning small"/>
+                <span class="small text-muted ms-1"
+                      t-esc="props.space.feature_ids.length + ' feature(s)'"/>
+            </div>
+        </div>
+    </t>
+
+    <!-- ================================================================
+         FloorPlanView template
+    ================================================================ -->
+    <t t-name="hospitality_property.FloorPlanView">
+        <div class="o_floor_plan_view d-flex flex-column h-100">
+
+            <!-- Top toolbar -->
+            <div class="o_floor_plan_toolbar d-flex align-items-center gap-2 p-2 border-bottom bg-white">
+
+                <!-- Filters -->
+                <select class="form-select form-select-sm"
+                        style="max-width:160px"
+                        t-on-change="onFilterStatus">
+                    <option value="">All Statuses</option>
+                    <t t-foreach="statusOptions" t-as="opt" t-key="opt.value">
+                        <option t-att-value="opt.value" t-esc="opt.label"/>
+                    </t>
+                </select>
+
+                <select class="form-select form-select-sm"
+                        style="max-width:160px"
+                        t-on-change="onFilterFeature">
+                    <option value="">All Features</option>
+                    <t t-foreach="state.allFeatures" t-as="f" t-key="f.id">
+                        <option t-att-value="f.id" t-esc="f.name"/>
+                    </t>
+                </select>
+
+                <select class="form-select form-select-sm"
+                        style="max-width:160px"
+                        t-on-change="onFilterFloor">
+                    <option value="">All Floors</option>
+                    <t t-foreach="state.floors" t-as="fl" t-key="fl.id">
+                        <option t-att-value="fl.id" t-esc="fl.name"/>
+                    </t>
+                </select>
+
+                <div class="flex-grow-1"/>
+
+                <!-- Bulk action bar — visible only when selection exists -->
+                <t t-if="selectedCount > 0">
+                    <span class="badge bg-primary me-1">
+                        <t t-esc="selectedCount"/> selected
+                    </span>
+                    <button class="btn btn-sm btn-outline-secondary"
+                            t-on-click="onBulkVacantClean">
+                        Set Vacant Clean
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning"
+                            t-on-click="onBulkOOS">
+                        Set OOS
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger"
+                            t-on-click="onBulkOOO">
+                        Set OOO
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary"
+                            t-on-click="clearSelection">
+                        Clear
+                    </button>
+                </t>
+            </div>
+
+            <!-- Loading spinner -->
+            <t t-if="state.loading">
+                <div class="d-flex justify-content-center align-items-center flex-grow-1">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading…</span>
+                    </div>
+                </div>
+            </t>
+
+            <!-- Main grid area -->
+            <t t-else="">
+                <div class="o_floor_plan_body flex-grow-1 overflow-auto p-3"
+                     t-ref="container"
+                     t-on-mousedown="onMouseDown"
+                     t-on-mouseup="onMouseUp"
+                     t-on-mousemove="onMouseMove">
+
+                    <t t-if="filteredFloors.length === 0">
+                        <div class="text-center text-muted mt-5">
+                            <i class="fa fa-building-o fa-3x mb-3 d-block"/>
+                            No spaces match the current filters.
+                        </div>
+                    </t>
+
+                    <t t-foreach="filteredFloors" t-as="floor" t-key="floor.id">
+                        <div class="o_floor_section mb-4">
+                            <!-- Floor header -->
+                            <div class="o_floor_header d-flex align-items-center mb-2">
+                                <span class="fw-semibold fs-6 me-2"
+                                      t-esc="floor.name"/>
+                                <span class="badge bg-secondary"
+                                      t-esc="floor.spaces.length + ' space(s)'"/>
+                            </div>
+                            <!-- Space cards grid -->
+                            <div class="o_floor_cards_grid">
+                                <t t-foreach="floor.spaces" t-as="space" t-key="space.id">
+                                    <t t-set="enriched" t-value="{
+                                        ...space,
+                                        _statusColor: statusColor(space.status),
+                                        _statusLabel: statusLabel(space.status)
+                                    }"/>
+                                    <div class="o_floor_space_card"
+                                         t-att-class="isSelected(space.id) ? 'o_floor_space_card_selected' : ''"
+                                         t-att-data-space-id="space.id"
+                                         t-att-style="'border-top: 4px solid ' + statusColor(space.status)"
+                                         t-on-click="(ev) => onCardClick(space, ev)">
+                                        <div class="o_card_code fw-bold"
+                                             t-esc="space.code"/>
+                                        <div class="o_card_type small text-muted"
+                                             t-esc="space.space_type_id and space.space_type_id[1] or ''"/>
+                                        <div class="o_card_status mt-1">
+                                            <span class="badge rounded-pill"
+                                                  t-att-style="'background:' + statusColor(space.status) + ';color:#fff;font-size:0.7rem'"
+                                                  t-esc="statusLabel(space.status)"/>
+                                        </div>
+                                        <t t-if="space.feature_ids.length">
+                                            <div class="o_card_features mt-1">
+                                                <i class="fa fa-star text-warning"
+                                                   style="font-size:0.7rem"/>
+                                                <span class="small text-muted ms-1"
+                                                      t-esc="space.feature_ids.length"/>
+                                            </div>
+                                        </t>
+                                        <!-- Selection checkmark -->
+                                        <t t-if="isSelected(space.id)">
+                                            <div class="o_card_check">
+                                                <i class="fa fa-check-circle text-primary"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+
+            <!-- Status legend -->
+            <div class="o_floor_plan_legend d-flex flex-wrap gap-2 p-2 border-top bg-light">
+                <t t-foreach="statusOptions" t-as="opt" t-key="opt.value">
+                    <span class="d-flex align-items-center gap-1 small">
+                        <span class="d-inline-block rounded"
+                              style="width:12px;height:12px"
+                              t-att-style="'background:' + statusColor(opt.value)"/>
+                        <t t-esc="opt.label"/>
+                    </span>
+                </t>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

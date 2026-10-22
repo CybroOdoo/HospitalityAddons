@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         hospitality.contract — List view
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_contract_list" model="ir.ui.view">
+        <field name="name">hospitality.contract.list</field>
+        <field name="model">hospitality.contract</field>
+        <field name="arch" type="xml">
+            <list string="Contracts">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'expired'"
+                       decoration-danger="state == 'terminated'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         hospitality.contract — Form view
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_contract_form" model="ir.ui.view">
+        <field name="name">hospitality.contract.form</field>
+        <field name="model">hospitality.contract</field>
+        <field name="arch" type="xml">
+            <form string="Contract">
+                <header>
+                    <button name="action_activate"
+                            string="Activate"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_terminate"
+                            string="Terminate"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,expired,terminated"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Contract Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Contract Details">
+                            <field name="code"/>
+                            <field name="partner_id"/>
+                            <field name="property_id"/>
+                            <field name="deposit_policy_id" />
+                        </group>
+                        <group string="Validity">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="cancellation_policy_id" />
+                        </group>
+                    </group>
+                    <group string="Termination Details"
+                           invisible="state != 'terminated'">
+                        <field name="termination_reason" readonly="1"/>
+                        <field name="terminated_by" readonly="1"/>
+                        <field name="terminated_at" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="General" name="page_general">
+                            <group>
+                                <group string="Commercial Terms">
+                                    <field name="discount_pct"/>
+                                    <field name="allowance_room_nights"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Document" name="page_document">
+                            <group>
+                                <field name="document_attachment_id"
+                                       widget="many2one"
+                                       string="Contract Document"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="page_notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         hospitality.contract — Search view
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_contract_search" model="ir.ui.view">
+        <field name="name">hospitality.contract.search</field>
+        <field name="model">hospitality.contract</field>
+        <field name="arch" type="xml">
+            <search string="Contracts">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <filter string="Draft"      name="filter_draft"
+                        domain="[('state','=','draft')]"/>
+                <filter string="Active"     name="filter_active"
+                        domain="[('state','=','active')]"/>
+                <filter string="Expired"    name="filter_expired"
+                        domain="[('state','=','expired')]"/>
+                <filter string="Terminated" name="filter_terminated"
+                        domain="[('state','=','terminated')]"/>
+                <separator/>
+                <filter string="Partner"  name="group_partner"
+                        context="{'group_by': 'partner_id'}"/>
+                <filter string="Property" name="group_property"
+                        context="{'group_by': 'property_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Window action
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_hospitality_contract" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">hospitality.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hospitality_contract_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No contracts yet
+            </p>
+            <p>
+                Create your first negotiated contract with rate codes and policies.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Menu item — child of menu_hospitality_partners
+    ═══════════════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_hospitality_contracts"
+              name="Contracts"
+              parent="hospitality_base.menu_hospitality_partners"
+              action="action_hospitality_contract"
+              sequence="20"/>
+
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- The login panel's slogan, held as a config parameter so a
+             deployment can reword it without editing the template.
+
+             noupdate="1": once a deployment has reworded this, an upgrade
+             must not put the default back. The same flag is why the key
+             keeps its hospitality_theme.* prefix after that module was
+             merged into this one - renaming a key here would NOT rewrite
+             an existing row, so the database would answer to the old key
+             while the template asked for the new one.
+
+             This replaces login_eyebrow / login_headline / login_subline,
+             which fed the pitch block the panel no longer has. The
+             19.0.1.2.0 migration removes those three rows. -->
+        <record id="param_login_slogan" model="ir.config_parameter">
+            <field name="key">hospitality_theme.login_slogan</field>
+            <field name="value">Behind every great stay.</field>
+        </record>
+
+    </data>
+</odoo>

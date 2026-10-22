@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="group_hk_attendant" model="res.groups">
+            <field name="name">Housekeeping / Attendant</field>
+            <field name="implied_ids" eval="[
+                (4, ref('hospitality_base.group_hospitality_user'))
+            ]"/>
+            <field name="comment">Housekeeping attendants can read and
+                write only the tasks assigned to them on the
+                housekeeping board.</field>
+        </record>
+
+        <record id="group_hk_supervisor" model="res.groups">
+            <field name="name">Housekeeping / Supervisor</field>
+            <field name="implied_ids" eval="[(4, ref('group_hk_attendant'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Housekeeping supervisors have full
+                access to the housekeeping board, task assignment,
+                inspections and lost &amp; found records.</field>
+        </record>
+
+    </data>
+</odoo>

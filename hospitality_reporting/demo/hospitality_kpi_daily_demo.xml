@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================
+             REP-04: 7 days of hospitality.kpi.daily demo rows for the
+             NYC01 (Demo Boutique NYC) property, D-6 through today.
+             Dates are computed relative to load time (not a hardcoded
+             range) so they stay "leading up to today" no matter when
+             this demo data is loaded.
+
+             noupdate="1" is REQUIRED here, not cosmetic. business_date
+             slides with datetime.now(), while the model carries
+             UNIQUE(property_id, business_date). Without noupdate, every
+             later-day upgrade rewrites all 7 rows: day6 tries to move
+             from D-6 to D-5, which day5 still occupies, and the upgrade
+             dies on the constraint. With noupdate the rows are seeded
+             once, relative to the install date, and left alone after.
+
+             Occupancy 50% -> 85% (rooms_sold / (rooms_available -
+             rooms_ooo)), ADR 175-183 USD (~180 avg). Day D-4 carries
+             one OOO room, so the occupancy_pct OOO-exclusion shows up
+             in the demo data itself, not just in unit tests.
+             segment_breakdown / source_breakdown counts sum to
+             rooms_sold on every row, so Manager Flash's donuts render
+             a real mix instead of "100% Unspecified".
+
+             FIX (REP-04 debug): property_id now uses
+             ref="hospitality_base.demo_property_nyc01" directly
+             instead of a search=[('code','=','NYC01')] lookup. The
+             search= approach assumed the demo property's `code` field
+             was 'NYC01', based only on a *test fixture* setting that
+             value on its own throwaway property — not on the actual
+             hospitality_base demo record. When that assumption didn't
+             hold, search= matched nothing, property_id (required=True)
+             was left out of the create() call, and the resulting
+             validation failure was swallowed as a silent demo-data
+             failure — no rows, no visible error. Using the xmlid we
+             already confirmed exists (via ir_model_data) sidesteps the
+             guess entirely.
+        ============================================================ -->
+
+        <record id="demo_kpi_daily_nyc01_day6" model="hospitality.kpi.daily">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="business_date"
+                   eval="(datetime.now() - relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+            <field name="rooms_available">20</field>
+            <field name="rooms_sold">10</field>
+            <field name="rooms_ooo">0</field>
+            <field name="rooms_complimentary">0</field>
+            <field name="room_revenue">1750.0</field>
+            <field name="fnb_revenue">350.0</field>
+            <field name="other_revenue">90.0</field>
+            <field name="arrivals">4</field>
+            <field name="departures">3</field>
+            <field name="no_shows">1</field>
+            <field name="walkins">1</field>
+            <field name="cancellations">0</field>
+            <field name="segment_breakdown" eval="{'Corporate': 6, 'Leisure': 4}"/>
+            <field name="source_breakdown" eval="{'OTA': 5, 'Direct': 3, 'Walk-in': 2}"/>
+        </record>
+
+        <record id="demo_kpi_daily_nyc01_day5" model="hospitality.kpi.daily">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="business_date"
+                   eval="(datetime.now() - relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+            <field name="rooms_available">20</field>
+            <field name="rooms_sold">11</field>
+            <field name="rooms_ooo">0</field>
+            <field name="rooms_complimentary">0</field>
+            <field name="room_revenue">1958.0</field>
+            <field name="fnb_revenue">390.0</field>
+            <field name="other_revenue">95.0</field>
+            <field name="arrivals">3</field>
+            <field name="departures">2</field>
+            <field name="no_shows">0</field>
+            <field name="walkins">2</field>
+            <field name="cancellations">1</field>
+            <field name="segment_breakdown" eval="{'Corporate': 7, 'Leisure': 4}"/>
+            <field name="source_breakdown" eval="{'OTA': 6, 'Direct': 3, 'Walk-in': 2}"/>
+        </record>
+
+        <record id="demo_kpi_daily_nyc01_day4" model="hospitality.kpi.daily">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="business_date"
+                   eval="(datetime.now() - relativedelta(days=4)).strftime('%Y-%m-%d')"/>
+            <field name="rooms_available">20</field>
+            <field name="rooms_sold">12</field>
+            <field name="rooms_ooo">1</field>
+            <field name="rooms_complimentary">1</field>
+            <field name="room_revenue">2196.0</field>
+            <field name="fnb_revenue">430.0</field>
+            <field name="other_revenue">100.0</field>
+            <field name="arrivals">5</field>
+            <field name="departures">4</field>
+            <field name="no_shows">1</field>
+            <field name="walkins">1</field>
+            <field name="cancellations">0</field>
+            <field name="segment_breakdown" eval="{'Corporate': 7, 'Leisure': 5}"/>
+            <field name="source_breakdown" eval="{'OTA': 6, 'Direct': 4, 'Walk-in': 2}"/>
+        </record>
+
+        <record id="demo_kpi_daily_nyc01_day3" model="hospitality.kpi.daily">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="business_date"
+                   eval="(datetime.now() - relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="rooms_available">20</field>
+            <field name="rooms_sold">14</field>
+            <field name="rooms_ooo">0</field>
+            <field name="rooms_complimentary">0</field>
+            <field name="room_revenue">2492.0</field>
+            <field name="fnb_revenue">470.0</field>
+            <field name="other_revenue">110.0</field>
+            <field name="arrivals">6</field>
+            <field name="departures">3</field>
+            <field name="no_shows">0</field>
+            <field name="walkins">2</field>
+            <field name="cancellations">1</field>
+            <field name="segment_breakdown" eval="{'Corporate': 8, 'Leisure': 6}"/>
+            <field name="source_breakdown" eval="{'OTA': 7, 'Direct': 5, 'Walk-in': 2}"/>
+        </record>
+
+        <record id="demo_kpi_daily_nyc01_day2" model="hospitality.kpi.daily">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="business_date"
+                   eval="(datetime.now() - relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="rooms_available">20</field>
+            <field name="rooms_sold">15</field>
+            <field name="rooms_ooo">0</field>
+            <field name="rooms_complimentary">1</field>
+            <field name="room_revenue">2730.0</field>
+            <field name="fnb_revenue">510.0</field>
+            <field name="other_revenue">120.0</field>
+            <field name="arrivals">5</field>
+            <field name="departures">4</field>
+            <field name="no_shows">1</field>
+            <field name="walkins">1</field>
+            <field name="cancellations">0</field>
+            <field name="segment_breakdown" eval="{'Corporate': 9, 'Leisure': 6}"/>
+            <field name="source_breakdown" eval="{'OTA': 8, 'Direct': 5, 'Walk-in': 2}"/>
+        </record>
+
+        <record id="demo_kpi_daily_nyc01_day1" model="hospitality.kpi.daily">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="business_date"
+                   eval="(datetime.now() - relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="rooms_available">20</field>
+            <field name="rooms_sold">16</field>
+            <field name="rooms_ooo">0</field>
+            <field name="rooms_complimentary">0</field>
+            <field name="room_revenue">2848.0</field>
+            <field name="fnb_revenue">540.0</field>
+            <field name="other_revenue">125.0</field>
+            <field name="arrivals">7</field>
+            <field name="departures">5</field>
+            <field name="no_shows">0</field>
+            <field name="walkins">2</field>
+            <field name="cancellations">1</field>
+            <field name="segment_breakdown" eval="{'Corporate': 10, 'Leisure': 6}"/>
+            <field name="source_breakdown" eval="{'OTA': 9, 'Direct': 5, 'Walk-in': 2}"/>
+        </record>
+
+        <record id="demo_kpi_daily_nyc01_day0" model="hospitality.kpi.daily">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="business_date"
+                   eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="rooms_available">20</field>
+            <field name="rooms_sold">17</field>
+            <field name="rooms_ooo">0</field>
+            <field name="rooms_complimentary">1</field>
+            <field name="room_revenue">3111.0</field>
+            <field name="fnb_revenue">580.0</field>
+            <field name="other_revenue">135.0</field>
+            <field name="arrivals">6</field>
+            <field name="departures">4</field>
+            <field name="no_shows">1</field>
+            <field name="walkins">2</field>
+            <field name="cancellations">0</field>
+            <field name="segment_breakdown" eval="{'Corporate': 10, 'Leisure': 7}"/>
+            <field name="source_breakdown" eval="{'OTA': 9, 'Direct': 6, 'Walk-in': 2}"/>
+        </record>
+
+    </data>
+</odoo>

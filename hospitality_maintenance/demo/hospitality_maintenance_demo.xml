@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    MAINT-05 — Demo data.
+
+    Self-contained: this module does not assume a shared "demo property"
+    xmlid from another Hospitality Business Kit module (none is depended
+    on for demo purposes here), so it builds its own small demo property
+    and room, mirroring the pattern each MAINT-0x test file already uses
+    in its own setUpClass. If your install already has a canonical demo
+    property elsewhere in the suite, swap the ref="demo_property_maintenance"
+    below for that xmlid instead.
+
+    The guest-blocking work order is created directly in 'in_progress'
+    state (rather than driven through action_open/action_start) since XML
+    data records can only set field values, not call business methods. The
+    demo room's OOO fields are therefore set explicitly alongside it,
+    mirroring exactly what action_start() would have written.
+-->
+<odoo>
+    <record id="demo_property_maintenance" model="hospitality.property">
+        <field name="property_image" type="base64" file="hospitality_base/static/src/img/demo/prop_grandvista.jpg"/>
+        <field name="name">Grand Vista Demo Property</field>
+        <field name="code">GVDP</field>
+    </record>
+
+    <record id="demo_room_type_maintenance" model="hospitality.space.type">
+        <field name="image" type="base64" file="hospitality_base/static/src/img/demo/type_standard.jpg"/>
+        <field name="name">Demo Standard Room</field>
+        <field name="code">GVDPSTD</field>
+        <field name="property_id" ref="demo_property_maintenance"/>
+    </record>
+
+    <record id="demo_room_maintenance" model="hospitality.space">
+        <field name="name">Room 101</field>
+        <field name="code">GVDP101</field>
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="space_type_id" ref="demo_room_type_maintenance"/>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════
+         Assets (5) — AC unit, water heater, elevator, pool
+         pump, generator.
+    ══════════════════════════════════════════════════════ -->
+
+    <record id="demo_asset_ac_unit" model="hospitality.asset">
+        <field name="name">AC Unit — Room 101</field>
+        <field name="code">AST-DEMO-AC</field>
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="space_id" ref="demo_room_maintenance"/>
+        <field name="category">equipment</field>
+        <field name="manufacturer">Daikin</field>
+        <field name="model">FTKM50</field>
+    </record>
+
+    <record id="demo_asset_water_heater" model="hospitality.asset">
+        <field name="name">Water Heater — Central Plant</field>
+        <field name="code">AST-DEMO-WH</field>
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="category">equipment</field>
+        <field name="manufacturer">Rheem</field>
+    </record>
+
+    <record id="demo_asset_elevator" model="hospitality.asset">
+        <field name="name">Passenger Elevator — Main Lobby</field>
+        <field name="code">AST-DEMO-EL</field>
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="category">equipment</field>
+        <field name="manufacturer">Otis</field>
+    </record>
+
+    <record id="demo_asset_pool_pump" model="hospitality.asset">
+        <field name="name">Pool Pump — Outdoor Pool</field>
+        <field name="code">AST-DEMO-PP</field>
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="category">equipment</field>
+        <field name="manufacturer">Pentair</field>
+    </record>
+
+    <record id="demo_asset_generator" model="hospitality.asset">
+        <field name="name">Backup Generator</field>
+        <field name="code">AST-DEMO-GEN</field>
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="category">equipment</field>
+        <field name="manufacturer">Cummins</field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════
+         PPM Templates — one per asset above. Each template is
+         created pointing at its asset via asset_id first; the
+         asset's own ppm_template_id is then patched back onto it
+         in a second pass below, since the two fields point at
+         each other.
+    ══════════════════════════════════════════════════════ -->
+
+    <record id="demo_ppm_ac_unit" model="hospitality.ppm.template">
+        <field name="name">AC Unit Filter &amp; Coil Check</field>
+        <field name="asset_id" ref="demo_asset_ac_unit"/>
+        <field name="frequency">monthly</field>
+        <field name="task_template_text">Clean/replace air filter, check refrigerant pressure and coil condition.</field>
+    </record>
+
+    <record id="demo_ppm_water_heater" model="hospitality.ppm.template">
+        <field name="name">Water Heater Flush &amp; Anode Check</field>
+        <field name="asset_id" ref="demo_asset_water_heater"/>
+        <field name="frequency">quarterly</field>
+        <field name="task_template_text">Flush tank sediment, inspect anode rod, verify thermostat setting.</field>
+    </record>
+
+    <record id="demo_ppm_elevator" model="hospitality.ppm.template">
+        <field name="name">Elevator Safety Inspection</field>
+        <field name="asset_id" ref="demo_asset_elevator"/>
+        <field name="frequency">monthly</field>
+        <field name="task_template_text">Test emergency brake, alarm button, door sensors and cab lighting.</field>
+    </record>
+
+    <record id="demo_ppm_pool_pump" model="hospitality.ppm.template">
+        <field name="name">Pool Pump &amp; Filter Service</field>
+        <field name="asset_id" ref="demo_asset_pool_pump"/>
+        <field name="frequency">weekly</field>
+        <field name="task_template_text">Backwash filter, check pump seal and pressure gauge, test chlorinator.</field>
+    </record>
+
+    <record id="demo_ppm_generator" model="hospitality.ppm.template">
+        <field name="name">Generator Monthly Test Run</field>
+        <field name="asset_id" ref="demo_asset_generator"/>
+        <field name="frequency">monthly</field>
+        <field name="task_template_text">Run generator under load for 30 minutes, log fuel level and oil pressure.</field>
+    </record>
+
+    <!-- Patch each asset's ppm_template_id back onto it. -->
+    <record id="demo_asset_ac_unit" model="hospitality.asset">
+        <field name="ppm_template_id" ref="demo_ppm_ac_unit"/>
+    </record>
+    <record id="demo_asset_water_heater" model="hospitality.asset">
+        <field name="ppm_template_id" ref="demo_ppm_water_heater"/>
+    </record>
+    <record id="demo_asset_elevator" model="hospitality.asset">
+        <field name="ppm_template_id" ref="demo_ppm_elevator"/>
+    </record>
+    <record id="demo_asset_pool_pump" model="hospitality.asset">
+        <field name="ppm_template_id" ref="demo_ppm_pool_pump"/>
+    </record>
+    <record id="demo_asset_generator" model="hospitality.asset">
+        <field name="ppm_template_id" ref="demo_ppm_generator"/>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════
+         Work Orders (3)
+    ══════════════════════════════════════════════════════ -->
+
+    <!-- 1. Guest-blocking, on Room 101, auto-OOO. -->
+    <record id="demo_wo_guest_blocking" model="hospitality.work.order">
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="space_id" ref="demo_room_maintenance"/>
+        <field name="asset_id" ref="demo_asset_ac_unit"/>
+        <field name="category">hvac</field>
+        <field name="priority">guest_blocking</field>
+        <field name="source">guest</field>
+        <field name="description">Guest reports the AC unit in Room 101 is not cooling at all.</field>
+        <field name="state">in_progress</field>
+        <field name="set_ooo" eval="True"/>
+        <field name="ooo_from" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+        <field name="ooo_to" eval="(DateTime.today() + relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- Room 101 reflects the OOO block the way action_start() would
+         have applied it (the work order above is created directly in
+         'in_progress' state rather than driven through the action
+         buttons, since XML records can only assign field values). -->
+    <record id="demo_room_maintenance" model="hospitality.space">
+        <field name="status">ooo</field>
+        <field name="ooo_reason">Guest reports the AC unit in Room 101 is not cooling at all.</field>
+        <field name="ooo_from" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+        <field name="ooo_to" eval="(DateTime.today() + relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+    </record>
+
+    <!-- 2. Routine, in progress. -->
+    <record id="demo_wo_routine_in_progress" model="hospitality.work.order">
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="asset_id" ref="demo_asset_pool_pump"/>
+        <field name="category">pool</field>
+        <field name="priority">normal</field>
+        <field name="source">staff</field>
+        <field name="description">Routine pool pump filter backwash and pressure check.</field>
+        <field name="state">in_progress</field>
+    </record>
+
+    <!-- 3. Done. -->
+    <record id="demo_wo_done" model="hospitality.work.order">
+        <field name="property_id" ref="demo_property_maintenance"/>
+        <field name="asset_id" ref="demo_asset_generator"/>
+        <field name="category">electrical</field>
+        <field name="priority">low</field>
+        <field name="source">ppm</field>
+        <field name="description">Generator monthly test run completed — readings normal.</field>
+        <field name="state">done</field>
+    </record>
+</odoo>

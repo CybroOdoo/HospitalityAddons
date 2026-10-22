@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <data noupdate="1">-->
+<!--        &lt;!&ndash; Rate roles may select shared space types and types from their-->
+<!--             assigned properties. No property-specific types are visible-->
+<!--             when the user has no allowed properties. &ndash;&gt;-->
+<!--        <record id="rule_rate_user_space_type_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Rate User: allowed space types</field>-->
+<!--            <field name="model_id" ref="hospitality_property.model_hospitality_space_type"/>-->
+<!--            <field name="groups" eval="[(4, ref('group_rate_user'))]"/>-->
+<!--            <field name="domain_force">['|', ('property_id', '=', False), ('property_id', 'in', user.property_ids.ids)]</field>-->
+<!--            <field name="perm_read" eval="False"/>-->
+<!--            <field name="perm_write" eval="False"/>-->
+<!--            <field name="perm_create" eval="False"/>-->
+<!--            <field name="perm_unlink" eval="False"/>-->
+<!--        </record>-->
+<!--    </data>-->
+</odoo>

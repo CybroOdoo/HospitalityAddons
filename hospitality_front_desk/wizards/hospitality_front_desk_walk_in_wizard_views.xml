@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Walk-In Wizard — dialog form
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_front_desk_walk_in_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.walk.in.wizard.form</field>
+        <field name="model">hospitality.walk.in.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Walk-In">
+
+                <group string="Guest">
+                    <field name="mode" widget="radio"/>
+                    <field name="partner_id"
+                           invisible="mode != 'existing_partner'"
+                           required="mode == 'existing_partner'"/>
+                    <field name="new_partner_name"
+                           invisible="mode != 'new_partner'"
+                           required="mode == 'new_partner'"/>
+                    <field name="new_partner_email"
+                           invisible="mode != 'new_partner'"/>
+                    <field name="new_partner_phone"
+                           invisible="mode != 'new_partner'"/>
+                    <field name="new_partner_nationality_id"
+                           invisible="mode != 'new_partner'"/>
+                </group>
+
+                <group string="Stay">
+                    <field name="property_id"/>
+                    <field name="space_type_id"
+                           domain="[('property_id', '=', property_id)]"/>
+                    <field name="space_id"
+                           domain="[('property_id', '=', property_id),
+                                    ('space_type_id', '=', space_type_id),
+                                    ('status', '=', 'vacant_clean')]"
+                           options="{'no_create': True}"/>
+                    <field name="rate_code_id"/>
+                    <field name="arrival"/>
+                    <field name="arrival_time" widget="float_time"/>
+                    <field name="expected_departure"/>
+                    <field name="adults"/>
+                    <field name="children"/>
+                </group>
+
+                <group string="Payment">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="payment_method"/>
+                    <field name="deposit_amount"/>
+                </group>
+
+                <footer>
+                    <button name="action_walk_in"
+                            string="Create &amp; Check In"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Window action that opens the wizard
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="action_front_desk_walk_in_wizard" model="ir.actions.act_window">
+        <field name="name">Walk-In</field>
+        <field name="res_model">hospitality.walk.in.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_front_desk_walk_in_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Menu — single, ordinary entry under Front Office. No auto-popup
+         landing behavior and no role-based duplication: Administrators
+         and Front Desk Agents/Supervisors reach this the same way, like
+         Arrivals / In-House / Departures / Trace Pickup. Fast, prominent
+         access for agents (e.g. a "New Walk-In" card/button) belongs on
+         the FD-06 FD Dashboard, not hijacked into navigation here.
+    ════════════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_front_desk_walk_in"
+              name="Walk-In"
+              parent="hospitality_base.menu_hm_front_office"
+              action="action_front_desk_walk_in_wizard"
+              sequence="50"/>
+
+</odoo>

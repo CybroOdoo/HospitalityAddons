@@ -1,0 +1,39 @@
+// Dark theme (hospitality.be.config.theme == 'dark').
+//
+// Token-only override - see the note in booking_engine_theme_light.scss. The
+// two exceptions below are cases the tokens genuinely cannot reach: the hero
+// scrim (it has its own fixed palette so photographs stay legible) and the
+// browser-drawn date picker indicator, which ignores `color` and has to be
+// inverted via a filter.
+.be-theme-dark {
+    --be-canvas: #13151A;
+    --be-surface: #1C1F27;
+    --be-surface-sunken: #232732;
+    --be-line: #2C3140;
+    --be-line-strong: #3A4152;
+    --be-ink: #F2F3F5;
+    --be-ink-soft: #C2C7D0;
+    --be-muted: #8C93A1;
+    --be-accent: #D9B77A;
+
+    --be-shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+    --be-shadow: 0 10px 24px -6px rgba(0, 0, 0, .55);
+    --be-shadow-lg: 0 24px 56px -12px rgba(0, 0, 0, .66);
+
+    .o_be_title, .card-title { color: var(--be-ink); }
+
+    // A dark brand colour - the default deep navy among them - sits only a
+    // shade off the dark card behind it, so the button loses its shape even
+    // though the label stays readable. An accent hairline restores the edge
+    // without overriding the property's own colour.
+    .o_be_btn_primary {
+        border-color: var(--be-accent);
+    }
+
+    // The native date/number spinner glyphs are drawn by the browser in a
+    // fixed dark ink; on a dark field they vanish entirely.
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="number"]::-webkit-inner-spin-button {
+        filter: invert(1) opacity(.7);
+    }
+}

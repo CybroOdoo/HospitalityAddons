@@ -1,0 +1,18 @@
+// RATE-03 — Weekday mask field widget styling
+
+.o_field_weekday_mask {
+    .o_weekday_mask_chip {
+        min-width: 26px;
+        text-align: center;
+        font-weight: 600;
+        user-select: none;
+    }
+
+    .o_weekday_mask_chip_editable {
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}

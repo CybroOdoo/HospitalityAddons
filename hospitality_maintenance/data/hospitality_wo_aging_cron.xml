@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Hourly scheduled job that recalculates work order age
+         buckets, keeping maintenance aging reports and dashboards
+         up to date. -->
+        <record id="cron_recompute_wo_age_buckets" model="ir.cron">
+            <field name="name">Hospitality: Recompute WO Age Buckets</field>
+            <field name="model_id" ref="model_hospitality_work_order"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_recompute_wo_age_buckets()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,955 @@
+// ============================================================================
+//  Hospitality Booking Engine - public front end
+// ============================================================================
+//  Everything the guest-facing booking flow looks like lives here. The whole
+//  sheet is driven by custom properties declared on .o_be_page so that:
+//
+//    * --be-primary-color is injected inline per-request by the QWeb templates
+//      (from hospitality.be.config.primary_color), which lets one compiled
+//      bundle carry any property's brand colour with no per-property compile;
+//    * the three theme sheets (light / dark / brand) only have to re-declare
+//      tokens, not re-state component rules. They sit on the SAME element as
+//      .o_be_page and load after this file, so equal-specificity source order
+//      makes them win.
+// ============================================================================
+
+.o_be_page {
+    // --- brand (overridable per property) -----------------------------------
+    --be-primary-color: #16233B;
+    --be-accent: #B58A45;
+
+    // --- surfaces -----------------------------------------------------------
+    --be-canvas: #FBFAF8;
+    --be-surface: #FFFFFF;
+    --be-surface-sunken: #F4F2EE;
+    --be-line: #E7E3DC;
+    --be-line-strong: #D6D0C6;
+
+    // --- type ---------------------------------------------------------------
+    --be-ink: #1A1D23;
+    --be-ink-soft: #4A5058;
+    --be-muted: #767C86;
+    --be-on-primary: #FFFFFF;
+
+    // --- shape --------------------------------------------------------------
+    --be-radius: 16px;
+    --be-radius-sm: 10px;
+    --be-radius-pill: 999px;
+    --be-shadow-sm: 0 1px 2px rgba(16, 24, 40, .05), 0 1px 3px rgba(16, 24, 40, .06);
+    --be-shadow: 0 4px 6px -2px rgba(16, 24, 40, .04), 0 12px 24px -6px rgba(16, 24, 40, .10);
+    --be-shadow-lg: 0 8px 12px -4px rgba(16, 24, 40, .06), 0 28px 56px -12px rgba(16, 24, 40, .18);
+
+    background-color: var(--be-canvas);
+    color: var(--be-ink);
+    padding-bottom: 72px;
+
+    // Page-level headings. Light weight + tight tracking reads as hospitality
+    // rather than as a back-office form.
+    .o_be_title {
+        font-size: clamp(1.9rem, calc(1.2rem + 2.2vw), 2.9rem);
+        font-weight: 300;
+        letter-spacing: -.02em;
+        line-height: 1.12;
+        margin: 0;
+        color: var(--be-ink);
+    }
+
+    .o_be_subtitle {
+        color: var(--be-muted);
+        font-size: 1.02rem;
+        margin: 10px 0 0;
+    }
+
+    // Small uppercase label that sits above a heading or a field.
+    .o_be_eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: var(--be-accent);
+        margin: 0 0 10px;
+    }
+
+    .o_be_section_head {
+        margin-bottom: 28px;
+    }
+
+    // --- controls -----------------------------------------------------------
+    // .form-check-label is excluded: it carries real content (a payment
+    // provider's name), not a field caption, and the uppercase micro-label
+    // treatment rendered those as tiny grey capitals.
+    label:not(.form-check-label), .o_be_label {
+        display: block;
+        font-size: .74rem;
+        font-weight: 600;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: var(--be-muted);
+        margin-bottom: 6px;
+    }
+
+    .form-control, .form-select {
+        background-color: var(--be-surface);
+        border: 1px solid var(--be-line-strong);
+        border-radius: var(--be-radius-sm);
+        color: var(--be-ink);
+        font-size: .98rem;
+        min-height: 48px;
+        padding: 10px 14px;
+        transition: border-color .15s ease, box-shadow .15s ease;
+
+        &::placeholder { color: var(--be-muted); opacity: 1; }
+
+        &:focus {
+            border-color: var(--be-primary-color);
+            box-shadow: 0 0 0 3px rgba(22, 35, 59, .12);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--be-primary-color) 18%, transparent);
+            outline: none;
+        }
+    }
+
+    textarea.form-control { min-height: 96px; }
+
+    .o_be_btn_primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 12px 26px;
+        border: 1px solid var(--be-primary-color);
+        border-radius: var(--be-radius-sm);
+        background-color: var(--be-primary-color);
+        color: var(--be-on-primary);
+        font-weight: 600;
+        letter-spacing: .02em;
+        box-shadow: var(--be-shadow-sm);
+        transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+
+        &:hover, &:focus {
+            background-color: var(--be-primary-color);
+            border-color: var(--be-primary-color);
+            color: var(--be-on-primary);
+            filter: brightness(1.12);
+            transform: translateY(-1px);
+            box-shadow: var(--be-shadow);
+        }
+
+        &:active { transform: translateY(0); }
+
+        &:disabled, &.disabled {
+            filter: grayscale(.4) brightness(1.1);
+            transform: none;
+            opacity: .55;
+        }
+    }
+
+    .o_be_btn_ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 22px;
+        border: 1px solid var(--be-line-strong);
+        border-radius: var(--be-radius-sm);
+        background: transparent;
+        color: var(--be-ink);
+        font-weight: 600;
+        transition: border-color .15s ease, background-color .15s ease;
+
+        &:hover, &:focus {
+            border-color: var(--be-primary-color);
+            color: var(--be-ink);
+            background-color: var(--be-surface-sunken);
+        }
+    }
+
+    // A submit button carries no label above it, so it needs pushing down by
+    // the height of one label row to baseline-align with the inputs beside it.
+    .o_be_submit_cell { padding-top: 24px; }
+
+    // --- shared card --------------------------------------------------------
+    .card, .o_be_card {
+        background-color: var(--be-surface);
+        border: 1px solid var(--be-line);
+        border-radius: var(--be-radius);
+        box-shadow: var(--be-shadow-sm);
+    }
+
+    .o_be_badge {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--be-primary-color);
+        border-radius: var(--be-radius-pill);
+        color: var(--be-on-primary);
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        margin: 0 6px 6px 0;
+        padding: 5px 11px;
+    }
+
+    .o_be_price {
+        color: var(--be-ink);
+        font-size: 1.7rem;
+        font-weight: 600;
+        letter-spacing: -.02em;
+        line-height: 1.1;
+    }
+
+    .o_be_price_note {
+        color: var(--be-muted);
+        display: block;
+        font-size: .74rem;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    // Icon + text meta line used on room cards and summaries.
+    .o_be_meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+        color: var(--be-ink-soft);
+        font-size: .86rem;
+
+        > span {
+            align-items: center;
+            display: inline-flex;
+            gap: 7px;
+        }
+
+        .fa { color: var(--be-accent); width: 14px; text-align: center; }
+    }
+
+    .o_be_chip {
+        background-color: var(--be-surface-sunken);
+        border: 1px solid var(--be-line);
+        border-radius: var(--be-radius-pill);
+        color: var(--be-ink-soft);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: .78rem;
+        padding: 5px 12px;
+    }
+
+    .o_be_divider {
+        background-color: var(--be-line);
+        border: 0;
+        height: 1px;
+        margin: 20px 0;
+        opacity: 1;
+    }
+
+    // Shared by the cart, the checkout and the room detail page, so these
+    // live at page scope rather than inside one page's block.
+    .o_be_fieldset_title {
+        align-items: center;
+        display: flex;
+        font-size: .76rem;
+        font-weight: 700;
+        gap: 10px;
+        letter-spacing: .12em;
+        margin: 0 0 18px;
+        text-transform: uppercase;
+        color: var(--be-ink);
+
+        &::after {
+            background-color: var(--be-line);
+            content: "";
+            flex: 1 1 auto;
+            height: 1px;
+        }
+    }
+
+    .o_be_cart_summary {
+        position: sticky;
+        top: 24px;
+
+        .card-body { padding: 24px; }
+
+        .o_be_sum_row {
+            color: var(--be-ink-soft);
+            display: flex;
+            font-size: .95rem;
+            justify-content: space-between;
+            padding: 7px 0;
+        }
+
+        .o_be_sum_total {
+            align-items: baseline;
+            border-top: 1px solid var(--be-line);
+            color: var(--be-ink);
+            display: flex;
+            font-weight: 600;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 16px;
+
+            .o_be_sum_total_value { font-size: 1.5rem; letter-spacing: -.02em; }
+        }
+    }
+
+    .o_be_secure_note {
+        align-items: center;
+        color: var(--be-muted);
+        display: flex;
+        font-size: .82rem;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 14px;
+
+        .fa { color: var(--be-accent); }
+    }
+
+    // --- empty / notice states ---------------------------------------------
+    .o_be_empty {
+        background-color: var(--be-surface);
+        border: 1px dashed var(--be-line-strong);
+        border-radius: var(--be-radius);
+        color: var(--be-muted);
+        padding: 56px 24px;
+        text-align: center;
+
+        .fa { color: var(--be-line-strong); font-size: 2.6rem; margin-bottom: 14px; }
+        h3 { color: var(--be-ink); font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+        p { margin-bottom: 20px; }
+    }
+
+    .alert {
+        border-radius: var(--be-radius-sm);
+        border-width: 1px;
+    }
+}
+
+// ============================================================================
+//  Hero  (search page)
+// ============================================================================
+.o_be_hero {
+    position: relative;
+    isolation: isolate;
+    min-height: 420px;
+    display: flex;
+    align-items: flex-end;
+    padding: 56px 0 108px;
+    background-color: #16233B;
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    overflow: hidden;
+
+    // Scrim. Two layers: a bottom-weighted one so the copy stays readable over
+    // a bright photograph, and a faint brand wash so an unset hero image still
+    // looks deliberate rather than like a missing asset.
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background:
+            linear-gradient(to top, rgba(10, 16, 28, .88) 0%, rgba(10, 16, 28, .55) 45%, rgba(10, 16, 28, .25) 100%),
+            radial-gradient(circle 700px at 15% 110%, rgba(181, 138, 69, .32), transparent 72%);
+    }
+
+    .o_be_hero_inner { position: relative; max-width: 720px; }
+
+    .o_be_eyebrow { color: #E2C488; }
+
+    .o_be_hero_title {
+        color: #fff;
+        font-size: clamp(2.2rem, calc(1.3rem + 3.2vw), 3.6rem);
+        font-weight: 300;
+        letter-spacing: -.025em;
+        line-height: 1.08;
+        margin: 0;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, .35);
+    }
+
+    .o_be_hero_sub {
+        color: rgba(255, 255, 255, .82);
+        font-size: 1.05rem;
+        margin: 16px 0 0;
+        max-width: 56ch;
+    }
+
+    .o_be_stars {
+        color: #E2C488;
+        letter-spacing: .18em;
+        margin-left: 2px;
+    }
+}
+
+// The search panel deliberately overlaps the hero's lower edge - the pattern
+// every modern hotel site uses to tie the booking form to the property.
+.o_be_search_panel {
+    position: relative;
+    z-index: 2;
+    margin-top: -72px;
+    background-color: var(--be-surface);
+    border: 1px solid var(--be-line);
+    border-radius: var(--be-radius);
+    box-shadow: var(--be-shadow-lg);
+    padding: 26px 26px 28px;
+
+    // Seven fields whose natural widths do not land on twelfths, so this is
+    // an explicit grid rather than a Bootstrap row: a wide property picker,
+    // two date fields, two narrow occupancy boxes, the promo code, and a
+    // button sized to its own text.
+    .o_be_search_grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 576px) {
+        .o_be_search_grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 992px) {
+        .o_be_search_grid {
+            align-items: start;
+            gap: 14px;
+            // property | arrival | departure | adults | children | promo | submit
+            grid-template-columns:
+                minmax(150px, 1.6fr) minmax(130px, 1fr) minmax(130px, 1fr)
+                76px 76px minmax(110px, .9fr) minmax(130px, auto);
+        }
+    }
+
+    .o_be_search_panel_head {
+        align-items: baseline;
+        border-bottom: 1px solid var(--be-line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 14px;
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+
+        h2 {
+            font-size: 1.08rem;
+            font-weight: 600;
+            letter-spacing: -.01em;
+            margin: 0;
+        }
+
+        small { color: var(--be-muted); }
+    }
+
+}
+
+@media (max-width: 767.98px) {
+    .o_be_hero { min-height: 320px; padding: 40px 0 92px; }
+    .o_be_search_panel {
+        margin-top: -64px;
+        padding: 20px 18px 22px;
+    }
+    // Stacked on a phone, so there is no neighbouring label to align to.
+    .o_be_page .o_be_submit_cell { padding-top: 4px; }
+}
+
+// --- reassurance strip under the search panel -------------------------------
+.o_be_trust {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    margin-top: 32px;
+
+    .o_be_trust_item {
+        align-items: center;
+        background-color: var(--be-surface);
+        border: 1px solid var(--be-line);
+        border-radius: var(--be-radius-sm);
+        display: flex;
+        gap: 14px;
+        padding: 16px 18px;
+
+        .fa {
+            color: var(--be-accent);
+            font-size: 1.15rem;
+            flex: 0 0 auto;
+            width: 22px;
+            text-align: center;
+        }
+
+        strong { display: block; font-size: .92rem; font-weight: 600; }
+        span { color: var(--be-muted); font-size: .82rem; }
+    }
+}
+
+// ============================================================================
+//  Booking progress stepper
+// ============================================================================
+.o_be_steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    list-style: none;
+    margin: 0 0 30px;
+    padding: 0;
+
+    li {
+        align-items: center;
+        color: var(--be-muted);
+        display: flex;
+        font-size: .78rem;
+        font-weight: 600;
+        gap: 9px;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+
+        &::after {
+            color: var(--be-line-strong);
+            content: "\f105"; // fa-angle-right
+            font-family: FontAwesome;
+            letter-spacing: 0;
+            margin-left: 4px;
+        }
+
+        &:last-child::after { content: none; }
+    }
+
+    .o_be_step_dot {
+        align-items: center;
+        background-color: var(--be-surface-sunken);
+        border: 1px solid var(--be-line-strong);
+        border-radius: 50%;
+        color: var(--be-muted);
+        display: inline-flex;
+        font-size: .72rem;
+        height: 24px;
+        justify-content: center;
+        width: 24px;
+    }
+
+    .o_be_step_done {
+        color: var(--be-ink-soft);
+        .o_be_step_dot {
+            background-color: var(--be-primary-color);
+            border-color: var(--be-primary-color);
+            color: var(--be-on-primary);
+        }
+    }
+
+    .o_be_step_current {
+        color: var(--be-ink);
+        .o_be_step_dot {
+            background-color: var(--be-accent);
+            border-color: var(--be-accent);
+            color: #16233B;
+        }
+    }
+}
+
+// ============================================================================
+//  Results
+// ============================================================================
+.o_be_results {
+    .o_be_results_bar {
+        align-items: center;
+        background-color: var(--be-surface);
+        border: 1px solid var(--be-line);
+        border-radius: var(--be-radius);
+        box-shadow: var(--be-shadow-sm);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 26px;
+        justify-content: space-between;
+        margin-bottom: 28px;
+        padding: 16px 22px;
+    }
+
+    .o_be_result_card {
+        border-radius: var(--be-radius);
+        overflow: hidden;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+
+        &:hover {
+            border-color: var(--be-line-strong);
+            box-shadow: var(--be-shadow-lg);
+            transform: translateY(-4px);
+
+            .o_be_result_photo { transform: scale(1.05); }
+        }
+    }
+
+    // Fixed ratio frame so a card's height never depends on the photograph it
+    // was given - mixed portrait/landscape uploads used to stagger the grid.
+    .o_be_photo_frame {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--be-surface-sunken);
+        aspect-ratio: 3 / 2;
+    }
+
+    .o_be_result_photo {
+        display: block;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        transition: transform .4s ease;
+    }
+
+    // Shown when a room type has no photograph at all, so every card in the
+    // grid still presents the same silhouette.
+    .o_be_photo_fallback {
+        align-items: center;
+        background: linear-gradient(145deg, #243B5E 0%, #16233B 100%);
+        color: rgba(226, 196, 136, .55);
+        display: flex;
+        font-size: 2.8rem;
+        height: 100%;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .o_be_badges {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        right: 12px;
+        z-index: 1;
+    }
+
+    .o_be_result_card .card-body { padding: 20px 22px 22px; }
+
+    .card-title {
+        font-size: 1.22rem;
+        font-weight: 600;
+        letter-spacing: -.015em;
+        margin-bottom: 4px;
+    }
+
+    .o_be_rate_name {
+        color: var(--be-muted);
+        font-size: .86rem;
+        margin-bottom: 14px;
+    }
+
+    .o_be_price_row {
+        align-items: flex-end;
+        border-top: 1px solid var(--be-line);
+        display: flex;
+        gap: 14px;
+        justify-content: space-between;
+        margin-top: 18px;
+        padding-top: 16px;
+    }
+}
+
+// ============================================================================
+//  Room detail
+// ============================================================================
+.o_be_room_detail {
+    .o_be_gallery { margin-bottom: 36px; }
+
+    .o_be_gallery_photo {
+        border-radius: var(--be-radius-sm);
+        display: block;
+        height: 128px;
+        object-fit: cover;
+        width: 100%;
+        transition: transform .3s ease, box-shadow .3s ease;
+
+        &:hover { transform: translateY(-2px); box-shadow: var(--be-shadow); }
+    }
+
+    .o_be_gallery_lead .o_be_gallery_photo { height: 100%; min-height: 280px; }
+
+    .o_be_amenities {
+        display: grid;
+        gap: 10px 22px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        margin: 0;
+
+        li {
+            align-items: center;
+            color: var(--be-ink-soft);
+            display: flex;
+            gap: 10px;
+            font-size: .92rem;
+        }
+
+        .fa { color: var(--be-accent); }
+    }
+
+    .o_be_room_summary {
+        position: sticky;
+        top: 24px;
+
+        .card-body { padding: 24px; }
+    }
+
+    .o_be_desc {
+        color: var(--be-ink-soft);
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .o_be_room_detail .o_be_room_summary { position: static; }
+    .o_be_room_detail .o_be_gallery_lead .o_be_gallery_photo { min-height: 200px; }
+}
+
+// ============================================================================
+//  Cart
+// ============================================================================
+.o_be_cart {
+    // Still a <table> (the BE-06 flow tour waits on .o_be_cart_table), but
+    // stripped of its grid lines and given room to breathe.
+    .o_be_cart_table {
+        background-color: var(--be-surface);
+        border: 1px solid var(--be-line);
+        border-collapse: separate;
+        border-radius: var(--be-radius);
+        border-spacing: 0;
+        box-shadow: var(--be-shadow-sm);
+        font-size: .95rem;
+        margin: 0;
+        overflow: hidden;
+        width: 100%;
+
+        thead th {
+            background-color: var(--be-surface-sunken);
+            border-bottom: 1px solid var(--be-line);
+            color: var(--be-muted);
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            padding: 13px 18px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            border-bottom: 1px solid var(--be-line);
+            color: var(--be-ink);
+            padding: 18px;
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td { border-bottom: 0; }
+
+        .o_be_cart_room {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .o_be_cart_dates {
+            color: var(--be-muted);
+            font-size: .85rem;
+        }
+
+        .o_be_occupants_adults { max-width: 84px; min-height: 40px; }
+
+        .o_be_remove_line {
+            border: 1px solid var(--be-line-strong);
+            border-radius: var(--be-radius-sm);
+            background: transparent;
+            color: var(--be-muted);
+            padding: 7px 13px;
+            transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+
+            &:hover {
+                background-color: rgba(176, 58, 46, .07);
+                border-color: #B03A2E;
+                color: #B03A2E;
+            }
+        }
+    }
+
+    .o_be_upsell_row {
+        align-items: center;
+        border: 1px solid var(--be-line);
+        border-radius: var(--be-radius-sm);
+        background-color: var(--be-surface);
+        display: flex;
+        gap: 14px;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding: 13px 16px;
+        transition: border-color .15s ease;
+
+        &:hover { border-color: var(--be-line-strong); }
+
+        .o_be_upsell_name { font-weight: 600; font-size: .94rem; }
+        .o_be_upsell_price { color: var(--be-muted); font-size: .86rem; }
+    }
+
+}
+
+@media (max-width: 991.98px) {
+    .o_be_page .o_be_cart_summary { position: static; }
+}
+
+// ============================================================================
+//  Checkout
+// ============================================================================
+.o_be_checkout {
+    .o_be_form_card .card-body { padding: 26px; }
+
+    // Payment providers as pickable tiles rather than a bare radio list.
+    .o_be_payment_providers {
+        border: 0;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        padding: 0;
+
+        .form-check {
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-check-input {
+            margin: 0;
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .form-check-label {
+            align-items: center;
+            border: 1px solid var(--be-line-strong);
+            border-radius: var(--be-radius-sm);
+            color: var(--be-ink);
+            cursor: pointer;
+            display: flex;
+            font-size: .95rem;
+            font-weight: 600;
+            gap: 10px;
+            letter-spacing: normal;
+            margin-bottom: 0;
+            min-height: 58px;
+            padding: 14px 16px;
+            text-transform: none;
+            transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+            width: 100%;
+
+            &::before {
+                border: 2px solid var(--be-line-strong);
+                border-radius: 50%;
+                content: "";
+                flex: 0 0 auto;
+                height: 18px;
+                transition: border-color .15s ease, box-shadow .15s ease;
+                width: 18px;
+            }
+
+            &:hover { border-color: var(--be-primary-color); }
+        }
+
+        .form-check-input:checked + .form-check-label {
+            background-color: var(--be-surface-sunken);
+            border-color: var(--be-primary-color);
+            box-shadow: 0 0 0 1px var(--be-primary-color);
+
+            &::before {
+                border-color: var(--be-primary-color);
+                box-shadow: inset 0 0 0 4px var(--be-primary-color);
+            }
+        }
+
+        .form-check-input:focus-visible + .form-check-label {
+            box-shadow: 0 0 0 3px rgba(22, 35, 59, .22);
+        }
+    }
+
+}
+
+// ============================================================================
+//  Confirmation
+// ============================================================================
+.o_be_confirmation {
+    .o_be_confirm_panel {
+        background-color: var(--be-surface);
+        border: 1px solid var(--be-line);
+        border-radius: var(--be-radius);
+        box-shadow: var(--be-shadow);
+        margin: 0 auto;
+        max-width: 640px;
+        padding: 48px 36px 40px;
+        text-align: center;
+    }
+
+    .o_be_confirm_icon {
+        align-items: center;
+        background: radial-gradient(circle at 50% 35%, rgba(31, 138, 76, .16), rgba(31, 138, 76, .04) 70%);
+        border: 1px solid rgba(31, 138, 76, .3);
+        border-radius: 50%;
+        color: #1F8A4C;
+        display: inline-flex;
+        font-size: 2.4rem;
+        height: 86px;
+        justify-content: center;
+        margin-bottom: 22px;
+        width: 86px;
+    }
+
+    .o_be_ref_pill {
+        background-color: var(--be-surface-sunken);
+        border: 1px dashed var(--be-line-strong);
+        border-radius: var(--be-radius-pill);
+        display: inline-block;
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+        font-size: 1.05rem;
+        font-weight: 600;
+        letter-spacing: .08em;
+        margin-top: 6px;
+        padding: 9px 22px;
+    }
+
+    .o_be_confirm_grid {
+        display: grid;
+        gap: 1px;
+        background-color: var(--be-line);
+        border: 1px solid var(--be-line);
+        border-radius: var(--be-radius-sm);
+        // Exactly two columns for exactly four facts: auto-fit left a fifth
+        // of the strip as a bare grey cell whenever the count did not divide
+        // evenly into the available width.
+        grid-template-columns: repeat(2, 1fr);
+        margin: 30px 0 28px;
+        overflow: hidden;
+        text-align: left;
+
+        > div {
+            background-color: var(--be-surface);
+            padding: 16px 18px;
+        }
+
+        dt {
+            color: var(--be-muted);
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        dd {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+    }
+}
+
+// ============================================================================
+//  Lookup
+// ============================================================================
+.o_be_lookup {
+    .o_be_lookup_card {
+        margin: 0 auto;
+        max-width: 760px;
+
+        .card-body { padding: 30px; }
+    }
+}

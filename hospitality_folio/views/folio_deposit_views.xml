@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.deposit — List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_deposit_list" model="ir.ui.view">
+        <field name="name">hospitality.deposit.list</field>
+        <field name="model">hospitality.deposit</field>
+        <field name="arch" type="xml">
+            <list string="Deposits" decoration-muted="state == 'refunded'">
+                <field name="posted_at"/>
+                <field name="folio_id"/>
+                <field name="partner_id"/>
+                <field name="amount"/>
+                <field name="applied_amount"/>
+                <field name="refunded_amount"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'applied'"
+                       decoration-warning="state == 'partially_applied'"
+                       decoration-danger="state == 'refunded'"/>
+                <button name="action_apply_to_folio"
+                        type="object"
+                        string="Apply"
+                        icon="fa-check"
+                        invisible="state in ('applied', 'refunded')"/>
+                <button name="action_refund"
+                        type="object"
+                        string="Refund"
+                        icon="fa-undo"
+                        invisible="state == 'refunded'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.deposit — Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_deposit_form" model="ir.ui.view">
+        <field name="name">hospitality.deposit.form</field>
+        <field name="model">hospitality.deposit</field>
+        <field name="arch" type="xml">
+            <form string="Deposit">
+                <header>
+                    <button name="action_apply_to_folio"
+                            string="Apply to Folio"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state in ('applied', 'refunded')"/>
+                    <button name="action_refund"
+                            string="Refund"
+                            type="object"
+                            invisible="state == 'refunded'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="held,applied,partially_applied,refunded"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="folio_id"/>
+                            <field name="partner_id"/>
+                            <field name="posted_at"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="applied_amount"/>
+                            <field name="refunded_amount"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.deposit — Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_deposit_search" model="ir.ui.view">
+        <field name="name">hospitality.deposit.search</field>
+        <field name="model">hospitality.deposit</field>
+        <field name="arch" type="xml">
+            <search string="Search Deposits">
+                <field name="folio_id"/>
+                <field name="partner_id"/>
+                <filter name="held" string="Held" domain="[('state','=','held')]"/>
+                <filter name="applied" string="Applied" domain="[('state','=','applied')]"/>
+                <filter name="refunded" string="Refunded" domain="[('state','=','refunded')]"/>
+                <separator/>
+                <filter name="group_folio" string="Folio" context="{'group_by': 'folio_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Action + Menu
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_hospitality_deposit" model="ir.actions.act_window">
+        <field name="name">Deposits</field>
+        <field name="res_model">hospitality.deposit</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hospitality_deposit_search"/>
+    </record>
+
+    <menuitem
+        id="menu_hospitality_deposit"
+        name="Deposits"
+        action="action_hospitality_deposit"
+        parent="hospitality_base.menu_hm_finance"
+        sequence="55"
+        groups="hospitality_folio.group_folio_cashier"/>
+
+</odoo>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ─────────────────────────────────────────────────────────────
+             1. Alice Schwartz — DE, VIP gold (vip2), passport attached
+        ──────────────────────────────────────────────────────────────── -->
+        <record id="demo_guest_alice" model="res.partner">
+            <field name="name">Alice Schwartz</field>
+            <field name="is_guest">True</field>
+            <field name="country_id" ref="base.de"/>
+            <field name="vip_level">gold</field>
+        </record>
+
+        <record id="demo_guest_alice_passport" model="hospitality.guest.id.document">
+            <field name="partner_id" ref="demo_guest_alice"/>
+            <field name="type">passport</field>
+            <field name="number">DE-PASS-ALICE-001</field>
+            <field name="issuing_country_id" ref="base.de"/>
+            <field name="expiry_date">2030-06-01</field>
+        </record>
+
+        <!-- ─────────────────────────────────────────────────────────────
+             2. Bob Tanaka — JP, VIP silver (vip1), passport + driver's licence
+        ──────────────────────────────────────────────────────────────── -->
+        <record id="demo_guest_bob" model="res.partner">
+            <field name="name">Bob Tanaka</field>
+            <field name="is_guest">True</field>
+            <field name="country_id" ref="base.jp"/>
+            <field name="vip_level">silver</field>
+        </record>
+
+        <record id="demo_guest_bob_passport" model="hospitality.guest.id.document">
+            <field name="partner_id" ref="demo_guest_bob"/>
+            <field name="type">passport</field>
+            <field name="number">JP-PASS-BOB-001</field>
+            <field name="issuing_country_id" ref="base.jp"/>
+            <field name="expiry_date">2028-03-15</field>
+        </record>
+
+        <record id="demo_guest_bob_licence" model="hospitality.guest.id.document">
+            <field name="partner_id" ref="demo_guest_bob"/>
+            <field name="type">drivers_license</field>
+            <field name="number">JP-DL-BOB-001</field>
+            <field name="issuing_country_id" ref="base.jp"/>
+            <field name="expiry_date">2026-12-31</field>
+        </record>
+
+        <!-- ─────────────────────────────────────────────────────────────
+             3. Cara Lopez — US, no VIP, dietary GF + HALAL
+        ──────────────────────────────────────────────────────────────── -->
+        <record id="demo_guest_cara" model="res.partner">
+            <field name="name">Cara Lopez</field>
+            <field name="is_guest">True</field>
+            <field name="country_id" ref="base.us"/>
+            <field name="vip_level">none</field>
+            <field name="dietary_restriction_ids" eval="[
+                Command.link(ref('hospitality_guest_profile.dietary_gf')),
+                Command.link(ref('hospitality_guest_profile.dietary_halal')),
+            ]"/>
+        </record>
+
+        <!-- ─────────────────────────────────────────────────────────────
+             4. Devon Patel — IN, VIP platinum (vip3), email marketing consent
+        ──────────────────────────────────────────────────────────────── -->
+        <record id="demo_guest_devon" model="res.partner">
+            <field name="name">Devon Patel</field>
+            <field name="is_guest">True</field>
+            <field name="country_id" ref="base.in"/>
+            <field name="vip_level">platinum</field>
+            <field name="marketing_consent_email">True</field>
+        </record>
+
+        <!-- ─────────────────────────────────────────────────────────────
+             5. Erin O'Connor — IE, blacklisted, reason "previous incident"
+        ──────────────────────────────────────────────────────────────── -->
+        <record id="demo_guest_erin" model="res.partner">
+            <field name="name">Erin O'Connor</field>
+            <field name="is_guest">True</field>
+            <field name="country_id" ref="base.ie"/>
+            <field name="blacklist">True</field>
+            <field name="blacklist_reason">previous incident</field>
+        </record>
+
+    </data>
+</odoo>

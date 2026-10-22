@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         TRANSACTION CODE — List View
+    ================================================================ -->
+    <record id="view_hospitality_transaction_code_list" model="ir.ui.view">
+        <field name="name">hospitality.transaction.code.list</field>
+        <field name="model">hospitality.transaction.code</field>
+        <field name="arch" type="xml">
+            <list string="Transaction Codes">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="category" widget="badge"
+                       decoration-info="category in ('room','fnb')"
+                       decoration-warning="category in ('tax','deposit')"
+                       decoration-success="category in ('payment')"
+                       decoration-danger="category in ('allowance','paid_out')"/>
+                <field name="account_id"/>
+                <field name="sign"/>
+                <field name="show_on_folio"/>
+                <field name="property_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         TRANSACTION CODE — Form View
+    ================================================================ -->
+    <record id="view_hospitality_transaction_code_form" model="ir.ui.view">
+        <field name="name">hospitality.transaction.code.form</field>
+        <field name="model">hospitality.transaction.code</field>
+        <field name="arch" type="xml">
+            <form string="Transaction Code">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Transaction Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Identity">
+                            <field name="code"/>
+                            <field name="category"/>
+                            <field name="sign"/>
+                            <field name="show_on_folio"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Accounting">
+                            <field name="account_id"/>
+                            <field name="tax_ids" widget="many2many_tags"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="property_id"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================
+     TRANSACTION CODE — Search View
+    ================================================================ -->
+    <record id="view_hospitality_transaction_code_search" model="ir.ui.view">
+        <field name="name">hospitality.transaction.code.search</field>
+        <field name="model">hospitality.transaction.code</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="active"
+                        string="Active"
+                        domain="[('active', '=', True)]"/>
+                <filter name="archived"
+                        string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <filter name="global_transaction"
+                        string="Global"
+                        domain="[('property_id', '=', False)]"/>
+                <filter name="show_folio"
+                        string="Shown on Folio"
+                        domain="[('show_on_folio', '=', True)]"/>
+                <filter name="cat_room"
+                        string="Room"
+                        domain="[('category', '=', 'room')]"/>
+                <filter name="cat_fnb"
+                        string="F&amp;B"
+                        domain="[('category', '=', 'fnb')]"/>
+                <filter name="cat_tax"
+                        string="Tax"
+                        domain="[('category', '=', 'tax')]"/>
+                <filter name="cat_payment"
+                        string="Payment"
+                        domain="[('category', '=', 'payment')]"/>
+                <filter name="cat_deposit"
+                        string="Deposit"
+                        domain="[('category', '=', 'deposit')]"/>
+                <group>
+                    <filter name="group_category"
+                            string="Category"
+                            context="{'group_by': 'category'}"/>
+                    <filter name="group_property"
+                            string="Property"
+                            context="{'group_by': 'property_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         TRANSACTION CODE — Action
+    ================================================================ -->
+    <record id="action_hospitality_transaction_code" model="ir.actions.act_window">
+        <field name="name">Transaction Codes</field>
+        <field name="res_model">hospitality.transaction.code</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id"
+               ref="view_hospitality_transaction_code_search"/>
+        <field name="context">{'search_default_group_category': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first transaction code!
+            </p>
+            <p>Transaction codes define how charges flow through the GL.</p>
+        </field>
+    </record>
+
+</odoo>

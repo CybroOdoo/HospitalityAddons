@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--
+            Odoo's spreadsheet "Dashboards" app is superseded by the
+            Reports root, which carries this module's Dashboards section
+            (Manager Flash, Daily KPIs, Daily Revenue Summary).
+
+            spreadsheet_dashboard is NOT a dependency of this module -
+            it arrives only through auto-installed bridge modules - so
+            this must not assume the menu exists. The helper skips
+            silently when it does not.
+        -->
+        <function model="ir.ui.menu" name="_hm_hide_superseded_menu"
+                  eval="('spreadsheet_dashboard.spreadsheet_dashboard_menu_root',
+                         'hospitality_base.menu_hospitality_reports')"/>
+
+    </data>
+</odoo>

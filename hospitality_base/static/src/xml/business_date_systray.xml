@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hospitality_base.BusinessDateSystray">
+        <div t-if="state.date" class="ht_date_systray o_mail_systray_item">
+            <span class="ht_date_pill">
+                <span class="ht_live_dot"/>
+                <t t-out="state.date"/>
+            </span>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Folio User ─────────────────────────────────────────
+         View folios; post non-monetary charges (food, room).
+    ─────────────────────────────────────────────────────────── -->
+    <record id="group_folio_user" model="res.groups">
+        <field name="name">Folio User</field>
+        <field name="implied_ids" eval="[
+            (4, ref('base.group_user')),
+            (4, ref('hospitality_base.group_hospitality_user'))
+        ]"/>
+        <field name="comment">
+            Can view guest folios and post non-monetary charges such as
+            food and beverage or room-related incidentals.
+        </field>
+    </record>
+
+    <!-- ── Folio Cashier ──────────────────────────────────────
+         Inherits Folio User; post payments and adjustments.
+    ─────────────────────────────────────────────────────────── -->
+    <record id="group_folio_cashier" model="res.groups">
+        <field name="name">Folio Cashier</field>
+        <field name="implied_ids" eval="[(4, ref('group_folio_user'))]"/>
+        <field name="comment">
+            Inherits Folio User rights. Additionally allowed to post
+            payments and financial adjustments against a folio.
+        </field>
+    </record>
+
+    <!-- ── Folio Supervisor ───────────────────────────────────
+         Inherits Folio Cashier; voids, allowances, write-offs,
+         manual postings, transfer to AR.
+    ─────────────────────────────────────────────────────────── -->
+    <record id="group_folio_supervisor" model="res.groups">
+        <field name="name">Folio Supervisor</field>
+        <field name="implied_ids" eval="[(4, ref('group_folio_cashier'))]"/>
+
+<!--        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>-->
+        <field name="comment">
+            Inherits Folio Cashier rights. Additionally allowed to void
+            transactions, post allowances and write-offs, perform manual
+            postings, and transfer balances to Accounts Receivable.
+        </field>
+    </record>
+
+</odoo>

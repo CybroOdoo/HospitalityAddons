@@ -1,0 +1,215 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Room kanban: a media card built to showcase the room.
+//
+// Scoped under .o_hm_room_kanban so nothing here reaches any other
+// kanban in the database.
+//
+// WIDTH: --KanbanRecord-width has to be set on the RENDERER, not on the
+// controller where the <kanban class="..."> attribute lands, because
+// Odoo declares the variable on the renderer and a value set above is
+// overridden by it. The variable is only a starting basis in any case:
+// the ungrouped renderer gives records flex-grow: 1, so they grow to
+// share the row and each card ends up wider than the number below.
+.o_hm_room_kanban .o_kanban_renderer {
+    --KanbanRecord-width: 320px;
+}
+
+.o_hm_room_kanban {
+    .o_hm_room_card {
+        overflow: hidden;
+        border-radius: 12px;
+        border: 1px solid rgba(181, 138, 69, .42);
+        box-shadow: 0 1px 2px rgba(22, 35, 59, .05);
+        transition: box-shadow .16s ease-in-out, transform .16s ease-in-out,
+                    border-color .16s ease-in-out;
+
+        &:hover {
+            transform: translateY(-2px);
+            border-color: rgba(181, 138, 69, .95);
+            box-shadow: 0 12px 26px -12px rgba(140, 102, 40, .55);
+        }
+    }
+
+    // ── Cover, inherited from the room type ───────────────────────────
+    .o_hm_room_media {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        background: #EDEDED;
+        overflow: hidden;
+    }
+
+    .o_hm_room_img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    // The code sits ON the image, so it needs a scrim to stay legible
+    // over a pale shot as well as a dark one.
+    .o_hm_room_scrim {
+        position: absolute;
+        inset: auto 0 0 0;
+        padding: 30px 12px 10px;
+        background: linear-gradient(
+            to top,
+            rgba(22, 35, 59, .92) 0%,
+            rgba(22, 35, 59, .60) 45%,
+            rgba(22, 35, 59, 0) 100%
+        );
+        color: #FFFFFF;
+        pointer-events: none;
+    }
+
+    // The room type leads the card, as a SOLID brass badge.
+    //
+    // It was brass text first, and that failed: coloured type over a
+    // photograph depends entirely on what is behind it, so it washed out
+    // on a pale cover and disappeared on a busy one. A filled pill
+    // carries its own background, so legibility no longer depends on the
+    // image - and ink on brass is about 4.5:1, which holds at this size.
+    .o_hm_room_typeline {
+        display: inline-block;
+        max-width: 100%;
+        margin-bottom: 7px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: #B58A45;
+        color: #16233B;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        line-height: 1.5;
+        text-transform: uppercase;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: bottom;
+    }
+
+    .o_hm_room_code {
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: .01em;
+    }
+
+    .o_hm_room_name {
+        font-size: 12px;
+        color: rgba(255, 255, 255, .80);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    // ── Status pill ───────────────────────────────────────────────────
+    // Housekeeping reads this before anything else on the card, so it is
+    // the one element allowed to shout.
+    .o_hm_room_status {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.5;
+        color: #FFFFFF;
+        background: #4D515B;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+    }
+
+    // Clean and ready to sell.
+    .o_hm_room_st_vacant_clean   { background: #1F8A4C; }
+    .o_hm_room_st_inspected      { background: #11693A; }
+    // Needs housekeeping attention.
+    .o_hm_room_st_vacant_dirty   { background: #B9821F; }
+    .o_hm_room_st_pickup         { background: #B9821F; }
+    // Sold tonight.
+    .o_hm_room_st_occupied_clean { background: #2B5FA8; }
+    .o_hm_room_st_occupied_dirty { background: #2B5FA8; }
+    // Cannot be sold at all.
+    .o_hm_room_st_ooo            { background: #B03A2E; }
+    .o_hm_room_st_oos            { background: #B03A2E; }
+
+    .o_hm_room_virtual {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.5;
+        color: #16233B;
+        background: rgba(255, 255, 255, .88);
+    }
+
+    // ── Facts ─────────────────────────────────────────────────────────
+    .o_hm_room_body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 12px;
+        font-size: 12px;
+        border-top: 1px solid rgba(181, 138, 69, .28);
+    }
+
+    .o_hm_room_muted {
+        color: #8A8F98;
+    }
+
+    .o_hm_room_beds {
+        color: #4A4D55;
+        white-space: nowrap;
+    }
+
+    .o_hm_room_foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 7px 12px;
+        border-top: 1px solid rgba(181, 138, 69, .22);
+        font-size: 12px;
+        color: #4A4D55;
+        min-width: 0;
+    }
+
+    .o_hm_room_floor {
+        white-space: nowrap;
+    }
+
+    // ── Room-type card extras ─────────────────────────────────────────
+    // The same card is used for hospitality.space.type, where the badge
+    // carries the CATEGORY and the pill in the corner flags smoking.
+    .o_hm_type_smoking {
+        background: #B9821F;
+    }
+
+    .o_hm_type_dot {
+        margin: 0 5px;
+        opacity: .6;
+    }
+
+    .o_hm_type_dash {
+        margin: 0 2px;
+        opacity: .55;
+    }
+
+    // Amenities are supporting detail, not the headline: keep them to one
+    // line and let them truncate rather than growing the card.
+    .o_hm_room_tags {
+        min-width: 0;
+        overflow: hidden;
+
+        .o_tag {
+            max-width: 90px;
+        }
+    }
+}

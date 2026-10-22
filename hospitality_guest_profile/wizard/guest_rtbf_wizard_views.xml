@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         RTBF Wizard — form view
+    ================================================================ -->
+    <record id="view_guest_rtbf_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.guest.rtbf.wizard.form</field>
+        <field name="model">hospitality.guest.rtbf.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Execute RTBF — Confirm Anonymisation">
+                <sheet>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Warning: This action is irreversible.</strong>
+                        All personal data for guest
+                        <field name="guest_name" readonly="1" nolabel="1"/>
+                        will be permanently erased. Stay history is preserved
+                        for accounting integrity.
+                    </div>
+                    <group>
+                        <field name="partner_id" invisible="1"/>
+                        <field name="confirm_irreversible"
+                               string="I understand this action is irreversible and cannot be undone"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_execute"
+                            string="Execute Anonymisation"
+                            type="object"
+                            class="btn-danger"
+                            data-hotkey="v"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"
+                            data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

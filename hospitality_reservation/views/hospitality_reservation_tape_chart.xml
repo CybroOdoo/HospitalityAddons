@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         Tape Chart client action
+    ================================================================ -->
+    <record id="action_tape_chart" model="ir.actions.client">
+        <field name="name">Tape Chart</field>
+        <field name="tag">hospitality_tape_chart</field>
+        <field name="context">{}</field>
+        <field name="res_model">hospitality.reservation</field>
+    </record>
+
+    <!-- ================================================================
+         Tape Chart menu
+    ================================================================ -->
+    <menuitem id="menu_reservation_tape_chart"
+              name="Tape Chart"
+              parent="hospitality_reservation.menu_reservation_root"
+              action="action_tape_chart"
+              sequence="5"
+              groups="hospitality_reservation.group_reservation_agent,hospitality_reservation.group_reservation_supervisor,hospitality_base.group_hospitality_admin"/>
+
+</odoo>

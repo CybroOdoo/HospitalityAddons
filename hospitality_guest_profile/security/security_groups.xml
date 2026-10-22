@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ============================================================
+             Group: Guest User
+        ============================================================ -->
+        <record id="group_guest_user" model="res.groups">
+            <field name="name">Guest User</field>
+            <field name="implied_ids"
+                   eval="[(4, ref('hospitality_base.group_hospitality_user'))]"/>
+            <field name="comment">
+                Can read and write the basic guest profile.
+                Cannot access government ID numbers or scanned ID documents.
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Group: Guest PII
+        ============================================================ -->
+        <record id="group_guest_pii" model="res.groups">
+            <field name="name">Guest PII Access</field>
+            <field name="implied_ids"
+                   eval="[(4, ref('group_guest_user'))]"/>
+            <field name="comment">
+                Grants access to personally identifiable information (PII):
+                government ID numbers and scanned ID documents.
+                All access is recorded in ir.logging (channel: hospitality.pii).
+            </field>
+        </record>
+
+        <!-- Hospitality administrators manage guest documents, including
+             protected ID numbers, scans, and verification. Reuse the PII
+             group so field access and audit logging follow one permission. -->
+        <record id="hospitality_base.group_hospitality_admin" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_guest_pii'))]"/>
+        </record>
+
+        <!-- Odoo Settings administrators also need full guest-document
+             access for system-level administration and support. -->
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_guest_pii'))]"/>
+        </record>
+
+    </data>
+</odoo>

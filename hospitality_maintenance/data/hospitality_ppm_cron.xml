@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Daily scheduled job that processes all active preventive
+         maintenance (PPM) templates and generates due maintenance
+         tasks based on their configured schedules. -->
+        <record id="cron_run_ppm_templates" model="ir.cron">
+            <field name="name">Hospitality: Run PPM Templates</field>
+            <field name="model_id" ref="model_hospitality_ppm_template"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_run_ppm_templates()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

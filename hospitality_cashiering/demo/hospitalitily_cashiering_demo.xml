@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        CASH-04 — Demo data
+
+        References hospitality_folio's FOL-08 demo data (demo_property_folio,
+        demo_folio_checked_in + its window, and payment transaction code
+        tc_cash) rather than creating a parallel demo dataset.
+
+        NOTE ON TIMING: the 5 demo payment lines below are created at
+        install time ("now"), but _compute_expected_total() /
+        _get_closeout_payment_lines() filter hospitality.folio.line by
+        create_date BETWEEN shift.started_at AND shift.ended_at, and
+        create_date can't be set via a <field> tag (it's a magic
+        column). Since this shift is deliberately dated "yesterday" per
+        the spec, these 5 lines would never match that window without
+        help. hooks.py's post_init_hook backdates their create_date via
+        raw SQL right after this file loads, so the demo shift's
+        expected_total/variance are computed correctly the first time
+        anyone opens it. See hooks.py for details.
+    -->
+    <data>
+
+        <!-- ── Demo users ───────────────────────────────────────────── -->
+        <record id="demo_cash04_cashier_user" model="res.users"
+                context="{'no_reset_password': True}">
+            <field name="name">Dana Demo Cashier</field>
+            <field name="login">demo_cash04_cashier</field>
+            <field name="email">dana.cashier@hospitality.test</field>
+            <field name="group_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('hospitality_cashiering.group_cashier'),
+            ])]"/>
+            <field name="property_ids" eval="[(4, ref('hospitality_folio.demo_property_folio'))]"/>
+        </record>
+
+        <record id="demo_cash04_supervisor_user" model="res.users"
+                context="{'no_reset_password': True}">
+            <field name="name">Sam Demo Cashier Supervisor</field>
+            <field name="login">demo_cash04_supervisor</field>
+            <field name="email">sam.supervisor@hospitality.test</field>
+            <field name="group_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('hospitality_cashiering.group_cashier_supervisor'),
+            ])]"/>
+            <field name="property_ids" eval="[(4, ref('hospitality_folio.demo_property_folio'))]"/>
+        </record>
+
+        <!-- ── Closed shift from yesterday ──────────────────────────── -->
+        <record id="demo_cash04_shift" model="hospitality.cashier.shift">
+            <field name="user_id" ref="demo_cash04_cashier_user"/>
+            <field name="property_id" ref="hospitality_folio.demo_property_folio"/>
+            <field name="started_at"
+                   eval="(datetime.now() - timedelta(days=1)).replace(hour=8, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="ended_at"
+                   eval="(datetime.now() - timedelta(days=1)).replace(hour=16, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="state">closed</field>
+            <field name="notes">CASH-04 demo shift — 5 payments, 1 drop, zero variance.</field>
+        </record>
+
+        <!-- Opening float: 500.00 -->
+        <record id="demo_cash04_opening_amount" model="hospitality.cashier.amount">
+            <field name="shift_id" ref="demo_cash04_shift"/>
+            <field name="kind">opening</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="amount">500.00</field>
+        </record>
+
+        <!-- 5 cash payment lines against the open demo_folio_checked_in
+             folio, 50.00 each = 250.00 expected_total. See hooks.py for
+             the create_date backdating that ties these to the shift
+             window above. -->
+        <record id="demo_cash04_payment_1" model="hospitality.folio.line">
+            <field name="folio_id" ref="hospitality_folio.demo_folio_checked_in"/>
+            <field name="window_id" ref="hospitality_folio.demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="hospitality_folio.tc_cash"/>
+            <field name="description">CASH-04 Demo Payment 1</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-50.00</field>
+        </record>
+
+        <record id="demo_cash04_payment_2" model="hospitality.folio.line">
+            <field name="folio_id" ref="hospitality_folio.demo_folio_checked_in"/>
+            <field name="window_id" ref="hospitality_folio.demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="hospitality_folio.tc_cash"/>
+            <field name="description">CASH-04 Demo Payment 2</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-50.00</field>
+        </record>
+
+        <record id="demo_cash04_payment_3" model="hospitality.folio.line">
+            <field name="folio_id" ref="hospitality_folio.demo_folio_checked_in"/>
+            <field name="window_id" ref="hospitality_folio.demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="hospitality_folio.tc_cash"/>
+            <field name="description">CASH-04 Demo Payment 3</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-50.00</field>
+        </record>
+
+        <record id="demo_cash04_payment_4" model="hospitality.folio.line">
+            <field name="folio_id" ref="hospitality_folio.demo_folio_checked_in"/>
+            <field name="window_id" ref="hospitality_folio.demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="hospitality_folio.tc_cash"/>
+            <field name="description">CASH-04 Demo Payment 4</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-50.00</field>
+        </record>
+
+        <record id="demo_cash04_payment_5" model="hospitality.folio.line">
+            <field name="folio_id" ref="hospitality_folio.demo_folio_checked_in"/>
+            <field name="window_id" ref="hospitality_folio.demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="hospitality_folio.tc_cash"/>
+            <field name="description">CASH-04 Demo Payment 5</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-50.00</field>
+        </record>
+
+        <!-- 1 drop: 100.00, witnessed by the demo supervisor -->
+        <record id="demo_cash04_drop" model="hospitality.cashier.drop">
+            <field name="shift_id" ref="demo_cash04_shift"/>
+            <field name="amount">100.00</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="witness_user_id" ref="demo_cash04_supervisor_user"/>
+            <field name="dropped_at"
+                   eval="(datetime.now() - timedelta(days=1)).replace(hour=12, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="notes">Midday drop to the safe (CASH-04 demo).</field>
+        </record>
+
+        <!-- Closing float: opening(500) + expected(250) - drop(100) = 650
+             -> zero variance. -->
+        <record id="demo_cash04_closing_amount" model="hospitality.cashier.amount">
+            <field name="shift_id" ref="demo_cash04_shift"/>
+            <field name="kind">closing</field>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="amount">650.00</field>
+        </record>
+
+        <!-- ── Pending void request on a demo folio line ────────────── -->
+        <record id="demo_cash04_void_request" model="hospitality.void.request">
+            <field name="folio_line_id" ref="hospitality_folio.demo_line_ci_fnb"/>
+            <field name="requested_by" ref="demo_cash04_cashier_user"/>
+            <field name="reason">Demo: guest disputes the F&amp;B charge (CASH-04 demo data).</field>
+            <field name="state">requested</field>
+        </record>
+
+    </data>
+</odoo>

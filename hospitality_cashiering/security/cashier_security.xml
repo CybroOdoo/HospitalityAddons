@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Module category -->
+        <record id="module_category_hospitality_cashiering" model="ir.module.category">
+            <field name="name">Hospitality Cashiering</field>
+            <field name="description">Manage access to cashier shift and payment posting features.</field>
+            <field name="sequence">22</field>
+        </record>
+
+        <!-- Odoo 19: res.groups no longer carries category_id directly.
+             Groups are now organised under a res.groups.privilege, which
+             itself points at the ir.module.category. -->
+        <record id="res_groups_privilege_cashiering" model="res.groups.privilege">
+            <field name="name">Cashiering</field>
+            <field name="category_id" ref="module_category_hospitality_cashiering"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Cashier: run shift, post payments -->
+        <record id="group_cashier" model="res.groups">
+            <field name="name">Cashier</field>
+<!--            <field name="privilege_id" ref="res_groups_privilege_cashiering"/>-->
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('hospitality_base.group_hospitality_user')),
+                (4, ref('hospitality_folio.group_folio_cashier'))
+            ]"/>
+            <field name="comment">Can open/close cashier shifts and post guest payments.</field>
+        </record>
+
+        <!-- Cashier Supervisor: approve voids, audit shifts
+             CASH-03: also implies hospitality_folio.group_folio_supervisor.
+             hospitality.folio._void_line() (called from
+             hospitality.void.request.action_approve()) independently
+             enforces that folio-supervisor group, regardless of what
+             group gated action_approve itself. Without this implied_ids
+             entry, a Cashier Supervisor could approve a void request
+             here and still hit an AccessError inside _void_line().
+             Flag to the product owner if Cashier Supervisor and Folio
+             Supervisor are meant to stay fully separate roles — remove
+             this line to decouple them again. -->
+        <record id="group_cashier_supervisor" model="res.groups">
+            <field name="name">Cashier Supervisor</field>
+<!--            <field name="privilege_id" ref="res_groups_privilege_cashiering"/>-->
+            <field name="implied_ids" eval="[(4, ref('group_cashier')),
+                                              (4, ref('hospitality_folio.group_folio_supervisor'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Can approve voids and audit cashier shifts, in addition to all Cashier rights.</field>
+        </record>
+
+    </data>
+</odoo>

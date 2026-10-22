@@ -1,0 +1,16 @@
+// Light theme (hospitality.be.config.theme == 'light', the default).
+//
+// These sheets load AFTER booking_engine_base.scss and their class sits on the
+// same element as .o_be_page, so they only need to re-declare tokens - every
+// component rule in the base sheet picks the new values up. Nothing here
+// restates a component.
+.be-theme-light {
+    --be-canvas: #FBFAF8;
+    --be-surface: #FFFFFF;
+    --be-surface-sunken: #F4F2EE;
+    --be-line: #E7E3DC;
+    --be-line-strong: #D6D0C6;
+    --be-ink: #1A1D23;
+    --be-ink-soft: #4A5058;
+    --be-muted: #767C86;
+}

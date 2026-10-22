@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!--
+            BE-06 demo data.
+
+            property_id refs use hospitality_base.demo_property_nyc01
+            (confirmed against hospitality_property's own demo data and
+            its PROP-07 tests) — NOT hospitality_property.property_nyc01,
+            which a comment in hospitality_rate's demo_rate_nyc01.xml
+            claims was "unified" to, but which doesn't actually exist.
+            That looks like a real bug in hospitality_rate's demo data;
+            flag it to that module's owner, it's not fixed here.
+
+            rate_code_bar_nyc01 / rate_code_pkg_bb_nyc01 xmlids are
+            confirmed directly from hospitality_rate/data/demo_rate_nyc01.xml.
+
+            post_to_transaction_code_id on each upsell uses search="[]"
+            rather than a hardcoded ref, because hospitality.transaction.code
+            demo records live in a module not reviewed here, and a wrong
+            hardcoded ref would hard-fail this entire file. This resolves
+            to whatever transaction code exists first at load time —
+            replace with a specific ref (e.g. an "Ancillary Revenue" or
+            "Miscellaneous" code) once the real ones are confirmed.
+
+            hospitality.be.upsell (BE-02) has no per-night/per-person
+            recurrence field — price is a flat one-time Monetary. The
+            "/night" and "pp/night" semantics from the BE-06 spec are
+            therefore only descriptive (in the description field) below,
+            not enforced by the model. If real recurring-charge behavior
+            is needed, that's a model change beyond BE-06's scope.
+        -->
+
+        <record id="demo_be_config_nyc01" model="hospitality.be.config">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="theme">light</field>
+            <field name="primary_color">#1A73E8</field>
+            <field name="allow_promo_code">True</field>
+        </record>
+
+        <record id="demo_be_promo_summer10" model="hospitality.be.promo.code">
+            <field name="code">SUMMER10</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="discount_pct">10.0</field>
+        </record>
+
+        <record id="demo_be_promo_welcome50" model="hospitality.be.promo.code">
+            <field name="code">WELCOME50</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="discount_fixed">50.0</field>
+        </record>
+
+        <record id="demo_be_upsell_early_checkin" model="hospitality.be.upsell">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="name">Early Check-In</field>
+            <field name="price">25.0</field>
+            <field name="post_to_transaction_code_id" search="[]"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="demo_be_upsell_parking" model="hospitality.be.upsell">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="name">Parking</field>
+            <field name="description" type="html">
+                <p>Charged per night.</p>
+            </field>
+            <field name="price">15.0</field>
+            <field name="post_to_transaction_code_id" search="[]"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="demo_be_upsell_breakfast" model="hospitality.be.upsell">
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="name">Breakfast Add-on</field>
+            <field name="description" type="html">
+                <p>12 per person, per night.</p>
+            </field>
+            <field name="price">12.0</field>
+            <field name="post_to_transaction_code_id" search="[]"/>
+            <field name="sequence">30</field>
+        </record>
+    </data>
+</odoo>

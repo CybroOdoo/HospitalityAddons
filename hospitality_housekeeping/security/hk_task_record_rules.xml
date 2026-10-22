@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Global property scope applies to every role, including attendants. -->
+        <record id="hk_task_rule_allowed_properties" model="ir.rule">
+            <field name="name">Housekeeping Task: allowed properties</field>
+            <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+        </record>
+
+        <!-- Attendants only ever see/edit the tasks assigned to them. -->
+        <record id="hk_task_rule_attendant" model="ir.rule">
+            <field name="name">Housekeeping Task: attendant sees own tasks</field>
+            <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+            <field name="domain_force">[('attendant_user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_hk_attendant'))]"/>
+        </record>
+
+        <!-- Supervisors see every task for the properties they have
+             access to (multi-property scoping). -->
+        <record id="hk_task_rule_supervisor" model="ir.rule">
+            <field name="name">Housekeeping Task: supervisor sees own properties</field>
+            <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_hk_supervisor'))]"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.plan.occupancy — List View (embedded)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_plan_occupancy_list" model="ir.ui.view">
+        <field name="name">hospitality.rate.plan.occupancy.list</field>
+        <field name="model">hospitality.rate.plan.occupancy</field>
+        <field name="arch" type="xml">
+            <list string="Occupancy Grid" editable="bottom">
+                <field name="adults"/>
+                <field name="children"/>
+                <field name="price"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.plan — List View
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_plan_list" model="ir.ui.view">
+        <field name="name">hospitality.rate.plan.list</field>
+        <field name="model">hospitality.rate.plan</field>
+        <field name="arch" type="xml">
+            <list string="Rate Plans">
+                <field name="rate_code_id"/>
+                <field name="space_type_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="occupancy_pricing"/>
+                <field name="price_double"/>
+                <field name="weekday_mask" widget="weekday_mask"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.plan — Form View
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_plan_form" model="ir.ui.view">
+        <field name="name">hospitality.rate.plan.form</field>
+        <field name="model">hospitality.rate.plan</field>
+        <field name="arch" type="xml">
+            <form string="Rate Plan">
+                <sheet>
+                    <group>
+                        <group name="plan_main">
+                            <field name="rate_code_id"/>
+                            <field name="space_type_id"/>
+                            <field name="property_id" readonly="1"/>
+                        </group>
+                        <group name="plan_validity">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Weekday Availability">
+                        <field name="weekday_mask" widget="weekday_mask" nolabel="1"/>
+                    </group>
+                    <group string="Pricing">
+                        <group>
+                            <field name="occupancy_pricing"/>
+                            <field name="price_single"
+                                   invisible="occupancy_pricing == 'occupancy_grid'"/>
+                            <field name="price_double"
+                                   invisible="occupancy_pricing == 'occupancy_grid'"/>
+                        </group>
+                        <group>
+                            <field name="price_extra_adult"
+                                   invisible="occupancy_pricing != 'per_pax'"/>
+                            <field name="price_extra_child"
+                                   invisible="occupancy_pricing != 'per_pax'"/>
+                        </group>
+                    </group>
+                    <group string="Occupancy Grid"
+                           invisible="occupancy_pricing != 'occupancy_grid'">
+                        <field name="occupancy_grid_ids" nolabel="1"
+                               context="{'default_currency_id': currency_id}">
+                            <list editable="bottom">
+                                <field name="adults"/>
+                                <field name="children"/>
+                                <field name="price"/>
+                                <field name="currency_id" column_invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+                    <field name="notes" placeholder="Internal notes about this rate plan..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.plan — Action
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_hospitality_rate_plan" model="ir.actions.act_window">
+        <field name="name">Rate Plans</field>
+        <field name="res_model">hospitality.rate.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_hospitality_rate_plan_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_hospitality_rate_plan_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first rate plan!
+            </p>
+            <p>Rate plans hold the nightly price grid for a rate code and
+               space type, with occupancy pricing and weekday availability.
+               They can also be managed from the Rate Code's
+               "Pricing Grid" tab.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,345 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// App drawer. Everything here is scoped under .ht_home.
+
+.ht_home {
+    position: relative;
+    min-height: 100%;
+    background: $ht-ink;
+    color: $ht-on-ink;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+
+    // A single warm pool of light, upper right, echoing the login panel.
+    &::before {
+        content: '';
+        position: absolute;
+        width: 720px;
+        height: 720px;
+        right: -200px;
+        top: -220px;
+        border-radius: 50%;
+        background: $ht-glow-brass;
+        pointer-events: none;
+    }
+}
+
+// ── Left: greeting and operational stats ──────────────────────────────
+// Both brand colours work here, in different jobs. Brass is the accent -
+// it marks, rules and edges, never fills. Ivory is the warm white the
+// text sits in: against brass, pure #FFF reads cold and slightly blue.
+.ht_home .ht_stats {
+    position: relative;
+    flex: 0 0 $ht-stats-width;
+    width: $ht-stats-width;
+    padding: 26px 22px 32px;
+    overflow-y: auto;
+
+    // Both decorations are BACKGROUND LAYERS, not pseudo-elements. This
+    // box scrolls, and an absolutely positioned child counts towards its
+    // scrollable overflow: a glow hung past the bottom edge lets the
+    // column scroll 220px into nothing. A background paints without
+    // taking part in layout at all.
+    //
+    //   1. a brass seam down the right edge, strongest at the greeting
+    //      and gone by the fold, so the column is bounded without a line
+    //      drawn the whole height of the screen
+    //   2. a pool of warm light at the foot, so a column that is mostly
+    //      empty on a small property reads as deliberate space rather
+    //      than as something that failed to load
+    background-color: $ht-ink-raise;
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(181, 138, 69, .55) 0,
+            rgba(181, 138, 69, .18) 38%,
+            transparent 78%
+        ),
+        radial-gradient(
+            circle 420px at 18% 106%,
+            rgba(217, 183, 122, .20),
+            transparent 70%
+        );
+    background-repeat: no-repeat, no-repeat;
+    background-size: 1px 100%, auto;
+    background-position: right top, left bottom;
+
+    @media (max-width: 980px) { display: none; }
+}
+
+// Time and date lead the column. This block used to be a 11px caption
+// that sat quieter than the stat labels beneath it, which is backwards:
+// it is the first thing a front-desk user checks.
+.ht_home .ht_stats_now {
+    margin-bottom: 14px;
+}
+
+.ht_home .ht_stats_time {
+    font-family: $ht-font-mono;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -.02em;
+    color: $ht-ivory;
+    // Tabular figures, so the clock does not jitter as the digits change.
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 7px;
+}
+
+// The date keeps the mono small-caps the stat labels use, so the two
+// agree, but at a readable size and full brass rather than a whisper.
+.ht_home .ht_stats_date {
+    @include ht-label;
+    font-size: 12.5px;
+    letter-spacing: .13em;
+    color: $ht-brass;
+}
+
+.ht_home .ht_stats_greeting {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.22;
+    color: $ht-ivory;
+    margin: 0 0 18px;
+
+    // Short brass rule under the greeting: the letterhead move. It
+    // replaces the full-width hairline that used to sit on top of the
+    // first stat and ran the whole column width for no reason.
+    &::after {
+        content: '';
+        display: block;
+        width: 34px;
+        height: 3px;
+        border-radius: 2px;
+        background: $ht-brass;
+        margin-top: 16px;
+    }
+}
+
+// Each figure is its own card, with the same brass leading edge the rail
+// uses to mark the current app, so "this is a live number" looks the
+// same everywhere in the theme.
+.ht_home .ht_stat {
+    position: relative;
+    padding: 14px 16px 13px;
+    margin-bottom: 10px;
+    border-radius: $ht-radius-card;
+    background: rgba(255, 255, 255, .035);
+    border: 1px solid $ht-ink-line;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 10px;
+        bottom: 10px;
+        width: 3px;
+        border-radius: 0 3px 3px 0;
+        background: $ht-brass;
+    }
+}
+
+.ht_home .ht_stat_label {
+    @include ht-label;
+    color: $ht-on-ink-3;
+    margin-bottom: 8px;
+}
+
+.ht_home .ht_stat_value {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1;
+    color: $ht-ivory;
+    margin-bottom: 6px;
+}
+
+.ht_home .ht_stat_sub {
+    font-size: 13px;
+    color: $ht-on-ink-2;
+}
+
+// ── Right: meta, search, app grid ─────────────────────────────────────
+.ht_home .ht_apps {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 26px 32px 40px;
+    overflow-y: auto;
+}
+
+// Search and grid share one column so the grid does not trail off into
+// empty space on a wide screen.
+.ht_home .ht_apps_inner {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.ht_home .ht_search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    // Inset by exactly half the gap between a grid cell (120px) and a
+    // plate (80px), so the search box's left edge lines up with the
+    // first icon instead of sitting 20px outside it.
+    margin: 0 20px 34px;
+    padding: 0 12px 0 18px;
+    border-radius: $ht-radius-control;
+    background: $ht-ink-field;
+    border: 1px solid $ht-ink-line;
+
+    &:focus-within { border-color: rgba(181, 138, 69, .55); }
+}
+
+.ht_home .ht_search_input {
+    flex: 1 1 auto;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: $ht-on-ink;
+    font-size: 15px;
+
+    &::placeholder { color: $ht-on-ink-3; }
+}
+
+.ht_home .ht_search_key {
+    @include ht-label;
+    flex: 0 0 auto;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid $ht-ink-line-2;
+    color: $ht-on-ink-3;
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: none;
+}
+
+.ht_home .ht_apps_empty {
+    padding: 36px 0;
+    text-align: center;
+
+    .ht_label {
+        @include ht-label;
+        color: $ht-on-ink-3;
+    }
+}
+
+// Fixed track width so tiles stay on a steady grid rather than
+// stretching to fill whatever is left over. Cell 120 / plate 80 gives
+// the 20px inset the search box above compensates for.
+.ht_home .ht_app_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 120px);
+    justify-content: start;
+    row-gap: 22px;
+    column-gap: 8px;
+}
+
+.ht_home .ht_app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 4px 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    &:focus-visible {
+        outline: none;
+        border-radius: $ht-radius-card;
+        box-shadow: $ht-focus-ring;
+    }
+}
+
+// Every tile sits on a solid plate - artwork and monogram alike - so
+// the grid has one geometry instead of a mix of shapes. An icon with a
+// transparent background reads as floating against the ink otherwise.
+.ht_home .ht_app_plate {
+    @include ht-plate(80px, 18px, 26px);
+    box-shadow: 0 10px 28px -10px rgba(0, 0, 0, .55);
+    // The brass edge is permanent, not a hover state. It is what ties a
+    // grid of third-party artwork back to the palette; on hover it only
+    // goes to full strength.
+    border: 2px solid $ht-plate-tile-border;
+    transition: transform .18s ease, box-shadow .18s ease,
+                border-color .18s ease;
+}
+
+// Same material for every plate; .ht_app_plate_art exists only so the
+// artwork case can be targeted if it ever needs to differ. One switch
+// in variables.scss ($ht-plate-material) moves the whole set.
+.ht_home .ht_app_plate,
+.ht_home .ht_app_plate_art {
+    background-color: $ht-plate-bg;
+
+    @if $ht-plate-image {
+        background-image: $ht-plate-image;
+    }
+}
+
+// Glass: a pane, not a plate. The blur is what makes it a pane rather
+// than a grey rectangle - without it the translucency has nothing to
+// act on and the tile just looks washed out. The inner light line along
+// the top edge and the darker one along the bottom are what give it
+// thickness; a flat translucent fill reads as a hole, not as glass.
+@if $ht-plate-glass {
+    .ht_home .ht_app_plate {
+        backdrop-filter: blur($ht-plate-blur);
+        -webkit-backdrop-filter: blur($ht-plate-blur);
+        box-shadow: 0 10px 28px -10px rgba(0, 0, 0, .55),
+                    inset 0 1px 0 rgba(255, 255, 255, .17),
+                    inset 0 -1px 0 rgba(0, 0, 0, .20);
+    }
+
+    // The artwork floats above the pane rather than sitting on it.
+    .ht_home .ht_app_icon {
+        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45));
+    }
+
+    .ht_home .ht_app:hover .ht_app_plate {
+        background-color: rgba(255, 255, 255, .085);
+    }
+}
+
+.ht_home .ht_app_icon {
+    width: $ht-plate-icon;
+    height: $ht-plate-icon;
+    object-fit: contain;
+    border-radius: 12px;
+    transition: transform .18s ease;
+}
+
+.ht_home .ht_app:hover .ht_app_icon {
+    transform: translateY(-1px);
+}
+
+.ht_home .ht_app:hover .ht_app_plate {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 34px -10px rgba(0, 0, 0, .65);
+    border-color: $ht-plate-hover;
+}
+
+// Reserve two lines for every label. A name that wraps ("Finance &
+// Revenue") would otherwise push its own tile down and break the row's
+// baseline against its neighbours.
+.ht_home .ht_app_name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: $ht-on-ink;
+    text-align: center;
+    line-height: 1.3;
+    min-height: 2.6em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

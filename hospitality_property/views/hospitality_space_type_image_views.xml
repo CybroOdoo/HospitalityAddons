@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Reached only through the one2many on the space type form:
+        space_type_id is required and filled from the parent, so opening
+        these standalone would give a record that cannot be saved.
+    -->
+    <record id="view_hospitality_space_type_image_form" model="ir.ui.view">
+        <field name="name">hospitality.space.type.image.view.form</field>
+        <field name="model">hospitality.space.type.image</field>
+        <field name="arch" type="xml">
+            <form string="Room Type Image">
+                <field name="sequence" invisible="1"/>
+                <div class="row">
+                    <div class="col-md-5">
+                        <label for="name" string="Title"/>
+                        <h2>
+                            <field name="name"
+                                   placeholder="e.g. King Bed, Bathroom, Sea View"/>
+                        </h2>
+                    </div>
+                    <div class="col-md-7 text-center">
+                        <field name="image_1920" widget="image"/>
+                    </div>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospitality_space_type_image_kanban" model="ir.ui.view">
+        <field name="name">hospitality.space.type.image.view.kanban</field>
+        <field name="model">hospitality.space.type.image</field>
+        <field name="arch" type="xml">
+            <kanban string="Room Type Images" default_order="sequence">
+                <field name="sequence" widget="handle"/>
+                <templates>
+                    <t t-name="card" class="p-0 border-0">
+                        <div class="card h-100 position-relative">
+                            <!-- The plain "image" widget, NOT
+                                 "x2_many_image": the latter's
+                                 onFileRemove() reads env.parentField,
+                                 which only the x2_many_media_viewer
+                                 field widget ever sets, so removing a
+                                 card throws. preview_image serves the
+                                 256px variant image.mixin stores. -->
+                            <field class="o_hm_gallery_image"
+                                   name="image_1920"
+                                   widget="image"
+                                   options="{'preview_image': 'image_256'}"/>
+                            <div class="p-2 m-0 bg-200"
+                                 t-attf-title="#{record.name.value}">
+                                <field name="name"
+                                       class="small fs-6 text-truncate d-block"/>
+                            </div>
+                            <a t-if="widget.deletable"
+                               type="delete"
+                               role="button"
+                               title="Remove image"
+                               aria-label="Remove image"
+                               class="o_hm_gallery_remove fa fa-trash-o"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+</odoo>

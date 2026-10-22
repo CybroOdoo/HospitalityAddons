@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.routing.instruction — List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_routing_instruction_list" model="ir.ui.view">
+        <field name="name">hospitality.routing.instruction.list</field>
+        <field name="model">hospitality.routing.instruction</field>
+        <field name="arch" type="xml">
+            <list string="Routing Rules"
+                  decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="category_filter"/>
+                <field name="target_folio_id"/>
+                <field name="target_window_id" />
+                <field name="target_window_seq"/>
+                <field name="percent"/>
+                <field name="max_amount" optional="show"/>
+                <field name="active_from" optional="hide"/>
+                <field name="active_to" optional="hide"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.routing.instruction - Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_routing_instruction_form" model="ir.ui.view">
+        <field name="name">hospitality.routing.instruction.form</field>
+        <field name="model">hospitality.routing.instruction</field>
+        <field name="arch" type="xml">
+            <form string="Routing Rule">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Route F&amp;B to Window 2"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Scope">
+                            <field name="reservation_id"
+                                   options="{'no_create': True}"/>
+                            <field name="source_partner_id"
+                                   options="{'no_create': True}"/>
+                            <field name="category_filter"/>
+                            <field name="active_from"/>
+                            <field name="active_to"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Target">
+                            <field name="target_folio_id"
+                                   options="{'no_create': True}"/>
+                            <field name="target_window_id"
+                                   options="{'no_create': True}"/>
+                            <field name="target_window_seq"/>
+                        </group>
+                    </group>
+
+                    <group string="Split">
+                        <group>
+                            <field name="percent"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="max_amount"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.routing.instruction - Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_routing_instruction_search" model="ir.ui.view">
+        <field name="name">hospitality.routing.instruction.search</field>
+        <field name="model">hospitality.routing.instruction</field>
+        <field name="arch" type="xml">
+            <search string="Search Routing Rules">
+                <field name="name"/>
+                <field name="reservation_id"/>
+                <field name="category_filter"/>
+                <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                <filter name="property_level" string="Property-level"
+                        domain="[('reservation_id','=',False)]"/>
+                <filter name="group_category" string="Category"
+                        context="{'group_by': 'category_filter'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.routing.instruction - Window Action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_routing_instruction" model="ir.actions.act_window">
+        <field name="name">Routing Rules</field>
+        <field name="res_model">hospitality.routing.instruction</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_routing_instruction_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No routing rules yet. Create one to auto-route charges to
+                specific windows or folios.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Menu — Configuration > Folio > Routing Rules
+    ═══════════════════════════════════════════════════════════════ -->
+    <menuitem
+        id="menu_hospitality_folio_config"
+        name="Folio"
+        parent="hospitality_base.menu_hospitality_config"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_hospitality_routing_rules"
+        name="Routing Rules"
+        parent="menu_hospitality_folio_config"
+        action="action_routing_instruction"
+        sequence="10"/>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Extend hospitality.reservation form — add Routing tab
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_reservation_routing_tab" model="ir.ui.view">
+        <field name="name">hospitality.reservation.routing.tab</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="inherit_id" ref="hospitality_reservation.view_reservation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Routing Rules" name="routing_rules">
+                    <field name="routing_instruction_ids"
+                           context="{'default_reservation_id': id}"
+                           widget="one2many">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="category_filter"/>
+                            <field name="target_folio_id"
+                                   options="{'no_create': True}"/>
+                            <field name="target_window_seq"/>
+                            <field name="percent"/>
+                            <field name="max_amount"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

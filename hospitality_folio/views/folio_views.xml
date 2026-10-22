@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.folio — Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_folio_form" model="ir.ui.view">
+        <field name="name">hospitality.folio.form</field>
+        <field name="model">hospitality.folio</field>
+        <field name="arch" type="xml">
+            <form string="Guest Folio">
+                <header>
+                    <button name="action_open_post_charge_wizard"
+                            string="Post Charge"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ('open',)"/>
+                    <button name="action_open_post_payment_wizard"
+                            string="Post Payment"
+                            type="object"
+                            invisible="state not in ('open',)"/>
+                    <button name="action_open_folio"
+                            string="Open"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ('draft',)"/>
+                    <button name="action_settle"
+                            string="Settle &amp; Close"
+                            type="object"
+                            class="oe_highlight"
+                            confirm="Settle this folio? This will close it and cannot be undone."
+                            invisible="state != 'open'"/>
+                    <button name="action_dispute"
+                            string="Place in Dispute"
+                            type="object"
+                            invisible="state != 'open'"/>
+                    <button name="action_resolve_dispute"
+                            string="Resolve Dispute"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'in_dispute'"/>
+                    <button name="action_write_off"
+                            string="Write Off"
+                            type="object"
+                            confirm="Write off the remaining balance? This cannot be undone."
+                            groups="hospitality_folio.group_folio_supervisor"
+                            invisible="state not in ('open', 'in_dispute')"/>
+                    <button name="action_transfer_to_ar"
+                            string="Transfer to AR"
+                            type="object"
+                            groups="hospitality_folio.group_folio_supervisor"
+                            invisible="state != 'open'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="transferred_ar"
+                           invisible="state != 'transferred_ar'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="open,closed"
+                           invisible="state in ('closed', 'written_off', 'transferred_ar')"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="closed"
+                           invisible="state != 'closed'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="written_off"
+                           invisible="state != 'written_off'"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_reservation"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-calendar"
+                                invisible="not reservation_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Reservation</span>
+                            </div>
+                        </button>
+                        <button name="action_open_invoices"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o"
+                                groups="account.group_account_manager,account.group_account_invoice,account.group_account_readonly,base.group_portal">
+                            <field name="invoice_count"
+                                   widget="statinfo"
+                                   string="Invoices"/>
+                        </button>
+                        <button name="action_view_ar_account"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-university"
+                                invisible="state != 'transferred_ar'">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">AR Account</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <field name="paymaster"
+                               widget="boolean_toggle"
+                               options="{'terminology': 'paymaster'}"/>
+                    </div>
+                    <group>
+                        <group string="Identity">
+                            <field name="reservation_id"
+                                   options="{'no_create': True}"/>
+                            <field name="property_id"
+                                   options="{'no_create': True}"/>
+                            <field name="partner_id"
+                                   options="{'no_create': True}"/>
+                            <field name="currency_id"
+                                   groups="base.group_multi_currency"/>
+                            <field name="parent_folio_id"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group string="Dates &amp; Windows">
+                            <field name="opening_date" readonly="1"/>
+                            <field name="closing_date"
+                                   readonly="state in ('closed', 'written_off', 'transferred_ar')"/>
+                            <field name="window_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Totals">
+                            <field name="total_charges"/>
+                            <field name="total_taxes"/>
+                            <field name="total_payments"/>
+                            <field name="balance"
+                                   class="fw-bold"
+                                   decoration-danger="balance > 0"
+                                   decoration-success="balance == 0"/>
+                        </group>
+                    </group>
+                    <notebook invisible="id == 0">
+                        <page string="Window 1" name="window_1_lines">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 1)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 1}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Window 2" name="window_2_lines"
+                              invisible="window_count &lt; 2">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 2)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 2}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Window 3" name="window_3_lines"
+                              invisible="window_count &lt; 3">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 3)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 3}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Window 4" name="window_4_lines"
+                              invisible="window_count &lt; 4">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 4)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 4}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Window 5" name="window_5_lines"
+                              invisible="window_count &lt; 5">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 5)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 5}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Window 6" name="window_6_lines"
+                              invisible="window_count &lt; 6">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 6)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 6}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Window 7" name="window_7_lines"
+                              invisible="window_count &lt; 7">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 7)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 7}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Window 8" name="window_8_lines"
+                              invisible="window_count &lt; 8">
+                            <field name="line_ids"
+                                   domain="[('window_id.sequence', '=', 8)]"
+                                   readonly="state in ('closed','written_off','transferred_ar')"
+                                   context="{'default_folio_id': id, 'default_window_seq': 8}">
+                                <list>
+                                    <field name="post_date"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="description"/>
+                                    <field name="qty"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="tax_amount"/>
+                                    <field name="amount_total" string="Total"/>
+                                    <field name="reference"/>
+                                    <field name="is_void"
+                                           widget="boolean"
+                                           decoration-danger="is_void"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="All Windows" name="all_windows">
+                            <field name="window_ids"
+                                   readonly="state in ('closed', 'written_off', 'transferred_ar')">
+                                <list editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="label"/>
+                                    <field name="partner_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Deposits" name="deposits">
+                            <field name="deposit_ids"
+                                   readonly="state in ('closed', 'written_off', 'transferred_ar')">
+                                <list>
+                                    <field name="posted_at"/>
+                                    <field name="partner_id"/>
+                                    <field name="amount"/>
+                                    <field name="applied_amount"/>
+                                    <field name="refunded_amount"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_apply_to_folio"
+                                            type="object"
+                                            string="Apply"
+                                            icon="fa-check"
+                                            invisible="state in ('applied', 'refunded')"/>
+                                    <button name="action_refund"
+                                            type="object"
+                                            string="Refund"
+                                            icon="fa-undo"
+                                            invisible="state == 'refunded'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Allowances" name="allowances"
+                              groups="hospitality_folio.group_folio_supervisor">
+                            <field name="allowance_ids"
+                                   readonly="state in ('closed', 'written_off', 'transferred_ar')">
+                                <list>
+                                    <field name="approved_at"/>
+                                    <field name="approved_by"/>
+                                    <field name="folio_line_id"
+                                           domain="[('folio_id', '=', parent.id)]"/>
+                                    <field name="transaction_code_id"/>
+                                    <field name="amount"/>
+                                    <field name="reason"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Routing" name="routing">
+                            <field name="window_ids" readonly="1">
+                                <list>
+                                    <field name="sequence"/>
+                                    <field name="label"/>
+                                    <field name="partner_id"/>
+                                    <field name="routing_rule_ids" widget="many2many_tags"/>
+                                </list>
+                            </field>
+                        </page>
+<!--                        Hide the audit tab -->
+                        <page string="Audit" name="audit"
+                              groups="account.group_account_manager,account.group_account_invoice,account.group_account_readonly,base.group_portal">
+                            <field name="invoice_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="move_type"/>
+                                    <field name="invoice_date"/>
+                                    <field name="amount_total"/>
+                                    <field name="payment_state" widget="badge"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.folio — List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_folio_list" model="ir.ui.view">
+        <field name="name">hospitality.folio.list</field>
+        <field name="model">hospitality.folio</field>
+        <field name="arch" type="xml">
+            <list string="Folios" decoration-muted="state in ('closed','written_off')">
+                <field name="name"/>
+                <field name="property_id" optional="show"/>
+                <field name="reservation_id" optional="show"/>
+                <field name="partner_id"/>
+                <field name="opening_date"/>
+                <field name="closing_date" optional="hide"/>
+                <field name="total_charges" optional="show"/>
+                <field name="total_payments" optional="show"/>
+                <field name="balance"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'closed'"
+                       decoration-warning="state == 'in_dispute'"
+                       decoration-danger="state == 'transferred_ar'"
+                       decoration-info="state == 'open'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.folio — Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_folio_search" model="ir.ui.view">
+        <field name="name">hospitality.folio.search</field>
+        <field name="model">hospitality.folio</field>
+        <field name="arch" type="xml">
+            <search string="Search Folios">
+                <field name="name" string="Folio #"/>
+                <field name="partner_id"/>
+                <field name="reservation_id"/>
+                <field name="property_id"/>
+                <filter name="open" string="Open" domain="[('state','=','open')]"/>
+                <filter name="in_dispute" string="In Dispute"
+                        domain="[('state','=','in_dispute')]"/>
+                <filter name="closed" string="Closed" domain="[('state','=','closed')]"/>
+                <filter name="paymaster" string="Paymaster" domain="[('paymaster','=',True)]"/>
+                <separator/>
+                <filter name="group_property" string="Property"
+                        context="{'group_by': 'property_id'}"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.folio - Action Window
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_hospitality_folio" model="ir.actions.act_window">
+        <field name="name">Folios</field>
+        <field name="res_model">hospitality.folio</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hospitality_folio_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No folios yet. Create one or check in a reservation.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Action Menu Entries (moved from crowded header)
+    ═══════════════════════════════════════════════════════════════ -->
+
+    <record id="server_action_hospitality_folio_transfer_line" model="ir.actions.server">
+        <field name="name">Transfer Line</field>
+        <field name="model_id" ref="model_hospitality_folio"/>
+        <field name="binding_model_id" ref="model_hospitality_folio"/>
+        <field name="binding_view_types">form</field>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+records.ensure_one()
+action = records.action_open_transfer_line_wizard()
+        ]]></field>
+    </record>
+
+    <record id="server_action_hospitality_folio_print_folio" model="ir.actions.server">
+        <field name="name">Print Folio</field>
+        <field name="model_id" ref="model_hospitality_folio"/>
+        <field name="binding_model_id" ref="model_hospitality_folio"/>
+        <field name="binding_view_types">form</field>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+records.ensure_one()
+action = records.action_print_folio_tape()
+        ]]></field>
+    </record>
+
+    <record id="server_action_hospitality_folio_email_folio" model="ir.actions.server">
+        <field name="name">Email Folio</field>
+        <field name="model_id" ref="model_hospitality_folio"/>
+        <field name="binding_model_id" ref="model_hospitality_folio"/>
+        <field name="binding_view_types">form</field>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+records.ensure_one()
+action = records.action_email_folio()
+        ]]></field>
+    </record>
+
+    <record id="server_action_hospitality_folio_open_invoice" model="ir.actions.server">
+        <field name="name">Open Invoice</field>
+        <field name="model_id" ref="model_hospitality_folio"/>
+        <field name="binding_model_id" ref="model_hospitality_folio"/>
+        <field name="binding_view_types">form</field>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+records.ensure_one()
+action = records.action_open_invoices()
+        ]]></field>
+    </record>
+
+    <menuitem
+        id="menu_hospitality_folio_temp"
+        name="Folios"
+        action="action_hospitality_folio"
+        parent="hospitality_base.menu_hm_finance"
+        sequence="50"/>
+
+</odoo>

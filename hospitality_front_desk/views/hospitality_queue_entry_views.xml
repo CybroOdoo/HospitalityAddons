@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for arrival queue entries. -->
+    <record id="view_queue_entry_list" model="ir.ui.view">
+        <field name="name">hospitality.queue.entry.list</field>
+        <field name="model">hospitality.queue.entry</field>
+        <field name="arch" type="xml">
+            <list string="Arrival Queue" decoration-success="state == 'ready'"
+                  decoration-muted="state in ('served', 'cancelled')">
+                <field name="reservation_id"/>
+                <field name="queued_at"/>
+                <field name="ready_at"/>
+                <field name="called_by"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'waiting'"
+                       decoration-success="state == 'ready'"/>
+                <button name="action_mark_ready" string="Mark Ready" type="object"
+                        invisible="state != 'waiting'" class="btn-link"/>
+                <button name="action_mark_served" string="Mark Served" type="object"
+                        invisible="state != 'ready'" class="btn-link"/>
+                <button name="action_cancel" string="Cancel" type="object"
+                        invisible="state not in ('waiting', 'ready')" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for managing arrival queue entries. -->
+    <record id="view_queue_entry_form" model="ir.ui.view">
+        <field name="name">hospitality.queue.entry.form</field>
+        <field name="model">hospitality.queue.entry</field>
+        <field name="arch" type="xml">
+            <form string="Queue Entry">
+                <header>
+                    <button name="action_mark_ready" string="Mark Ready" type="object"
+                            invisible="state != 'waiting'" class="btn-primary"/>
+                    <button name="action_mark_served" string="Mark Served" type="object"
+                            invisible="state != 'ready'" class="btn-primary"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state not in ('waiting', 'ready')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="waiting,ready,served"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="reservation_id"/>
+                        <field name="queued_at"/>
+                        <field name="ready_at" readonly="1"/>
+                        <field name="called_by" readonly="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Window action to open the Arrival Queue views. -->
+    <record id="action_queue_entry" model="ir.actions.act_window">
+        <field name="name">Arrival Queue</field>
+        <field name="res_model">hospitality.queue.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_waiting': 1}</field>
+    </record>
+
+    <!-- Search view with filters for arrival queue entries. -->
+    <record id="view_queue_entry_search" model="ir.ui.view">
+        <field name="name">hospitality.queue.entry.search</field>
+        <field name="model">hospitality.queue.entry</field>
+        <field name="arch" type="xml">
+            <search string="Search Queue Entries">
+                <field name="reservation_id"/>
+                <filter name="waiting" string="Waiting"
+                        domain="[('state', '=', 'waiting')]"/>
+                <filter name="ready" string="Ready" domain="[('state', '=', 'ready')]"/>
+                <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

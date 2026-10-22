@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="group_front_desk_agent" model="res.groups">
+        <field name="name">Front Desk Agent</field>
+        <field name="comment">Run wizards, print registration cards.</field>
+    </record>
+
+    <record id="group_front_desk_supervisor" model="res.groups">
+        <field name="name">Front Desk Supervisor</field>
+        <field name="implied_ids" eval="[(4, ref('group_front_desk_agent'))]"/>
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="comment">Override room move, force checkout with balance, free upgrades.</field>
+    </record>
+
+</odoo>

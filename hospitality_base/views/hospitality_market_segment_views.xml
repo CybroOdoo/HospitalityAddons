@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         MARKET SEGMENT — List View
+    ================================================================ -->
+    <record id="view_hospitality_market_segment_list" model="ir.ui.view">
+        <field name="name">hospitality.market.segment.list</field>
+        <field name="model">hospitality.market.segment</field>
+        <field name="arch" type="xml">
+            <list string="Market Segments">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         MARKET SEGMENT — Form View
+    ================================================================ -->
+    <record id="view_hospitality_market_segment_form" model="ir.ui.view">
+        <field name="name">hospitality.market.segment.form</field>
+        <field name="model">hospitality.market.segment</field>
+        <field name="arch" type="xml">
+            <form string="Market Segment">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Segment Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="color"/>
+                        </group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         MARKET SEGMENT — Search View
+    ================================================================ -->
+    <record id="view_hospitality_market_segment_search" model="ir.ui.view">
+        <field name="name">hospitality.market.segment.search</field>
+        <field name="model">hospitality.market.segment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="property_id"/>
+                <filter name="active"
+                        string="Active"
+                        domain="[('active', '=', True)]"/>
+                <filter name="archived"
+                        string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <filter name="global_segment"
+                        string="Global"
+                        domain="[('property_id', '=', False)]"/>
+                <group>
+                    <filter name="group_property"
+                            string="Property"
+                            context="{'group_by': 'property_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         MARKET SEGMENT — Action
+    ================================================================ -->
+    <record id="action_hospitality_market_segment" model="ir.actions.act_window">
+        <field name="name">Market Segments</field>
+        <field name="res_model">hospitality.market.segment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hospitality_market_segment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first market segment!
+            </p>
+            <p>Market segments classify guests for reporting and rate plans.</p>
+        </field>
+    </record>
+
+</odoo>

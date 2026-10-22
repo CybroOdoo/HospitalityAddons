@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hospitality_kpi_daily_user,hospitality.kpi.daily.user,model_hospitality_kpi_daily,hospitality_reporting.group_reporting_user,1,0,0,0
+access_hospitality_kpi_daily_manager,hospitality.kpi.daily.manager,model_hospitality_kpi_daily,hospitality_reporting.group_reporting_manager,1,1,1,1
+access_hospitality_kpi_daily_system,hospitality.kpi.daily.system,model_hospitality_kpi_daily,base.group_system,1,1,1,1
+
+access_reservation_reporting_user,hospitality.reservation.reporting.user,hospitality_reservation.model_hospitality_reservation,hospitality_reporting.group_reporting_user,1,0,0,0
+access_reservation_reporting_manager,hospitality.reservation.reporting.manager,hospitality_reservation.model_hospitality_reservation,hospitality_reporting.group_reporting_manager,1,0,0,0

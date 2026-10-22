@@ -1,0 +1,79 @@
+// RATE-07 — Rate Calendar custom view
+
+.o_rate_calendar {
+    background: #fafafa;
+
+    .o_rate_calendar_toolbar {
+        z-index: 2;
+    }
+
+    .o_rate_calendar_grid_wrap {
+        position: relative;
+    }
+
+    .o_rate_calendar_grid {
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 100%;
+        font-size: 13px;
+
+        th, td {
+            min-width: 80px;
+            padding: 4px 6px;
+            vertical-align: middle;
+        }
+
+        .o_rate_calendar_corner,
+        .o_rate_calendar_row_header {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background-color: #f4f6f8;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 160px;
+            text-align: left;
+
+            &:hover {
+                background-color: #e8edf3;
+            }
+        }
+
+        .o_rate_calendar_date_header {
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 4px;
+
+            &.o_rate_calendar_weekend {
+                background-color: #fff3cd;
+            }
+
+            &:hover {
+                background-color: #e9ecef;
+            }
+        }
+
+        .o_rate_calendar_cell {
+            cursor: pointer;
+            transition: outline 0.1s;
+
+            &:hover {
+                outline: 2px solid #5d8aff;
+                outline-offset: -2px;
+            }
+        }
+
+        .o_rate_calendar_input {
+            width: 100%;
+            min-width: 70px;
+            padding: 0 4px;
+            height: 24px;
+            font-size: 13px;
+            text-align: right;
+        }
+    }
+
+    .o_rate_calendar_modal {
+        z-index: 1055;
+    }
+}

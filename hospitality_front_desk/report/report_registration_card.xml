@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Registration Card report action
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="action_report_registration_card" model="ir.actions.report">
+        <field name="name">Registration Card</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hospitality_front_desk.report_registration_card</field>
+        <field name="report_file">hospitality_front_desk.report_registration_card</field>
+        <field name="print_report_name">'Registration Card - %s' % (object.display_name)</field>
+        <field name="binding_model_id" ref="hospitality_reservation.model_hospitality_reservation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_registration_card">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page o_fd_reg_card">
+                        <div class="row o_fd_reg_card_header">
+                            <div class="col-9">
+                                <h2 t-out="o.property_id.name or ''"/>
+                            </div>
+                        </div>
+
+                        <h3 class="text-center">Registration Card</h3>
+
+                        <!-- ── Guest details ───────────────────────────── -->
+                        <div class="o_fd_reg_card_section">
+                            <h4>Guest Details</h4>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Name</strong></td>
+                                    <td t-out="o.partner_id.name or ''"/>
+                                    <td><strong>Nationality</strong></td>
+                                    <td t-out="o.partner_id.nationality_id.name if o.partner_id.nationality_id else ''"/>
+                                </tr>
+                                <tr>
+                                    <td><strong>Gender</strong></td>
+                                    <td t-out="o.partner_id.gender or ''"/>
+                                    <td><strong>Date of Birth</strong></td>
+                                    <td t-out="o.partner_id.birth_date or ''"/>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone</strong></td>
+                                    <td t-out="o.partner_id.phone or ''"/>
+                                    <td><strong>Email</strong></td>
+                                    <td t-out="o.partner_id.email or ''"/>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- ── Reservation block ───────────────────────── -->
+                        <div class="o_fd_reg_card_section">
+                            <h4>Reservation Details</h4>
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Arrival</strong></td>
+                                    <td t-out="o.arrival or ''"/>
+                                    <td><strong>Departure</strong></td>
+                                    <td t-out="o.departure or ''"/>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nights</strong></td>
+                                    <td>
+                                        <t t-if="o.arrival and o.departure">
+                                            <t t-out="(o.departure - o.arrival).days"/>
+                                        </t>
+                                    </td>
+                                    <td><strong>Room</strong></td>
+                                    <td t-out="o.space_id.display_name if o.space_id else ''"/>
+                                </tr>
+                                <tr>
+                                    <td><strong>Rate</strong></td>
+                                    <td colspan="3"
+                                        t-out="o.rate_code_id.display_name if o.rate_code_id else ''"/>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- ── Terms ───────────────────────────────────── -->
+                        <div class="o_fd_reg_card_section o_fd_reg_card_terms">
+                            <p>
+                                I confirm that the information provided above is accurate and I
+                                agree to settle all charges incurred during my stay in accordance
+                                with the property's terms and conditions, including its policies
+                                on cancellation, damages, and incidental charges.
+                            </p>
+                        </div>
+
+                        <!-- ── Signature box ───────────────────────────── -->
+                        <div class="row o_fd_reg_card_signature">
+                            <div class="col-6">
+                                <div style="border-bottom: 1px solid #000; height: 50px;"/>
+                                <p>Guest Signature</p>
+                            </div>
+                            <div class="col-6">
+                                <div style="border-bottom: 1px solid #000; height: 50px;"/>
+                                <p>Date</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

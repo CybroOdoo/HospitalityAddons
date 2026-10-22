@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hospitality_rate.RestrictionsMatrix">
+        <div class="o_restrictions_matrix o_action h-100 d-flex flex-column"
+             t-on-mouseup="onGridMouseUp">
+
+            <!-- ── Toolbar ─────────────────────────────────────────────── -->
+            <div class="o_rm_toolbar d-flex flex-wrap align-items-end gap-3 p-3 border-bottom bg-white">
+                <div>
+                    <label class="form-label mb-0 small text-muted">Rate Code</label>
+                    <select class="form-select form-select-sm o_rm_rate_code_select"
+                            t-on-change="onRateCodeChange">
+                        <t t-foreach="state.rateCodes" t-as="rc" t-key="rc.id">
+                            <option t-att-value="rc.id"
+                                    t-att-selected="rc.id === state.rateCodeId">
+                                <t t-esc="rc.code + ' — ' + rc.name"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label mb-0 small text-muted">Start Date</label>
+                    <input type="date" class="form-control form-control-sm o_rm_start_date"
+                           t-att-value="state.startDate"
+                           t-on-change="onStartDateChange"/>
+                </div>
+                <div>
+                    <label class="form-label mb-0 small text-muted">Window</label>
+                    <select class="form-select form-select-sm o_rm_window_select"
+                            t-on-change="onWindowChange">
+                        <t t-foreach="[7, 14, 21, 28]" t-as="w" t-key="w">
+                            <option t-att-value="w"
+                                    t-att-selected="w === state.windowDays">
+                                <t t-esc="w + ' days'"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+                <!-- Legend -->
+                <div class="ms-auto d-flex align-items-center gap-2 small">
+                    <span class="o_rm_legend o_rm_closed">Closed</span>
+                    <span class="o_rm_legend o_rm_cta">CTA</span>
+                    <span class="o_rm_legend o_rm_ctd">CTD</span>
+                    <span class="o_rm_legend o_rm_stay">MLOS</span>
+                    <span class="o_rm_legend o_rm_open">Open</span>
+                </div>
+            </div>
+
+            <!-- ── Grid ────────────────────────────────────────────────── -->
+            <div class="o_rm_grid_wrap d-flex flex-grow-1 overflow-auto">
+
+                <!-- Main grid -->
+                <div class="o_rm_grid_container flex-grow-1 overflow-auto p-2">
+                    <t t-if="state.loading">
+                        <div class="text-center text-muted p-5">
+                            <i class="fa fa-spinner fa-spin fa-2x"/>
+                        </div>
+                    </t>
+                    <t t-elif="!state.rateCodeId">
+                        <div class="text-center text-muted p-5">No rate code available.</div>
+                    </t>
+                    <t t-elif="!state.spaceTypes.length">
+                        <div class="text-center text-muted p-5">No space types found for this property.</div>
+                    </t>
+                    <t t-else="">
+                        <table class="o_rm_table table table-bordered table-sm mb-0"
+                               style="user-select: none;">
+                            <thead>
+                                <tr>
+                                    <th class="o_rm_corner sticky-top sticky-start bg-light small">
+                                        Space Type / Date
+                                    </th>
+                                    <t t-foreach="state.dates" t-as="ds" t-key="ds">
+                                        <th class="o_rm_date_header text-center sticky-top bg-light small"
+                                            t-att-class="isWeekend(ds) ? 'o_rm_weekend' : ''">
+                                            <span style="white-space: pre-line;">
+                                                <t t-esc="dateLabel(ds)"/>
+                                            </span>
+                                        </th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.spaceTypes" t-as="st" t-key="st.id">
+                                    <tr>
+                                        <th class="o_rm_row_header sticky-start bg-light small fw-semibold">
+                                            <t t-esc="st.name"/>
+                                        </th>
+                                        <t t-foreach="state.dates" t-as="ds" t-key="ds">
+                                            <td class="o_rm_cell"
+                                                t-att-class="cellColorClass(st.id, ds) + (isSelected(st_index, ds_index) ? ' o_rm_selected' : '')"
+                                                t-att-title="cellTitle(st.id, ds)"
+                                                t-on-click="() => this.onCellClick(st.id, st.name, ds)"
+                                                t-on-mousedown="() => this.onCellMouseDown(st_index, ds_index)"
+                                                t-on-mouseenter="() => this.onCellMouseEnter(st_index, ds_index)"
+                                            >
+                                                <span class="o_rm_cell_value">
+                                                    <t t-esc="cellValue(st.id, ds)"/>
+                                                </span>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+                <t t-if="state.panel.open">
+                    <div class="o_rm_panel border-start p-3 bg-white o_rm_panel_slide">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 fw-semibold">
+                                <t t-esc="state.panel.spaceTypeName"/>
+                                ·
+                                <t t-esc="state.panel.dateStr"/>
+                            </h6>
+                            <button class="btn-close btn-sm o_rm_close_panel"
+                                    t-on-click="onClosePanel"/>
+                        </div>
+                        <div class="mb-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input o_rm_panel_closed"
+                                       id="rmPanelClosed" t-model="state.panel.closed"/>
+                                <label class="form-check-label" for="rmPanelClosed">Closed</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input o_rm_panel_cta"
+                                       id="rmPanelCTA" t-model="state.panel.cta"/>
+                                <label class="form-check-label" for="rmPanelCTA">Closed to Arrival</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input o_rm_panel_ctd"
+                                       id="rmPanelCTD" t-model="state.panel.ctd"/>
+                                <label class="form-check-label" for="rmPanelCTD">Closed to Departure</label>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small mb-0">Min Stay (nights)</label>
+                            <input type="number" min="0" class="form-control form-control-sm o_rm_panel_min_stay"
+                                   t-model.number="state.panel.min_stay"/>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small mb-0">Max Stay (nights)</label>
+                            <input type="number" min="0" class="form-control form-control-sm o_rm_panel_max_stay"
+                                   t-model.number="state.panel.max_stay"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small mb-0">No-Show Charge %</label>
+                            <input type="number" min="0" max="100" step="1"
+                                   class="form-control form-control-sm o_rm_panel_noshow"
+                                   t-model.number="state.panel.no_show_charge_pct"/>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-sm o_rm_panel_save"
+                                    t-att-disabled="state.panel.saving"
+                                    t-on-click="onSavePanel">
+                                <t t-if="state.panel.saving">
+                                    <i class="fa fa-spinner fa-spin me-1"/>
+                                </t>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </t>
+            </div>
+
+            <!-- ── Apply Restriction Wizard ────────────────────────────── -->
+            <t t-if="state.wizard.open">
+                <div class="modal fade show d-block o_rm_wizard_modal"
+                     tabindex="-1" role="dialog"
+                     style="background-color: rgba(0,0,0,0.4);">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Apply Restriction to Selection</h5>
+                                <button type="button" class="btn-close"
+                                        t-on-click="onCloseWizard"/>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input o_rm_wiz_closed"
+                                                   id="wizClosed" t-model="state.wizard.closed"/>
+                                            <label class="form-check-label" for="wizClosed">Closed</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input o_rm_wiz_cta"
+                                                   id="wizCTA" t-model="state.wizard.cta"/>
+                                            <label class="form-check-label" for="wizCTA">Closed to Arrival</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input o_rm_wiz_ctd"
+                                                   id="wizCTD" t-model="state.wizard.ctd"/>
+                                            <label class="form-check-label" for="wizCTD">Closed to Departure</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small mb-0">Min Stay</label>
+                                        <input type="number" min="0"
+                                               class="form-control form-control-sm o_rm_wiz_min_stay"
+                                               t-model.number="state.wizard.min_stay"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small mb-0">Max Stay</label>
+                                        <input type="number" min="0"
+                                               class="form-control form-control-sm o_rm_wiz_max_stay"
+                                               t-model.number="state.wizard.max_stay"/>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small mb-0">No-Show Charge %</label>
+                                        <input type="number" min="0" max="100" step="1"
+                                               class="form-control form-control-sm o_rm_wiz_noshow"
+                                               t-model.number="state.wizard.no_show_charge_pct"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary btn-sm o_rm_wiz_cancel"
+                                        t-on-click="onCloseWizard">Cancel</button>
+                                <button class="btn btn-danger btn-sm o_rm_wiz_set_closed"
+                                        t-att-disabled="state.wizard.saving"
+                                        t-on-click="onSetClosedWizard">
+                                    Set Closed
+                                </button>
+                                <button class="btn btn-primary btn-sm o_rm_wiz_apply"
+                                        t-att-disabled="state.wizard.saving"
+                                        t-on-click="onApplyWizard">
+                                    <t t-if="state.wizard.saving">
+                                        <i class="fa fa-spinner fa-spin me-1"/>
+                                    </t>
+                                    Apply Restriction
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

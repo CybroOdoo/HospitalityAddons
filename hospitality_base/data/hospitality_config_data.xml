@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================
+             Market Segments (6)
+        ============================================================ -->
+        <record id="market_segment_corporate" model="hospitality.market.segment">
+            <field name="name">Corporate</field>
+            <field name="code">CORP</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="market_segment_leisure" model="hospitality.market.segment">
+            <field name="name">Leisure</field>
+            <field name="code">LEIS</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="market_segment_group" model="hospitality.market.segment">
+            <field name="name">Group</field>
+            <field name="code">GRP</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="market_segment_walkin" model="hospitality.market.segment">
+            <field name="name">Walk-In</field>
+            <field name="code">WALK</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="market_segment_complimentary" model="hospitality.market.segment">
+            <field name="name">Complimentary</field>
+            <field name="code">COMP</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="market_segment_house_use" model="hospitality.market.segment">
+            <field name="name">House Use</field>
+            <field name="code">HOUSE</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <!-- ============================================================
+             Source Codes (5)
+        ============================================================ -->
+        <record id="source_code_direct" model="hospitality.source.code">
+            <field name="name">Direct</field>
+            <field name="code">DIR</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="source_code_phone" model="hospitality.source.code">
+            <field name="name">Phone</field>
+            <field name="code">PHONE</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="source_code_email" model="hospitality.source.code">
+            <field name="name">Email</field>
+            <field name="code">EMAIL</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="source_code_booking_engine" model="hospitality.source.code">
+            <field name="name">Booking Engine</field>
+            <field name="code">BKENG</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="source_code_walkin" model="hospitality.source.code">
+            <field name="name">Walk-In</field>
+            <field name="code">WALK</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- ============================================================
+             Transaction Codes (30)
+             account_id left null — admin maps to CoA at go-live
+        ============================================================ -->
+
+        <!-- Room Revenue -->
+        <record id="txn_room" model="hospitality.transaction.code">
+            <field name="name">Room Revenue</field>
+            <field name="code">ROOM</field>
+            <field name="category">room</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Tax -->
+        <record id="txn_tax_vat" model="hospitality.transaction.code">
+            <field name="name">VAT</field>
+            <field name="code">TAX_VAT</field>
+            <field name="category">tax</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_tax_city" model="hospitality.transaction.code">
+            <field name="name">City Tax</field>
+            <field name="code">TAX_CITY</field>
+            <field name="category">tax</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- F&B -->
+        <record id="txn_food" model="hospitality.transaction.code">
+            <field name="name">Food</field>
+            <field name="code">FOOD</field>
+            <field name="category">fnb</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_bev" model="hospitality.transaction.code">
+            <field name="name">Beverage</field>
+            <field name="code">BEV</field>
+            <field name="category">fnb</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_minibar" model="hospitality.transaction.code">
+            <field name="name">Minibar</field>
+            <field name="code">MINIBAR</field>
+            <field name="category">fnb</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_rm_svc" model="hospitality.transaction.code">
+            <field name="name">Room Service</field>
+            <field name="code">RM_SVC</field>
+            <field name="category">fnb</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Telephone -->
+        <record id="txn_tel_loc" model="hospitality.transaction.code">
+            <field name="name">Local Calls</field>
+            <field name="code">TEL_LOC</field>
+            <field name="category">telephone</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_tel_ld" model="hospitality.transaction.code">
+            <field name="name">Long Distance Calls</field>
+            <field name="code">TEL_LD</field>
+            <field name="category">telephone</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_tel_intl" model="hospitality.transaction.code">
+            <field name="name">International Calls</field>
+            <field name="code">TEL_INTL</field>
+            <field name="category">telephone</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Laundry -->
+        <record id="txn_laundry" model="hospitality.transaction.code">
+            <field name="name">Laundry</field>
+            <field name="code">LAUNDRY</field>
+            <field name="category">laundry</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Other Revenue -->
+        <record id="txn_spa" model="hospitality.transaction.code">
+            <field name="name">Spa</field>
+            <field name="code">SPA</field>
+            <field name="category">other_revenue</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_activity" model="hospitality.transaction.code">
+            <field name="name">Activity</field>
+            <field name="code">ACTIVITY</field>
+            <field name="category">other_revenue</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_transfer" model="hospitality.transaction.code">
+            <field name="name">Transfer</field>
+            <field name="code">TRANSFER</field>
+            <field name="category">other_revenue</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_parking" model="hospitality.transaction.code">
+            <field name="name">Parking</field>
+            <field name="code">PARKING</field>
+            <field name="category">other_revenue</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_resort_fee" model="hospitality.transaction.code">
+            <field name="name">Resort Fee</field>
+            <field name="code">RESORT_FEE</field>
+            <field name="category">other_revenue</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_cleaning" model="hospitality.transaction.code">
+            <field name="name">Cleaning Fee</field>
+            <field name="code">CLEANING</field>
+            <field name="category">other_revenue</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_damage" model="hospitality.transaction.code">
+            <field name="name">Damage Fee</field>
+            <field name="code">DAMAGE</field>
+            <field name="category">other_revenue</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Deposit -->
+        <record id="txn_deposit_in" model="hospitality.transaction.code">
+            <field name="name">Deposit Received</field>
+            <field name="code">DEPOSIT_IN</field>
+            <field name="category">deposit</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_deposit_ref" model="hospitality.transaction.code">
+            <field name="name">Deposit Refund</field>
+            <field name="code">DEPOSIT_REF</field>
+            <field name="category">deposit</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Payment -->
+        <record id="txn_pmt_cash" model="hospitality.transaction.code">
+            <field name="name">Cash Payment</field>
+            <field name="code">PMT_CASH</field>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_pmt_card" model="hospitality.transaction.code">
+            <field name="name">Card Payment</field>
+            <field name="code">PMT_CARD</field>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_pmt_ar" model="hospitality.transaction.code">
+            <field name="name">AR Transfer</field>
+            <field name="code">PMT_AR</field>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_pmt_bank" model="hospitality.transaction.code">
+            <field name="name">Bank Transfer</field>
+            <field name="code">PMT_BANK</field>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Allowance -->
+        <record id="txn_allowance" model="hospitality.transaction.code">
+            <field name="name">Allowance</field>
+            <field name="code">ALLOWANCE</field>
+            <field name="category">allowance</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_comp" model="hospitality.transaction.code">
+            <field name="name">Complimentary</field>
+            <field name="code">COMP</field>
+            <field name="category">allowance</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+        <record id="txn_write_off" model="hospitality.transaction.code">
+            <field name="name">Write Off</field>
+            <field name="code">WRITE_OFF</field>
+            <field name="category">allowance</field>
+            <field name="sign">credit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Paid Out -->
+        <record id="txn_paid_out" model="hospitality.transaction.code">
+            <field name="name">Paid Out</field>
+            <field name="code">PAID_OUT</field>
+            <field name="category">paid_out</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="True"/>
+        </record>
+
+        <!-- Commission -->
+        <record id="txn_comm" model="hospitality.transaction.code">
+            <field name="name">Commission</field>
+            <field name="code">COMM</field>
+            <field name="category">commission</field>
+            <field name="sign">debit</field>
+            <field name="show_on_folio" eval="False"/>
+        </record>
+
+        <!-- Exchange -->
+        <record id="txn_fx_conv" model="hospitality.transaction.code">
+            <field name="name">FX Conversion</field>
+            <field name="code">FX_CONV</field>
+            <field name="category">exchange</field>
+            <field name="sign">both</field>
+            <field name="show_on_folio" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+
+        <!-- ============================================================
+             Default amenity catalogue
+        ============================================================ -->
+
+        <record id="feature_wifi" model="hospitality.space.feature">
+            <field name="name">Wi-Fi</field>
+            <field name="code">WIFI</field>
+            <field name="icon">fa-wifi</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="feature_balcony" model="hospitality.space.feature">
+            <field name="name">Balcony</field>
+            <field name="code">BALCONY</field>
+            <field name="icon">fa-building</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="feature_bathtub" model="hospitality.space.feature">
+            <field name="name">Bathtub</field>
+            <field name="code">BATHTUB</field>
+            <field name="icon">fa-bath</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="feature_sea_view" model="hospitality.space.feature">
+            <field name="name">Sea View</field>
+            <field name="code">SEA_VIEW</field>
+            <field name="icon">fa-water</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="feature_kitchenette" model="hospitality.space.feature">
+            <field name="name">Kitchenette</field>
+            <field name="code">KITCHENETTE</field>
+            <field name="icon">fa-utensils</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="feature_workdesk" model="hospitality.space.feature">
+            <field name="name">Work Desk</field>
+            <field name="code">WORKDESK</field>
+            <field name="icon">fa-laptop</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="feature_aircon" model="hospitality.space.feature">
+            <field name="name">Air Conditioning</field>
+            <field name="code">AIRCON</field>
+            <field name="icon">fa-snowflake</field>
+            <field name="sequence">70</field>
+        </record>
+
+        <record id="feature_accessible" model="hospitality.space.feature">
+            <field name="name">Accessible</field>
+            <field name="code">ACCESSIBLE</field>
+            <field name="icon">fa-wheelchair</field>
+            <field name="sequence">80</field>
+        </record>
+
+    </data>
+</odoo>

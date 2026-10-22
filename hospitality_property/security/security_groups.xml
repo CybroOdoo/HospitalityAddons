@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             Property User
+        ============================================================ -->
+        <record id="group_property_user" model="res.groups">
+            <field name="name">Property User</field>
+            <field name="implied_ids" eval="[(4, ref('hospitality_base.group_hospitality_user'))]"/>
+        </record>
+
+        <!-- ============================================================
+             Property Manager
+        ============================================================ -->
+        <record id="group_property_manager" model="res.groups">
+            <field name="name">Property Manager</field>
+            <field name="implied_ids" eval="[
+        (4, ref('hospitality_base.group_hospitality_manager')),
+        (4, ref('hospitality_property.group_property_user'))]"/>
+            <!-- Remove the legacy hard-coded admin membership. Administrators
+                 receive access through Hospitality / Administrator instead. -->
+            <field name="user_ids" eval="[(3, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>

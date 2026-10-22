@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="hk_dnd_global_property_rule" model="ir.rule">
+            <field name="name">DND Entry: allowed properties</field>
+            <field name="model_id" ref="model_hospitality_dnd_entry"/>
+            <field name="domain_force">[('space_id.property_id', 'in', user.property_ids.ids)]</field>
+        </record>
+        <record id="hk_lost_found_global_property_rule" model="ir.rule">
+            <field name="name">Lost &amp; Found: allowed properties</field>
+            <field name="model_id" ref="model_hospitality_lost_found"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+        </record>
+        <record id="hk_linen_global_property_rule" model="ir.rule">
+            <field name="name">Linen Count: allowed properties</field>
+            <field name="model_id" ref="model_hospitality_linen_count"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+        </record>
+        <record id="hk_linen_line_global_property_rule" model="ir.rule">
+            <field name="name">Linen Count Line: allowed properties</field>
+            <field name="model_id" ref="model_hospitality_linen_count_line"/>
+            <field name="domain_force">[('count_id.property_id', 'in', user.property_ids.ids)]</field>
+        </record>
+
+        <!-- DND entries are scoped through the space's property, since
+             the model itself has no direct property_id. -->
+        <record id="hk_dnd_entry_rule_property" model="ir.rule">
+            <field name="name">DND Entry: user sees own properties</field>
+            <field name="model_id" ref="model_hospitality_dnd_entry"/>
+            <field name="domain_force">
+                [('space_id.property_id', 'in', user.property_ids.ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('group_hk_attendant'))]"/>
+        </record>
+
+        <record id="hk_lost_found_rule_property" model="ir.rule">
+            <field name="name">Lost &amp; Found: user sees own properties</field>
+            <field name="model_id" ref="model_hospitality_lost_found"/>
+            <field name="domain_force">
+                [('property_id', 'in', user.property_ids.ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('group_hk_attendant'))]"/>
+        </record>
+
+        <record id="hk_linen_count_rule_property" model="ir.rule">
+            <field name="name">Linen Count: user sees own properties</field>
+            <field name="model_id" ref="model_hospitality_linen_count"/>
+            <field name="domain_force">
+                [('property_id', 'in', user.property_ids.ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('group_hk_attendant'))]"/>
+        </record>
+
+        <record id="hk_linen_count_line_rule_property" model="ir.rule">
+            <field name="name">Linen Count Line: user sees own properties</field>
+            <field name="model_id" ref="model_hospitality_linen_count_line"/>
+            <field name="domain_force">
+                [('count_id.property_id', 'in', user.property_ids.ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('group_hk_attendant'))]"/>
+        </record>
+
+    </data>
+</odoo>

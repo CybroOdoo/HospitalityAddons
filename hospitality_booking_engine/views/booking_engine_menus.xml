@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Standalone app root for Booking Engine Managers.
+         Named "Distribution" so it reads as a peer of the other suite
+         roots (Front Office, Rooms, Finance & Revenue, Reports, Admin)
+         rather than as a single feature. -->
+    <menuitem id="menu_booking_engine_root"
+              name="Distribution"
+              web_icon="hospitality_booking_engine,static/description/icon.png"
+              groups="hospitality_booking_engine.group_be_manager"
+              sequence="90"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_booking_engine_configuration"
+              name="Configuration"
+              parent="menu_booking_engine_root"
+              action="action_hospitality_be_config"
+              groups="hospitality_booking_engine.group_be_manager"
+              sequence="10"/>
+
+    <menuitem id="menu_booking_engine_promo_codes"
+              name="Promo Codes"
+              parent="menu_booking_engine_root"
+              action="action_hospitality_be_promo_code"
+              groups="hospitality_booking_engine.group_be_manager"
+              sequence="20"/>
+
+    <menuitem id="menu_booking_engine_upsells"
+              name="Upsells"
+              parent="menu_booking_engine_root"
+              action="action_hospitality_be_upsell"
+              groups="hospitality_booking_engine.group_be_manager"
+              sequence="30"/>
+
+</odoo>

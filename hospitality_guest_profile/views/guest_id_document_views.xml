@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         res.partner form view
+    ================================================================ -->
+    <record id="view_partner_form_guest_id_docs" model="ir.ui.view">
+        <field name="name">res.partner.form.guest.id.docs</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="hospitality_guest_profile.view_partner_form_guest_tab"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='guest_profile_page']" position="inside">
+                <separator string="Identity Documents"/>
+                <field name="id_document_ids" readonly="rtbf_anonymized_at"
+                       context="{'default_partner_id': id}"
+                       nolabel="1">
+                    <list string="Identity Documents"
+                          decoration-success="verified == True"
+                          decoration-muted="active == False">
+                        <field name="type"/>
+                        <field name="number_masked" string="Document Number"/>
+                        <field name="issuing_country_id"/>
+                        <field name="expiry_date"/>
+                        <field name="verified"/>
+                        <field name="active" column_invisible="1"/>
+                        <button name="action_mark_verified"
+                                string="Verify"
+                                type="object"
+                                icon="fa-check"
+                                invisible="verified == True"
+                                groups="hospitality_guest_profile.group_guest_pii"/>
+                    </list>
+                    <form string="ID Document">
+                        <group>
+                            <group string="Document">
+                                <field name="type"/>
+                                <field name="number"
+                                       groups="hospitality_guest_profile.group_guest_pii"
+                                       password="True"/>
+                                <field name="number_masked"
+                                       groups="!hospitality_guest_profile.group_guest_pii"/>
+                                <field name="issuing_country_id"/>
+                                <field name="issue_date"/>
+                                <field name="expiry_date"/>
+                            </group>
+                            <group string="Verification">
+                                <field name="verified" readonly="1"/>
+                                <field name="verified_by" readonly="1"
+                                       invisible="not verified"/>
+                                <field name="verified_at" readonly="1"
+                                       invisible="not verified"/>
+                            </group>
+                        </group>
+                        <group string="Scans"
+                               groups="hospitality_guest_profile.group_guest_pii">
+                            <field name="scan_front" widget="image"
+                                   class="oe_avatar"/>
+                            <field name="scan_back"  widget="image"
+                                   class="oe_avatar"/>
+                        </group>
+                        <field name="notes" placeholder="Optional notes…"/>
+                        <footer>
+                            <button string="Save"
+                                    class="btn-primary"
+                                    special="save"/>
+                            <button name="action_mark_verified"
+                                    string="Mark as Verified"
+                                    type="object"
+                                    class="btn-secondary"
+                                    invisible="verified == True"
+                                    groups="hospitality_guest_profile.group_guest_pii"/>
+                            <button string="Discard" class="btn-secondary"
+                                    special="cancel"/>
+                        </footer>
+                    </form>
+                </field>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.restriction — List View
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_restriction_list" model="ir.ui.view">
+        <field name="name">hospitality.rate.restriction.list</field>
+        <field name="model">hospitality.rate.restriction</field>
+        <field name="arch" type="xml">
+            <list string="Rate Restrictions">
+                <field name="rate_code_id"/>
+                <field name="space_type_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="closed"/>
+                <field name="cta"/>
+                <field name="ctd"/>
+                <field name="min_stay"/>
+                <field name="max_stay"/>
+                <field name="no_show_charge_pct"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.restriction — Form View
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_restriction_form" model="ir.ui.view">
+        <field name="name">hospitality.rate.restriction.form</field>
+        <field name="model">hospitality.rate.restriction</field>
+        <field name="arch" type="xml">
+            <form string="Rate Restriction">
+                <sheet>
+                    <group>
+                        <group name="restriction_main">
+                            <field name="rate_code_id"/>
+                            <field name="space_type_id"/>
+                            <field name="property_id" readonly="1"/>
+                        </group>
+                        <group name="restriction_dates">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <group string="Restriction Rules">
+                        <group>
+                            <field name="closed"/>
+                            <field name="cta"/>
+                            <field name="ctd"/>
+                        </group>
+                        <group>
+                            <field name="min_stay"/>
+                            <field name="max_stay"/>
+                            <field name="no_show_charge_pct"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"
+                               placeholder="Internal notes about this restriction..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

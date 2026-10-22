@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+
+    <!-- Partners -->
+    <record id="demo_partner_vip" model="res.partner">
+        <field name="name">Eleanor Vance</field>
+        <field name="email">eleanor.vance@demo.com</field>
+    </record>
+    <record id="demo_partner_acme_corp" model="res.partner">
+        <field name="name">Acme Corp</field>
+        <field name="is_company">True</field>
+    </record>
+    <record id="demo_partner_acme_contact" model="res.partner">
+        <field name="name">James Acme</field>
+        <field name="parent_id" ref="demo_partner_acme_corp"/>
+        <field name="email">james@acmecorp.demo.com</field>
+    </record>
+    <record id="demo_partner_walkin" model="res.partner">
+        <field name="name">Walk-In Guest</field>
+    </record>
+    <record id="demo_partner_midstay_1" model="res.partner">
+        <field name="name">Carol Danvers</field>
+        <field name="email">carol.d@demo.com</field>
+    </record>
+    <record id="demo_partner_midstay_2" model="res.partner">
+        <field name="name">Diana Prince</field>
+        <field name="email">diana.p@demo.com</field>
+    </record>
+    <record id="demo_partner_option" model="res.partner">
+        <field name="name">Bruce Wayne</field>
+        <field name="email">bruce.w@demo.com</field>
+    </record>
+    <record id="demo_partner_group_a" model="res.partner">
+        <field name="name">Peter Parker</field>
+        <field name="email">peter.p@demo.com</field>
+    </record>
+    <record id="demo_partner_group_b" model="res.partner">
+        <field name="name">Tony Stark</field>
+        <field name="email">tony.s@demo.com</field>
+    </record>
+    <record id="demo_partner_sharer_a" model="res.partner">
+        <field name="name">Natasha Romanoff</field>
+        <field name="email">natasha.r@demo.com</field>
+    </record>
+    <record id="demo_partner_sharer_b" model="res.partner">
+        <field name="name">Wanda Maximoff</field>
+        <field name="email">wanda.m@demo.com</field>
+    </record>
+    <record id="demo_partner_cancelled" model="res.partner">
+        <field name="name">Victor Stone</field>
+        <field name="email">victor.s@demo.com</field>
+    </record>
+    <record id="demo_partner_noshow" model="res.partner">
+        <field name="name">Barry Allen</field>
+        <field name="email">barry.a@demo.com</field>
+    </record>
+
+    <!-- 01 · VIP · BAR · today · STD-K / room 101 -->
+    <record id="demo_res_confirmed_vip" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_vip"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_std_k"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_101"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=3)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+        <field name="deposit_paid">250.0</field>
+    </record>
+
+    <!-- 02 · Acme Corp · CORP-ACME · today · STD-T / room 203 -->
+    <record id="demo_res_confirmed_acme" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_acme_contact"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_std_t"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_203"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=2)).strftime('%Y-%m-%d')"/>
+        <field name="adults">2</field>
+        <field name="deposit_paid">180.0</field>
+    </record>
+
+    <!-- 03 · Walk-in · BAR · today · STD-K / room 103 -->
+    <record id="demo_res_confirmed_walkin" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_walkin"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_std_k"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_103"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="datetime.now().strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+        <field name="deposit_paid">100.0</field>
+    </record>
+
+    <!-- 04 · mid-stay checked_in · BAR · DLX-K / room 201 -->
+    <record id="demo_res_checkedin_1" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_midstay_1"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_dlx_k"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_201"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=3)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+        <field name="deposit_paid">300.0</field>
+    </record>
+
+    <!-- 05 · mid-stay checked_in · PKG-BB · JR-SUITE / room 301 -->
+    <record id="demo_res_checkedin_2" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_midstay_2"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_jr_suite"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_301"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=4)).strftime('%Y-%m-%d')"/>
+        <field name="adults">2</field>
+        <field name="deposit_paid">400.0</field>
+    </record>
+
+    <!-- 06 · option expiring tomorrow · BAR · STD-K / room 304 -->
+    <record id="demo_res_option_expiring" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_option"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_std_k"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_304"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() + timedelta(days=5)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=8)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+        <field name="option_expires_at" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+    <!-- 07 · group GRP-NYC-001 room A · BAR · STD-T / room 305 -->
+    <record id="demo_res_group_a" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_group_a"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_std_t"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_305"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d')"/>
+        <field name="adults">2</field>
+        <field name="group_id_stub">GRP-NYC-001</field>
+        <field name="deposit_paid">200.0</field>
+    </record>
+
+    <!-- 08 · group GRP-NYC-001 room B · BAR · DLX-K / room 303 -->
+    <record id="demo_res_group_b" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_group_b"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_dlx_k"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_303"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d')"/>
+        <field name="adults">2</field>
+        <field name="group_id_stub">GRP-NYC-001</field>
+        <field name="deposit_paid">200.0</field>
+    </record>
+
+    <!-- 09 · sharer primary · PKG-BB · JR-SUITE / room 401 -->
+    <record id="demo_res_sharer_primary" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_sharer_a"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_jr_suite"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_401"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() + timedelta(days=12)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=15)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+        <field name="deposit_paid">150.0</field>
+    </record>
+
+    <!-- 10 · sharer secondary · PKG-BB · JR-SUITE / room 401 (same space)
+         NOTE: share_with_ids is set in post_init_hook, NOT here, to avoid
+         the sharer overlap constraint firing during XML load. -->
+    <record id="demo_res_sharer_secondary" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_sharer_b"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_jr_suite"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_401"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() + timedelta(days=12)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=15)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+        <field name="deposit_paid">150.0</field>
+    </record>
+
+    <!-- 11 · cancelled · CORP-ACME · STD-K / room 404 -->
+    <record id="demo_res_cancelled" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_cancelled"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_std_k"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_404"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() + timedelta(days=20)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=22)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+    </record>
+
+    <!-- 12 · no_show · BAR · ACC / room 104 -->
+    <record id="demo_res_noshow" model="hospitality.reservation">
+        <field name="property_id"   ref="hospitality_base.demo_property_nyc01"/>
+        <field name="partner_id"    ref="demo_partner_noshow"/>
+        <field name="space_type_id" ref="hospitality_property.demo_stype_acc"/>
+        <field name="space_id"      ref="hospitality_property.demo_space_104"/>
+        <field name="rate_code_id"  ref="hospitality_rate.rate_code_bar_nyc01"/>
+        <field name="arrival"   eval="(datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')"/>
+        <field name="departure" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')"/>
+        <field name="adults">1</field>
+        <field name="deposit_paid">100.0</field>
+    </record>
+
+</data>
+</odoo>

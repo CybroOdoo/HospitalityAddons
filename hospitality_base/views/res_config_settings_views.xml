@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================
+             Hospitality Settings
+        ============================================================= -->
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.hospitality</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="40"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+                    <!-- Hospitality Settings App -->
+                    <app
+                        data-string="Hospitality"
+                        string="Hospitality"
+                        name="hospitality"
+                        groups="base.group_system">
+                        <block
+                            title="Security &amp; Encryption"
+                            name="hospitality_security_encryption">
+                            <setting
+                                id="hospitality_encryption_key"
+                                string="Fernet Encryption Key"
+                                help="Used to encrypt sensitive guest data at rest, such as passport numbers and payment tokens.">
+                                <field
+                                    name="hospitality_encryption_key_hint"
+                                    readonly="1"/>
+                                <div class="text-muted mt8">
+                                    Only the last 4 characters of the
+                                    configured encryption key are displayed.
+                                </div>
+                                <div class="text-warning mt8">
+                                    <i class="fa fa-warning me-1"/>
+                                    Rotating the key makes all previously
+                                    encrypted data unreadable.
+                                </div>
+                                <button
+                                    name="action_generate_encryption_key"
+                                    type="object"
+                                    string="Generate New Key"
+                                    class="btn btn-secondary mt16"
+                                    confirm="Generating a new key will make all previously encrypted data unreadable. Continue?"/>
+                            </setting>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_hospitality_config" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="context">
+                {'module': 'hospitality_base', 'bin_size': False}
+            </field>
+        </record>
+    </data>
+</odoo>

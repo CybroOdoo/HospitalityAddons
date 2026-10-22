@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Category -->
+    <record id="module_hospitality_rate" model="ir.module.category">
+        <field name="name">Hospitality</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <!--  Rate User -->
+    <record id="group_rate_user" model="res.groups">
+        <field name="name">Rate User</field>
+        <field name="implied_ids" eval="[
+            (4, ref('hospitality_base.group_hospitality_user'))
+        ]"/>
+        <field name="comment">
+            Can view rate plans and run availability / rate searches.
+            Cannot create, update, or override rates.
+        </field>
+    </record>
+
+    <!-- Rate Manager -->
+    <record id="group_rate_manager" model="res.groups">
+        <field name="name">Rate Manager</field>
+        <field name="implied_ids" eval="[(4, ref('group_rate_user'))]"/>
+        <field name="comment">
+            Can create and update rate plans and pricing restrictions.
+            Cannot perform bulk import/export or override audit-locked grids.
+        </field>
+    </record>
+
+    <!-- Rate Admin -->
+    <record id="group_rate_admin" model="res.groups">
+        <field name="name">Rate Admin</field>
+        <field name="implied_ids" eval="[(4, ref('group_rate_manager'))]"/>
+        <field name="comment">
+            Full rate administration: bulk import/export of rate grids
+            and the ability to override audit-locked entries.
+        </field>
+    </record>
+
+</odoo>

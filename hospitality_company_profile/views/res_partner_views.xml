@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Partner form — Corporate / TA / OTA notebook tab
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_partner_form_corporate_tab" model="ir.ui.view">
+        <field name="name">res.partner.form.corporate.tab</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Corporate / TA / OTA"
+                      name="page_corporate"
+                      groups="hospitality_company_profile.group_corporate_user">
+                    <group string="Account Type" col="2">
+                        <field name="is_corporate_account"/>
+                        <field name="is_travel_agent"/>
+                        <field name="is_ota"/>
+                        <field name="iata_number"
+                               invisible="not is_travel_agent"
+                               required="is_travel_agent"/>
+                    </group>
+                    <group string="Commission" col="2">
+                        <field name="commission_method"/>
+                        <field name="commission_pct"
+                               invisible="commission_method == 'tiered_by_volume' or not commission_method"
+                               string="Commission % / Amount"/>
+                    </group>
+                    <div invisible="commission_method != 'tiered_by_volume'">
+                        <separator string="Commission Tiers"/>
+                        <field name="commission_tier_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="volume_basis" string="Basis"/>
+                                <field name="lower_volume" string="From (≥)"
+                                       optional="show"/>
+                                <field name="upper_volume" string="To (&lt;, 0=∞)"
+                                       optional="show"/>
+                                <field name="commission_pct" string="Commission %"/>
+                            </list>
+                        </field>
+                    </div>
+                    <group string="Credit Management" col="2">
+                        <field name="hospitality_credit_limit"/>
+                        <field name="credit_used"/>
+                        <field name="credit_hold_manual"/>
+                        <field name="credit_status" widget="badge"
+                               decoration-success="credit_status == 'ok'"
+                               decoration-warning="credit_status == 'near_limit'"
+                               decoration-danger="credit_status in ('exceeded', 'on_hold')"/>
+                    </group>
+                    <group string="Billing &amp; Management" col="2">
+                        <field name="payment_terms_id"/>
+                        <field name="account_manager_id"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         List view — Corporate accounts with credit status chip
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_partner_list_corporate" model="ir.ui.view">
+        <field name="name">res.partner.list.corporate</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="Corporate Accounts">
+                <field name="name"/>
+                <field name="iata_number" optional="show"/>
+                <field name="commission_method" optional="show"/>
+                <field name="hospitality_credit_limit" optional="show"/>
+                <field name="credit_used" optional="show"/>
+                <field name="credit_status" widget="badge"
+                       decoration-success="credit_status == 'ok'"
+                       decoration-warning="credit_status == 'near_limit'"
+                       decoration-danger="credit_status in ('exceeded', 'on_hold')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Kanban view — Corporate accounts with credit status chip
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_partner_kanban_corporate" model="ir.ui.view">
+        <field name="name">res.partner.kanban.corporate</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="credit_status"/>
+                <field name="hospitality_credit_limit"/>
+                <field name="credit_used"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_kanban_card_header">
+                            <strong><field name="name"/></strong>
+                            <span class="badge ms-2"
+                                  t-attf-class="badge {{ record.credit_status.raw_value == 'ok' and 'text-bg-success'
+                                                          or record.credit_status.raw_value == 'near_limit' and 'text-bg-warning'
+                                                          or 'text-bg-danger' }}">
+                                <field name="credit_status"/>
+                            </span>
+                        </div>
+                        <div class="o_kanban_card_content">
+                            <div>Credit Limit: <field name="hospitality_credit_limit"/></div>
+                            <div>Credit Used: <field name="credit_used"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Actions — filtered partner lists
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_corporate_accounts" model="ir.actions.act_window">
+        <field name="name">Corporate Accounts</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_corporate_account', '=', True)]</field>
+        <field name="context">{'default_is_corporate_account': True}</field>
+    </record>
+
+    <record id="action_corporate_accounts_view_list" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_partner_list_corporate"/>
+        <field name="act_window_id" ref="action_corporate_accounts"/>
+    </record>
+
+    <record id="action_corporate_accounts_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_partner_kanban_corporate"/>
+        <field name="act_window_id" ref="action_corporate_accounts"/>
+    </record>
+
+    <record id="action_travel_agents" model="ir.actions.act_window">
+        <field name="name">Travel Agents</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_travel_agent', '=', True)]</field>
+        <field name="context">{'default_is_travel_agent': True}</field>
+    </record>
+
+    <record id="action_travel_agents_view_list" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_partner_list_corporate"/>
+        <field name="act_window_id" ref="action_travel_agents"/>
+    </record>
+
+    <record id="action_travel_agents_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_partner_kanban_corporate"/>
+        <field name="act_window_id" ref="action_travel_agents"/>
+    </record>
+
+    <record id="action_otas" model="ir.actions.act_window">
+        <field name="name">OTAs</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_ota', '=', True)]</field>
+        <field name="context">{'default_is_ota': True}</field>
+    </record>
+
+    <record id="action_otas_view_list" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_partner_list_corporate"/>
+        <field name="act_window_id" ref="action_otas"/>
+    </record>
+
+    <record id="action_otas_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_partner_kanban_corporate"/>
+        <field name="act_window_id" ref="action_otas"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Menus
+    ═══════════════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_corporate_accounts"
+              name="Corporate Accounts"
+              parent="hospitality_base.menu_hospitality_partners"
+              action="action_corporate_accounts"
+              sequence="10"
+              groups="hospitality_company_profile.group_corporate_user"/>
+
+    <menuitem id="menu_travel_agents"
+              name="Travel Agents"
+              parent="hospitality_base.menu_hospitality_partners"
+              action="action_travel_agents"
+              sequence="20"
+              groups="hospitality_company_profile.group_corporate_user"/>
+
+    <menuitem id="menu_otas"
+              name="OTAs"
+              parent="hospitality_base.menu_hospitality_partners"
+              action="action_otas"
+              sequence="30"
+              groups="hospitality_company_profile.group_corporate_user"/>
+
+</odoo>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            Email template sent approximately one hour after a booking
+            search is abandoned. Encourages the guest to resume the
+            booking using the saved search link.
+        -->
+        <record id="mail_template_be_cart_recovery_1h" model="mail.template">
+            <field name="name">Booking Engine: Cart Recovery (1 Hour)</field>
+            <field name="model_id" ref="model_hospitality_be_search_session"/>
+            <field name="subject">Still thinking it over? Your stay is waiting</field>
+            <field name="email_to">{{ object.contact_email }}</field>
+            <field name="email_from">{{ (object.property_id.partner_id.email or user.email) }}</field>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                    <p>Hi there,</p>
+                    <p>
+                        We noticed you were looking at a stay at
+                        <strong t-out="object.property_id.name">the property</strong>
+                        and didn't finish booking. Good news — your search is
+                        still saved, so you can pick up right where you left off.
+                    </p>
+                    <p>
+                        <a t-att-href="object._lookup_url()"
+                           style="background:#71639E;color:#ffffff;padding:10px 18px;
+                                  text-decoration:none;border-radius:4px;display:inline-block;">
+                            Resume My Booking
+                        </a>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!--
+            Follow-up reminder sent approximately 24 hours after the
+            booking search is abandoned. Warns that availability may
+            change and invites the guest to complete the booking.
+        -->
+        <record id="mail_template_be_cart_recovery_24h" model="mail.template">
+            <field name="name">Booking Engine: Cart Recovery (24 Hours)</field>
+            <field name="model_id" ref="model_hospitality_be_search_session"/>
+            <field name="subject">Your dates may not stay available much longer</field>
+            <field name="email_to">{{ object.contact_email }}</field>
+            <field name="email_from">{{ (object.property_id.partner_id.email or user.email) }}</field>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                    <p>Hi there,</p>
+                    <p>
+                        Just a friendly reminder — the stay you were checking out at
+                        <strong t-out="object.property_id.name">the property</strong>
+                        is still on hold in your search, but availability for
+                        popular dates can change quickly.
+                    </p>
+                    <p>
+                        <a t-att-href="object._lookup_url()"
+                           style="background:#71639E;color:#ffffff;padding:10px 18px;
+                                  text-decoration:none;border-radius:4px;display:inline-block;">
+                            Complete My Booking
+                        </a>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!--
+            Final abandoned-cart reminder sent approximately seven days
+            after the booking search is abandoned. Informs the guest that
+            the saved search will expire soon and provides a final
+            opportunity to complete the booking.
+        -->
+        <record id="mail_template_be_cart_recovery_7d" model="mail.template">
+            <field name="name">Booking Engine: Cart Recovery (7 Days, Final)</field>
+            <field name="model_id" ref="model_hospitality_be_search_session"/>
+            <field name="subject">Last chance to complete your booking</field>
+            <field name="email_to">{{ object.contact_email }}</field>
+            <field name="email_from">{{ (object.property_id.partner_id.email or user.email) }}</field>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                    <p>Hi there,</p>
+                    <p>
+                        This is a final reminder about your saved search at
+                        <strong t-out="object.property_id.name">the property</strong>.
+                        We'll be closing out this particular search soon, but
+                        you're always welcome to start a fresh one any time.
+                    </p>
+                    <p>
+                        <a t-att-href="object._lookup_url()"
+                           style="background:#71639E;color:#ffffff;padding:10px 18px;
+                                  text-decoration:none;border-radius:4px;display:inline-block;">
+                            Book Now
+                        </a>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

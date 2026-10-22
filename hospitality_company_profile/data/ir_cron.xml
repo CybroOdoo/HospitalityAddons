@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================
+             Recompute Corporate Credit Status Cron
+        ============================================================ -->
+    <record id="cron_credit_recompute" model="ir.cron">
+        <field name="name">Hospitality: Recompute Corporate Credit Status</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_credit_recompute()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- ============================================================
+             Expire Contracts Cron
+        ============================================================ -->
+    <record id="cron_expire_contracts" model="ir.cron">
+        <field name="name">Hospitality: Expire Contracts Past End Date</field>
+        <field name="model_id" ref="hospitality_company_profile.model_hospitality_contract"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_contracts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

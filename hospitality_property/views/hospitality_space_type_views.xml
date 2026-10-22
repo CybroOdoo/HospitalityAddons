@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ======================================================
+             SPACE TYPE — Search view
+        ====================================================== -->
+        <record id="view_hospitality_space_type_search" model="ir.ui.view">
+            <field name="name">hospitality.space.type.search</field>
+            <field name="model">hospitality.space.type</field>
+            <field name="arch" type="xml">
+                <search string="Room Types">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="property_id"/>
+                    <filter string="Active"
+                            name="filter_active"
+                            domain="[('active','=',True)]"/>
+                    <filter string="Archived"
+                            name="filter_archived"
+                            domain="[('active','=',False)]"/>
+                    <filter string="Category"
+                            name="group_category"
+                            context="{'group_by':'category'}"/>
+                    <filter string="Property"
+                            name="group_property"
+                            context="{'group_by':'property_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE TYPE — List view
+        ====================================================== -->
+        <record id="view_hospitality_space_type_list" model="ir.ui.view">
+            <field name="name">hospitality.space.type.list</field>
+            <field name="model">hospitality.space.type</field>
+            <field name="arch" type="xml">
+                <list string="Room Types" default_order="sequence,name"
+                      decoration-muted="active == False">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code" class="fw-bold"/>
+                    <field name="property_id" optional="show"/>
+                    <field name="category"/>
+                    <field name="default_occupancy" string="Default Occ."/>
+                    <field name="max_occupancy" string="Max Occ."/>
+                    <field name="bed_config" optional="show"/>
+                    <field name="smoking" widget="boolean_toggle" optional="show"/>
+                    <field name="active" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE TYPE — Form view
+        ====================================================== -->
+        <record id="view_hospitality_space_type_form" model="ir.ui.view">
+            <field name="name">hospitality.space.type.form</field>
+            <field name="model">hospitality.space.type</field>
+            <field name="arch" type="xml">
+                <form string="Room Type">
+                    <header>
+                        <button name="action_archive_space_type"
+                                string="Archive" type="object"
+                                class="btn-secondary"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="not active"/>
+                        <button name="action_unarchive_space_type"
+                                string="Unarchive" type="object"
+                                class="btn-primary"
+                                groups="hospitality_property.group_property_manager"
+                                invisible="active"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived"
+                                bg_color="text-bg-danger"
+                                invisible="active"/>
+                        <field name="image" widget="image" class="oe_avatar"
+                               options="{'preview_image': 'image'}"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Room Type Name"/>
+                            </h1>
+                            <div class="o_row">
+                                <field name="code" class="text-muted"
+                                       placeholder="TYPE-CODE"/>
+                            </div>
+                        </div>
+                        <group>
+                            <group string="Classification">
+                                <field name="property_id"
+                                       placeholder="(global — all properties)"/>
+                                <field name="category"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group string="Occupancy &amp; Beds">
+                                <field name="default_occupancy"/>
+                                <field name="max_occupancy"/>
+                                <field name="bed_config"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Physical Attributes">
+                                <field name="size_sqm"/>
+                                <field name="smoking" widget="boolean_toggle"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="General" name="general">
+                                <group>
+                                    <field name="base_rate_id"
+                                           placeholder="Populated in RATE-02"/>
+                                </group>
+                                <field name="description"
+                                       placeholder="Detailed description of this room type…"/>
+                            </page>
+                            <page string="Amenities" name="amenities">
+                                <field name="amenity_ids" widget="many2many_tags"
+                                       placeholder="Add amenities…"/>
+                            </page>
+                            <page string="Photos" name="photos">
+                                <group string="Cover">
+                                    <!-- Read by the booking engine
+                                         results card and the kanban. -->
+                                    <!-- The size option sets the size of
+                                         the WIDGET on screen, not the
+                                         stored image: [1024, 1024] drew
+                                         a 1024px box and pushed the
+                                         gallery off the page. The field
+                                         itself still stores up to
+                                         1024x1024 - that cap lives on
+                                         the Python field. -->
+                                    <field name="image" widget="image"
+                                           options="{'size': [0, 180]}"
+                                           nolabel="1"/>
+                                </group>
+                                <group string="Gallery">
+                                    <!-- default_name seeds the title so
+                                         adding an image never stops on a
+                                         required field with nothing in
+                                         it. -->
+                                    <field name="image_ids"
+                                           class="o_hm_property_gallery"
+                                           mode="kanban"
+                                           add-label="Add Image"
+                                           nolabel="1"
+                                           colspan="2"
+                                           context="{'default_name': name}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE TYPE — Kanban view
+        ====================================================== -->
+        <record id="view_hospitality_space_type_kanban" model="ir.ui.view">
+            <field name="name">hospitality.space.type.kanban</field>
+            <field name="model">hospitality.space.type</field>
+            <field name="arch" type="xml">
+                <!--
+                    Same media card as the room kanban. A room type is the
+                    thing a guest actually shops, so its own cover is the
+                    headline and the category is the badge.
+
+                    "image" is NOT declared as a field: reading an Image
+                    field in a kanban pulls the whole base64 payload per
+                    row. The <img> points at /web/image with a 640x360
+                    resize, which Odoo serves from its own cache and which
+                    falls back to a placeholder when the field is empty.
+                -->
+                <kanban default_order="sequence,name" class="o_hm_room_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="category"/>
+                    <field name="bed_config"/>
+                    <field name="smoking"/>
+                    <field name="property_id"/>
+                    <field name="default_occupancy"/>
+                    <field name="max_occupancy"/>
+                    <field name="size_sqm"/>
+                    <field name="image_count"/>
+                    <field name="amenity_ids"/>
+                    <templates>
+                        <t t-name="card" class="o_hm_room_card p-0">
+                            <div class="o_hm_room_media">
+                                <img class="o_hm_room_img"
+                                     t-attf-src="/web/image/hospitality.space.type/#{record.id.raw_value}/image/640x360"
+                                     t-att-alt="record.name.value"/>
+
+                                <span t-if="record.smoking.raw_value"
+                                      class="o_hm_room_status o_hm_type_smoking"
+                                      title="Smoking allowed">
+                                    <i class="fa fa-fire me-1" aria-hidden="true"/>
+                                    Smoking
+                                </span>
+
+                                <span t-if="record.image_count.raw_value"
+                                      class="o_hm_room_virtual"
+                                      t-attf-title="#{record.image_count.value} gallery images">
+                                    <i class="fa fa-camera me-1" aria-hidden="true"/>
+                                    <t t-out="record.image_count.value"/>
+                                </span>
+
+                                <div class="o_hm_room_scrim">
+                                    <!-- The category is the badge here,
+                                         exactly as the room type is the
+                                         badge on a room card. -->
+                                    <div class="o_hm_room_typeline"
+                                         t-out="record.category.value"/>
+                                    <div class="o_hm_room_code"
+                                         t-out="record.name.value"/>
+                                    <div class="o_hm_room_name">
+                                        <t t-out="record.code.value"/>
+                                        <t t-if="record.property_id.raw_value">
+                                            <span class="o_hm_type_dot">·</span>
+                                            <t t-out="record.property_id.value"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="o_hm_type_dot">·</span>
+                                            Global
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_hm_room_body">
+                                <span class="o_hm_room_floor"
+                                      title="Default / maximum occupancy">
+                                    <i class="fa fa-users me-1" aria-hidden="true"/>
+                                    <t t-out="record.default_occupancy.value"/>
+                                    <span class="o_hm_type_dash">/</span>
+                                    <t t-out="record.max_occupancy.value"/>
+                                </span>
+                                <span t-if="record.bed_config.raw_value"
+                                      class="o_hm_room_beds"
+                                      t-attf-title="Bed configuration: #{record.bed_config.value}">
+                                    <i class="fa fa-bed me-1" aria-hidden="true"/>
+                                    <t t-out="record.bed_config.value"/>
+                                </span>
+                                <span t-elif="record.size_sqm.raw_value"
+                                      class="o_hm_room_beds">
+                                    <t t-out="record.size_sqm.value"/> m²
+                                </span>
+                            </div>
+
+                            <div t-if="record.amenity_ids.raw_value.length"
+                                 class="o_hm_room_foot">
+                                <field name="amenity_ids"
+                                       widget="many2many_tags"
+                                       class="o_hm_room_tags"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ======================================================
+             SPACE TYPE — Action
+        ====================================================== -->
+        <record id="action_property_space_type" model="ir.actions.act_window">
+            <field name="name">Room Types</field>
+            <field name="res_model">hospitality.space.type</field>
+            <!-- Kanban first, like Rooms: a room type is a product,
+                 and the cover is how staff recognise it. -->
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="view_hospitality_space_type_search"/>
+            <field name="context">{'search_default_filter_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first space type
+                </p>
+                <p>
+                    Space types define categories of bookable spaces (rooms, suites, meeting rooms…).
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

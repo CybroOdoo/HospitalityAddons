@@ -1,0 +1,37 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Shared mixins, loaded into BOTH bundles because the login page needs
+// the same primitives as the webclient chrome. Emits no CSS of its own:
+// it is concatenated into two bundles, so any rule here would ship twice.
+
+@mixin ht-nowrap {
+    white-space: nowrap;
+}
+
+// Small mono caption: section labels, stat labels, keyboard hints.
+@mixin ht-label {
+    font-family: $ht-font-mono;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    @include ht-nowrap;
+}
+
+// Rounded monogram plate, used by drawer tiles and rail icons.
+@mixin ht-plate($size, $radius, $font-size) {
+    width: $size;
+    height: $size;
+    flex: 0 0 $size;
+    border-radius: $radius;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    overflow: hidden;
+    @include ht-nowrap;
+}

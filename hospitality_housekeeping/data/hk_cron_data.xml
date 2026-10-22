@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- HK-05: daily at 06:00 — create stayover tasks for
+             in-house rooms. nextcall is set to today at 06:00; if
+             the module is installed after 06:00, the first run
+             happens on the next scheduler tick (typically within
+             the hour) and then settles into the daily 06:00
+             cadence via interval_number/interval_type. -->
+        <record id="cron_create_stayover_tasks" model="ir.cron">
+            <field name="name">Housekeeping: Create Stayover Tasks</field>
+            <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_create_stayover_tasks()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now()).strftime('%Y-%m-%d 06:00:00')"/>
+            <field name="active">True</field>
+        </record>
+
+        <!-- HK-05: daily at 17:00 — create turndown tasks where
+             applicable. -->
+        <record id="cron_create_turndown_tasks" model="ir.cron">
+            <field name="name">Housekeeping: Create Turndown Tasks</field>
+            <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_create_turndown_tasks()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now()).strftime('%Y-%m-%d 17:00:00')"/>
+            <field name="active">True</field>
+        </record>
+
+        <!-- HK-05: every 15 minutes — safety-net poll that creates a
+             departure task for any space whose reservation has
+             moved to checked_out and doesn't have one yet. The
+             primary path is event-driven (write() hook on
+             hospitality.reservation, see
+             hospitality_reservation_hk_hook.py), which fires
+             immediately on checkout; this cron only matters if that
+             transition happened some other way. Both share the same
+             dedup check, so there's never a duplicate task. -->
+        <record id="cron_create_departure_tasks" model="ir.cron">
+            <field name="name">Housekeeping: Create Departure Tasks</field>
+            <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_create_departure_tasks()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="nextcall" eval="(DateTime.now()).strftime('%Y-%m-%d %H:%M:00')"/>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

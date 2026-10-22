@@ -1,0 +1,96 @@
+.o_fd_dashboard {
+    padding: 16px 24px;
+
+    .o_fd_dashboard_header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+
+        h2 {
+            margin: 0;
+        }
+
+        .o_fd_dashboard_controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+    }
+
+    .o_fd_dashboard_loading {
+        padding: 32px;
+        text-align: center;
+        color: #6c757d;
+    }
+
+    .o_fd_dashboard_grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .o_fd_card {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        transition: box-shadow .15s ease-in-out;
+
+        &:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .12);
+        }
+
+        .o_fd_card_label {
+            font-size: .85rem;
+            text-transform: uppercase;
+            color: #6c757d;
+        }
+
+        .o_fd_card_value {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+    }
+
+    .o_fd_card_wide {
+        grid-column: span 2;
+        cursor: default;
+
+        &:hover {
+            box-shadow: none;
+        }
+    }
+
+    .o_fd_table {
+        width: 100%;
+        border-collapse: collapse;
+
+        td {
+            padding: 4px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .o_fd_table_value {
+            text-align: right;
+            font-weight: 600;
+        }
+    }
+
+    .o_fd_gauge {
+        height: 10px;
+        border-radius: 5px;
+        background: #e9ecef;
+        overflow: hidden;
+        margin: 4px 0;
+
+        .o_fd_gauge_fill {
+            height: 100%;
+            background: #714B67;
+        }
+    }
+}

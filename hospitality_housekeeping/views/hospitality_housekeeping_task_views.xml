@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for housekeeping tasks, providing an overview of
+     task assignments, priorities, attendants, and current
+     workflow status. -->
+    <record id="view_hk_task_list" model="ir.ui.view">
+        <field name="name">hospitality.housekeeping.task.list</field>
+        <field name="model">hospitality.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <list string="Housekeeping Tasks" decoration-muted="state == 'inspected'"
+                  decoration-info="state == 'dnd'">
+                <field name="name"/>
+                <field name="business_date"/>
+                <field name="property_id"/>
+                <field name="space_id"/>
+                <field name="task_type"/>
+                <field name="priority"/>
+                <field name="credit"/>
+                <field name="attendant_user_id"/>
+                <field name="attendant_id"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for creating, managing, and progressing
+     housekeeping tasks through their lifecycle, including
+     assignment, completion, inspection, DND handling,
+     and refusal actions. -->
+    <record id="view_hk_task_form" model="ir.ui.view">
+        <field name="name">hospitality.housekeeping.task.form</field>
+        <field name="model">hospitality.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <form string="Housekeeping Task">
+                <header>
+                    <button name="action_assign" type="object"
+                            string="Assign" class="oe_highlight"
+                            invisible="state != 'pending'"/>
+                    <button name="action_finish" type="object"
+                            string="Finish"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_inspect" type="object"
+                            string="Inspect" class="oe_highlight"
+                            invisible="state != 'done'"/>
+                    <button name="action_set_dnd" type="object"
+                            string="Set Do Not Disturb"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_clear_dnd" type="object"
+                            string="Clear Do Not Disturb"
+                            invisible="state != 'dnd'"/>
+                    <button name="action_refuse" type="object"
+                            string="Refuse"
+                            invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,in_progress,done,inspected"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="space_id"/>
+                            <field name="business_date"/>
+                            <field name="task_type"/>
+                            <field name="priority"/>
+                            <field name="rush"/>
+                        </group>
+                        <group>
+                            <field name="credit"/>
+                            <field name="attendant_user_id"/>
+                            <field name="attendant_id"/>
+                            <field name="inspector_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Timing">
+                            <field name="started_at"/>
+                            <field name="finished_at"/>
+                            <field name="inspected_at"/>
+                        </group>
+                        <group string="Refusal">
+                            <field name="refusal_reason"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Standard kanban view for housekeeping tasks, grouping
+     tasks by state and displaying key task information,
+     priority, and assigned attendant. -->
+    <record id="view_hk_task_kanban" model="ir.ui.view">
+        <field name="name">hospitality.housekeeping.task.kanban</field>
+        <field name="model">hospitality.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false">
+                <field name="space_id"/>
+                <field name="task_type"/>
+                <field name="priority"/>
+                <field name="credit"/>
+                <field name="attendant_user_id"/>
+                <field name="attendant_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="space_id"/></strong>
+                            <div>
+                                <field name="task_type"/>
+                                <span class="badge text-bg-secondary float-end">
+                                    <field name="priority"/>
+                                </span>
+                            </div>
+                            <div>
+                                <span class="badge rounded-pill text-bg-info"
+                                      t-if="record.attendant_user_id.value">
+                                    <field name="attendant_user_id"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-info"
+                                      t-elif="record.attendant_id.value">
+                                    <field name="attendant_id"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-light"
+                                      t-else="">Unassigned</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- HK-04: HK Board — supervisor kanban, grouped by state, with
+         drag-between-states (routed through the state machine's
+         action_* methods via the model's write() override), an
+         attendant chip per card, and a floor-plan link. -->
+    <record id="view_hk_board_kanban" model="ir.ui.view">
+        <field name="name">hospitality.housekeeping.task.hk.board.kanban</field>
+        <field name="model">hospitality.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" quick_create="false"
+                    records_draggable="true">
+                <field name="space_id"/>
+                <field name="task_type"/>
+                <field name="priority"/>
+                <field name="credit"/>
+                <field name="rush"/>
+                <field name="attendant_user_id"/>
+                <field name="attendant_id"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="d-flex justify-content-between">
+                                <strong><field name="space_id"/></strong>
+                                <button name="action_open_space_form"
+                                        type="object"
+                                        class="btn btn-sm btn-link p-0"
+                                        title="Floor Plan">
+                                    Floor Plan
+                                </button>
+                            </div>
+                            <div>
+                                <field name="task_type"/>
+                                <span class="badge text-bg-secondary float-end">
+                                    <field name="priority"/>
+                                </span>
+                                <span class="badge text-bg-danger"
+                                      t-if="record.rush.value">Rush</span>
+                            </div>
+                            <div>
+                                <span class="badge rounded-pill text-bg-info"
+                                      t-if="record.attendant_user_id.value">
+                                    <field name="attendant_user_id"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-info"
+                                      t-elif="record.attendant_id.value">
+                                    <field name="attendant_id"/>
+                                </span>
+                                <span class="badge rounded-pill text-bg-light"
+                                      t-else="">Unassigned</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Bound as a server action so the domain (current property +
+         that property's own business_date) can be computed per-user
+         at open time; see action_hk_board() on the task model. -->
+    <record id="action_hk_board" model="ir.actions.server">
+        <field name="name">HK Board</field>
+        <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_hk_board()</field>
+    </record>
+
+    <!-- HK-05: HK Status — pivot of today's tasks, state x space_type_id. -->
+    <record id="view_hk_status_pivot" model="ir.ui.view">
+        <field name="name">hospitality.housekeeping.task.hk.status.pivot</field>
+        <field name="model">hospitality.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <pivot string="HK Status">
+                <field name="space_type_id" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Server action that opens the HK Status pivot report
+     using the dynamically computed business-date scope. -->
+    <record id="action_hk_status_report" model="ir.actions.server">
+        <field name="name">HK Status</field>
+        <field name="model_id" ref="model_hospitality_housekeeping_task"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_hk_status_report()</field>
+    </record>
+
+    <!-- Search view for housekeeping tasks, providing filters,
+     search fields, and grouping options based on task
+     status, attendant, task type, and priority. -->
+    <record id="view_hk_task_search" model="ir.ui.view">
+        <field name="name">hospitality.housekeeping.task.search</field>
+        <field name="model">hospitality.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <search string="Housekeeping Tasks">
+                <field name="name"/>
+                <field name="space_id"/>
+                <field name="attendant_user_id"/>
+                <field name="attendant_id"/>
+                <field name="task_type"/>
+                <field name="priority"/>
+                <filter string="Pending" name="filter_pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter string="In Progress" name="filter_in_progress"
+                        domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Done" name="filter_done"
+                        domain="[('state', '=', 'done')]"/>
+                <filter string="Inspected" name="filter_inspected"
+                        domain="[('state', '=', 'inspected')]"/>
+                <filter string="Do Not Disturb" name="filter_dnd"
+                        domain="[('state', '=', 'dnd')]"/>
+                <filter string="Refused" name="filter_refused"
+                        domain="[('state', '=', 'refused')]"/>
+                <separator/>
+                <filter string="My Tasks" name="filter_my_tasks"
+                        domain="[('attendant_user_id', '=', uid)]"/>
+                <filter string="State" name="group_by_state"
+                        context="{'group_by': 'state'}"/>
+                <filter string="Attendant" name="group_by_attendant"
+                        context="{'group_by': 'attendant_user_id'}"/>
+                <filter string="Task Type" name="group_by_task_type"
+                        context="{'group_by': 'task_type'}"/>
+                <filter string="Priority" name="group_by_priority"
+                        context="{'group_by': 'priority'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action for accessing the Housekeeping Board
+     through kanban, list, and form views, with pending and
+     in-progress tasks displayed by default. -->
+    <record id="action_hk_task" model="ir.actions.act_window">
+        <field name="name">Housekeeping Board</field>
+        <field name="res_model">hospitality.housekeeping.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_hk_task_search"/>
+        <field name="context">{'search_default_filter_pending': 1,
+            'search_default_filter_in_progress': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No housekeeping tasks yet.
+            </p>
+        </field>
+    </record>
+
+</odoo>

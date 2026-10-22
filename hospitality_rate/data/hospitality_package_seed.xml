@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Transaction Codes (seed for RATE-05)
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="transaction_code_breakfast_incl"
+                model="hospitality.transaction.code">
+            <field name="name">Breakfast Inclusion</field>
+            <field name="code">BREAKFAST_INCL</field>
+            <field name="category">fnb</field>
+            <field name="sign">debit</field>
+        </record>
+
+        <record id="transaction_code_welcome_wine"
+                model="hospitality.transaction.code">
+            <field name="name">Welcome Wine</field>
+            <field name="code">WELCOME_WINE</field>
+            <field name="category">fnb</field>
+            <field name="sign">debit</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Package: BB — Bed & Breakfast
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="package_bb" model="hospitality.package">
+            <field name="name">Bed &amp; Breakfast</field>
+            <field name="code">BB</field>
+        </record>
+
+        <record id="package_bb_inclusion_breakfast"
+                model="hospitality.package.inclusion">
+            <field name="package_id" ref="package_bb"/>
+            <field name="transaction_code_id"
+                   ref="transaction_code_breakfast_incl"/>
+            <field name="qty">1</field>
+            <field name="value">15.0</field>
+            <field name="posting_rhythm">per_pax_per_night</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Package: HONEYMOON
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="package_honeymoon" model="hospitality.package">
+            <field name="name">Honeymoon</field>
+            <field name="code">HONEYMOON</field>
+        </record>
+
+        <record id="package_honeymoon_inclusion_breakfast"
+                model="hospitality.package.inclusion">
+            <field name="package_id" ref="package_honeymoon"/>
+            <field name="transaction_code_id"
+                   ref="transaction_code_breakfast_incl"/>
+            <field name="qty">1</field>
+            <field name="value">15.0</field>
+            <field name="posting_rhythm">per_pax_per_night</field>
+        </record>
+
+        <record id="package_honeymoon_inclusion_wine"
+                model="hospitality.package.inclusion">
+            <field name="package_id" ref="package_honeymoon"/>
+            <field name="transaction_code_id"
+                   ref="transaction_code_welcome_wine"/>
+            <field name="qty">1</field>
+            <field name="value">50.0</field>
+            <field name="posting_rhythm">per_stay</field>
+        </record>
+
+    </data>
+</odoo>

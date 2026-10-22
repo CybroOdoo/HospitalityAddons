@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.code — Tree View
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_code_tree" model="ir.ui.view">
+        <field name="name">hospitality.rate.code.tree</field>
+        <field name="model">hospitality.rate.code</field>
+        <field name="arch" type="xml">
+            <list string="Rate Codes">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="property_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'expired'"
+                       decoration-muted="state == 'inactive'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.code — Form View
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_code_form" model="ir.ui.view">
+        <field name="name">hospitality.rate.code.form</field>
+        <field name="model">hospitality.rate.code</field>
+        <field name="arch" type="xml">
+            <form string="Rate Code">
+                <header>
+                    <button name="action_activate"
+                            string="Activate"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"
+                            groups="hospitality_rate.group_rate_manager"/>
+                    <button name="action_deactivate"
+                            string="Deactivate"
+                            type="object"
+                            invisible="state != 'active'"
+                            groups="hospitality_rate.group_rate_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,expired,inactive"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <group>
+                        <group name="main_info">
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="property_id"/>
+                            <field name="type"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group name="validity">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="group_only"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="General" name="general">
+                            <group>
+                                <group string="Market &amp; Source">
+                                    <field name="market_segment_id"/>
+                                    <field name="source_code_id"/>
+                                </group>
+                                <group string="Policies">
+                                    <field name="cancellation_policy_id"/>
+                                    <field name="deposit_policy_id"/>
+                                </group>
+                            </group>
+                            <group string="Derivation">
+                                <field name="derive_method"/>
+                                <field name="base_rate_code_id"
+                                       invisible="derive_method == 'none'"
+                                       required="derive_method != 'none'"/>
+                                <field name="derive_value"
+                                       invisible="derive_method == 'none'"
+                                       required="derive_method != 'none'"/>
+                            </group>
+                            <group string="Package"
+                                   invisible="type != 'package'">
+                                <field name="package_id"/>
+                            </group>
+                        </page>
+                        <page string="Pricing Grid" name="pricing_grid">
+                            <field name="plan_ids"
+                                   context="{'default_rate_code_id': id}">
+                                <list>
+                                    <field name="space_type_id" domain="[('property_id', '=', property_id)]"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="occupancy_pricing"/>
+                                    <field name="price_double"/>
+                                    <field name="weekday_mask"
+                                           widget="weekday_mask"/>
+                                    <field name="currency_id"
+                                           column_invisible="1"/>
+                                    <field name="property_id"
+                                           column_invisible="1"/>
+                                </list>
+                                <form string="Rate Plan">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="space_type_id" domain="[('property_id', '=', property_id)]"/>
+                                                <field name="date_from"/>
+                                                <field name="date_to"/>
+                                                <field name="currency_id"
+                                                       invisible="1"/>
+                                            </group>
+                                            <group>
+                                                <field name="occupancy_pricing"/>
+                                                <field name="price_single"
+                                                       invisible="occupancy_pricing == 'occupancy_grid'"/>
+                                                <field name="price_double"
+                                                       invisible="occupancy_pricing == 'occupancy_grid'"/>
+                                                <field name="price_extra_adult"
+                                                       invisible="occupancy_pricing != 'per_pax'"/>
+                                                <field name="price_extra_child"
+                                                       invisible="occupancy_pricing != 'per_pax'"/>
+                                            </group>
+                                        </group>
+                                        <group string="Weekday Availability">
+                                            <field name="weekday_mask"
+                                                   widget="weekday_mask"
+                                                   nolabel="1"/>
+                                        </group>
+                                        <group string="Occupancy Grid"
+                                               invisible="occupancy_pricing != 'occupancy_grid'">
+                                            <field name="occupancy_grid_ids"
+                                                   nolabel="1"
+                                                   context="{'default_currency_id': currency_id}">
+                                                <list editable="bottom">
+                                                    <field name="adults"/>
+                                                    <field name="children"/>
+                                                    <field name="price"/>
+                                                    <field name="currency_id"
+                                                           column_invisible="1"/>
+                                                </list>
+                                            </field>
+                                        </group>
+                                        <field name="notes"
+                                               placeholder="Internal notes about this rate plan..."/>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Restrictions" name="restrictions">
+                            <field name="restriction_ids"
+                                   context="{'default_rate_code_id': id}">
+                                <list>
+                                    <field name="space_type_id" domain="[('property_id', '=', property_id)]"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="closed"/>
+                                    <field name="cta"/>
+                                    <field name="ctd"/>
+                                    <field name="min_stay"/>
+                                    <field name="max_stay"/>
+                                    <field name="no_show_charge_pct"/>
+                                </list>
+                                <form string="Rate Restriction">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="space_type_id" domain="[('property_id', '=', property_id)]"/>
+                                                <field name="date_from"/>
+                                                <field name="date_to"/>
+                                            </group>
+                                            <group>
+                                                <field name="closed"/>
+                                                <field name="cta"/>
+                                                <field name="ctd"/>
+                                            </group>
+                                        </group>
+                                        <group>
+                                            <group>
+                                                <field name="min_stay"/>
+                                                <field name="max_stay"/>
+                                            </group>
+                                            <group>
+                                                <field name="no_show_charge_pct"/>
+                                            </group>
+                                        </group>
+                                        <field name="notes"
+                                               placeholder="Internal notes..."/>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Packages" name="packages"
+                              invisible="type != 'package'">
+                            <group>
+                                <field name="package_id"/>
+                            </group>
+                        </page>
+                        <page string="Channels" name="channels" >
+                            <field name="channel_ids">
+                                <list>
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Audit" name="audit"
+                              groups="hospitality_rate.group_rate_admin">
+                            <field name="audit_ids" readonly="1">
+                                <list>
+                                    <field name="changed_at"/>
+                                    <field name="changed_by"/>
+                                    <field name="model"/>
+                                    <field name="record_id"/>
+                                    <field name="reason"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"
+                                   placeholder="Internal notes about this rate code..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.code — Search View
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_rate_code_search" model="ir.ui.view">
+        <field name="name">hospitality.rate.code.search</field>
+        <field name="model">hospitality.rate.code</field>
+        <field name="arch" type="xml">
+            <search string="Rate Codes">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="market_segment_id"/>
+                <filter string="Draft" name="filter_draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Active" name="filter_active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter string="Expired" name="filter_expired"
+                        domain="[('state', '=', 'expired')]"/>
+                <filter string="Inactive" name="filter_inactive"
+                        domain="[('state', '=', 'inactive')]"/>
+                <filter string="Public" name="filter_public"
+                        domain="[('type', '=', 'public')]"/>
+                <filter string="Corporate" name="filter_corporate"
+                        domain="[('type', '=', 'corporate')]"/>
+                <filter string="Package" name="filter_package"
+                        domain="[('type', '=', 'package')]"/>
+                <filter string="Group" name="filter_group"
+                        domain="[('type', '=', 'group')]"/>
+                <filter string="Archived" name="filter_archived"
+                        domain="[('active', '=', False)]"/>
+                <filter string="Property" name="group_property"
+                        context="{'group_by': 'property_id'}"/>
+                <filter string="Type" name="group_type"
+                        context="{'group_by': 'type'}"/>
+                <filter string="Market Segment" name="group_market_segment"
+                        context="{'group_by': 'market_segment_id'}"/>
+                <filter string="Status" name="group_state"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         hospitality.rate.code — Action
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_hospitality_rate_code" model="ir.actions.act_window">
+        <field name="name">Rate Codes</field>
+        <field name="res_model">hospitality.rate.code</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Rate Code
+            </p>
+            <p>
+                Rate codes define pricing strategies for your properties.
+            </p>
+        </field>
+    </record>
+
+</odoo>

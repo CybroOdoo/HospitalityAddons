@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Daily revenue pivot view for KPI analysis -->
+        <record id="view_hospitality_kpi_daily_revenue_pivot" model="ir.ui.view">
+            <field name="name">hospitality.kpi.daily.revenue.pivot</field>
+            <field name="model">hospitality.kpi.daily</field>
+            <field name="arch" type="xml">
+                <pivot string="Daily Revenue Summary" disable_linking="1">
+                    <field name="business_date" type="row" interval="day"/>
+                    <field name="room_revenue" type="measure"/>
+                    <field name="fnb_revenue" type="measure"/>
+                    <field name="other_revenue" type="measure"/>
+                    <field name="total_revenue" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Action to open daily revenue summary analysis -->
+        <record id="action_daily_revenue_summary" model="ir.actions.act_window">
+            <field name="name">Daily Revenue Summary</field>
+            <field name="res_model">hospitality.kpi.daily</field>
+            <field name="view_mode">pivot,list</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_hospitality_kpi_daily_revenue_pivot')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_hospitality_kpi_daily_list')})]"/>
+            <field name="search_view_id" ref="view_hospitality_kpi_daily_search"/>
+            <field name="context">{'search_default_filter_this_month': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nobutton">
+                    No KPI snapshots yet for this period. Rows here are written
+                    automatically by step 8 of the night audit — run a night
+                    audit for a property to see its first row.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu entry for daily revenue summary -->
+        <menuitem id="menu_daily_revenue_summary"
+                  name="Daily Revenue Summary"
+                  parent="menu_hospitality_reporting_dashboards"
+                  action="action_daily_revenue_summary"
+                  sequence="15"
+                  groups="hospitality_reporting.group_reporting_user,hospitality_reporting.group_reporting_manager"/>
+
+    </data>
+</odoo>

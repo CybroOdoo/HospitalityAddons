@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Report action — Folio Tape
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_report_folio_tape" model="ir.actions.report">
+        <field name="name">Folio Statement</field>
+        <field name="model">hospitality.folio</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hospitality_folio.report_folio_tape</field>
+        <field name="report_file">hospitality_folio.report_folio_tape</field>
+        <field name="print_report_name">'Folio-%s' % (object.name,)</field>
+        <field name="binding_model_id" ref="model_hospitality_folio"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         QWeb template — report_folio_tape
+    ═══════════════════════════════════════════════════════════════ -->
+    <template id="report_folio_tape">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="folio">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: monospace; font-size: 11px;">
+                        <div style="border-bottom: 2px solid #333; padding-bottom: 6px; margin-bottom: 10px;">
+                            <table width="100%" style="border-collapse: collapse;">
+                                <tr>
+                                    <td width="60%">
+                                        <strong style="font-size: 14px;">
+                                            <t t-esc="folio.property_id.name or ''"/>
+                                        </strong><br/>
+                                        <t t-if="folio.property_id.partner_id">
+                                            <t t-esc="folio.property_id.partner_id.street or ''"/><br/>
+                                            <t t-esc="folio.property_id.partner_id.city or ''"/>
+                                            <t t-if="folio.property_id.partner_id.zip">
+                                                , <t t-esc="folio.property_id.partner_id.zip"/>
+                                            </t>
+                                        </t>
+                                    </td>
+                                    <td width="40%" style="text-align: right;">
+                                        <strong>FOLIO STATEMENT</strong><br/>
+                                        Folio #: <t t-esc="folio.name"/><br/>
+                                        Date: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="border: 1px solid #ccc; padding: 6px; margin-bottom: 10px; background: #f9f9f9;">
+                            <table width="100%" style="border-collapse: collapse;">
+                                <tr>
+                                    <td width="50%">
+                                        <strong>Guest:</strong>
+                                        <t t-esc="folio.partner_id.name or ''"/>
+                                    </td>
+                                    <td width="50%">
+                                        <t t-if="folio.reservation_id">
+                                            <strong>Room:</strong>
+                                            <t t-esc="folio.reservation_id.space_id.name if folio.reservation_id.space_id else ''"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <strong>Arrival:</strong>
+                                        <t t-esc="folio.opening_date.strftime('%d/%m/%Y') if folio.opening_date else ''"/>
+                                    </td>
+                                    <td>
+                                        <strong>Departure:</strong>
+                                        <t t-esc="folio.closing_date.strftime('%d/%m/%Y') if folio.closing_date else 'In House'"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <table width="100%" style="border-collapse: collapse; margin-bottom: 10px;">
+                            <thead>
+                                <tr style="background: #333; color: white;">
+                                    <th style="padding: 4px 6px; text-align: left; width: 12%;">Date</th>
+                                    <th style="padding: 4px 6px; text-align: left; width: 38%;">Description</th>
+                                    <th style="padding: 4px 6px; text-align: right; width: 15%;">Charges</th>
+                                    <th style="padding: 4px 6px; text-align: right; width: 15%;">Payments</th>
+                                    <th style="padding: 4px 6px; text-align: right; width: 20%;">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="tape_lines" t-value="folio.line_ids.filtered(lambda l: not l.is_void and l.transaction_code_id and l.transaction_code_id.show_on_folio)"/>
+                                <t t-set="running_balance" t-value="0.0"/>
+                                <t t-foreach="tape_lines.sorted(key=lambda l: (l.post_date, l.id))" t-as="line">
+                                    <t t-set="is_payment" t-value="line.transaction_type in ('payment', 'write_off')"/>
+                                    <t t-set="running_balance" t-value="running_balance + line.amount_total"/>
+                                    <tr style="border-bottom: 1px solid #eee;">
+                                        <td style="padding: 3px 6px;">
+                                            <t t-esc="line.post_date.strftime('%d/%m/%Y') if line.post_date else ''"/>
+                                        </td>
+                                        <td style="padding: 3px 6px;">
+                                            <t t-esc="line.description or line.transaction_code_id.name or ''"/>
+                                            <t t-if="line.reference">
+                                                <br/><small style="color: #666;">Ref: <t t-esc="line.reference"/></small>
+                                            </t>
+                                        </td>
+                                        <td style="padding: 3px 6px; text-align: right;">
+                                            <t t-if="not is_payment">
+                                                <t t-esc="'{:,.2f}'.format(line.amount_total)"/>
+                                            </t>
+                                        </td>
+                                        <td style="padding: 3px 6px; text-align: right;">
+                                            <t t-if="is_payment">
+                                                <t t-esc="'{:,.2f}'.format(abs(line.amount_total))"/>
+                                            </t>
+                                        </td>
+                                        <td style="padding: 3px 6px; text-align: right;"
+                                            t-attf-style="color: {{ 'red' if running_balance &gt; 0 else 'green' }};">
+                                            <t t-esc="'{:,.2f}'.format(running_balance)"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <t t-if="not tape_lines">
+                                    <tr>
+                                        <td colspan="5" style="padding: 10px; text-align: center; color: #999;">
+                                            No transactions to display.
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div style="border-top: 2px solid #333; padding-top: 8px;">
+                            <table width="100%" style="border-collapse: collapse;">
+                                <tr>
+                                    <td width="50%"/>
+                                    <td width="50%">
+                                        <table width="100%" style="border-collapse: collapse;">
+                                            <tr>
+                                                <td style="padding: 3px 6px;"><strong>Total Charges:</strong></td>
+                                                <td style="padding: 3px 6px; text-align: right;">
+                                                    <t t-esc="'{:,.2f}'.format(folio.total_charges)"/>
+                                                    <t t-esc="' ' + folio.currency_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 3px 6px;"><strong>Total Taxes:</strong></td>
+                                                <td style="padding: 3px 6px; text-align: right;">
+                                                    <t t-esc="'{:,.2f}'.format(folio.total_taxes)"/>
+                                                    <t t-esc="' ' + folio.currency_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 3px 6px;"><strong>Total Payments:</strong></td>
+                                                <td style="padding: 3px 6px; text-align: right;">
+                                                    <t t-esc="'{:,.2f}'.format(folio.total_payments)"/>
+                                                    <t t-esc="' ' + folio.currency_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr style="border-top: 1px solid #333; font-size: 13px;">
+                                                <td style="padding: 5px 6px;"><strong>Balance Due:</strong></td>
+                                                <td style="padding: 5px 6px; text-align: right;"
+                                                    t-attf-style="font-weight: bold; color: {{ 'red' if folio.balance &gt; 0 else 'green' }};">
+                                                    <t t-esc="'{:,.2f}'.format(folio.balance)"/>
+                                                    <t t-esc="' ' + folio.currency_id.name"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="margin-top: 40px;">
+                            <table width="100%" style="border-collapse: collapse;">
+                                <tr>
+                                    <td width="45%" style="border-top: 1px solid #333; padding-top: 4px; text-align: center;">
+                                        Guest Signature
+                                    </td>
+                                    <td width="10%"/>
+                                    <td width="45%" style="border-top: 1px solid #333; padding-top: 4px; text-align: center;">
+                                        Cashier Signature
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="margin-top: 20px; font-size: 9px; color: #aaa; text-align: right;">
+                            Printed: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M:%S')"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

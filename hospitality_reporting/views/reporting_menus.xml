@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             Dashboards — nested under the Hospitality app's existing
+             "Reports" tab (hospitality_base.menu_hospitality_reports),
+             alongside other business kit modules' report menus (see
+             e.g. menu_hk_reports in hospitality_housekeeping).
+        ============================================================ -->
+        <menuitem id="menu_hospitality_reporting_dashboards"
+                  name="Dashboards"
+                  parent="hospitality_base.menu_hospitality_reports"
+                  sequence="10"
+                  groups="hospitality_reporting.group_reporting_user,hospitality_reporting.group_reporting_manager"/>
+
+        <!-- Placeholder: cross-segment drills / export (REP-02+),
+             restricted to managers only. -->
+        <menuitem id="menu_hospitality_reporting_exports"
+                  name="Exports"
+                  parent="hospitality_base.menu_hospitality_reports"
+                  sequence="20"
+                  groups="hospitality_reporting.group_reporting_manager"/>
+
+    </data>
+</odoo>

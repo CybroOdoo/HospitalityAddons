@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Login - split brand panel.
+
+        WHY THESE XPATHS
+        ================
+        `//form` is the obvious anchor and web.login does contain one,
+        but when `website` is installed the page renders inside the
+        website shell and the FIRST <form> in the document is the
+        header's search bar - which puts the panel in the header.
+
+        These anchors come from web.login itself:
+          * div#oe_structure_login_top  sits immediately before the form
+          * input[@name='csrf_token']   is the form's first child
+        Both are ids/attributes rather than positions, so they survive
+        layout changes between point releases.
+
+        Odoo's own email and password inputs are untouched: no field is
+        added, removed or replaced. Only the panel, the heading and the
+        submit label change.
+    -->
+    <template id="login_brand_panel"
+              inherit_id="web.login"
+              name="Hospitality Login - Brand Panel">
+
+        <xpath expr="//div[@id='oe_structure_login_top']" position="after">
+            <div class="ht_login_brand" aria-hidden="true">
+                <div class="ht_login_glow ht_login_glow_brass"/>
+                <div class="ht_login_glow ht_login_glow_blue"/>
+
+                <!-- One centred lockup: logo, company, rule, slogan. The
+                     logo sits on its own light plate so the artwork reads
+                     whatever its colour - company logos are usually dark,
+                     and on the ink panel an unplated one disappears. -->
+                <div class="ht_login_lockup">
+                    <span class="ht_login_logo">
+                        <img src="/web/binary/company_logo" alt=""/>
+                    </span>
+                    <span class="ht_login_company"
+                          t-out="request.env.company.name"/>
+                    <span class="ht_login_rule"/>
+                    <p class="ht_login_slogan"
+                       t-out="request.env['ir.config_parameter'].sudo()
+                              .get_param('hospitality_theme.login_slogan',
+                                         'Behind every great stay.')"/>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- web.login ships no heading; the design calls for one. -->
+        <xpath expr="//form//input[@name='csrf_token']" position="after">
+            <div class="ht_login_head">
+                <h1 class="ht_login_title">Sign in</h1>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('oe_login_buttons')]/button[@type='submit']"
+               position="replace">
+            <button type="submit" class="btn btn-primary">Sign in</button>
+        </xpath>
+
+    </template>
+
+    <!--
+        "Reset Password" -> "Forgot?", matching the design. auth_signup
+        injects that link into label[@for='password'], so this inherits
+        auth_signup.login; the module is in depends so it always resolves.
+    -->
+    <template id="login_forgot_label"
+              inherit_id="auth_signup.login"
+              name="Hospitality Login - Forgot label">
+        <xpath expr="//label[@for='password']//a" position="replace">
+            <a t-if="reset_password_enabled" class="ht_login_forgot"
+               tabindex="1"
+               t-attf-href="/web/reset_password?{{ keep_query() }}">Forgot?</a>
+        </xpath>
+    </template>
+
+</odoo>

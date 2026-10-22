@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- List view for configuring auto-start night audit settings on properties. -->
+        <record id="view_hospitality_property_auto_audit_list" model="ir.ui.view">
+            <field name="name">hospitality.property.auto.audit.list</field>
+            <field name="model">hospitality.property</field>
+            <field name="arch" type="xml">
+                <list string="Properties — Auto-Audit Settings" editable="bottom">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="business_date"/>
+                    <field name="auto_audit"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Window action to open the auto-audit property settings list. -->
+        <record id="action_hospitality_property_auto_audit" model="ir.actions.act_window">
+            <field name="name">Auto-Audit Settings</field>
+            <field name="res_model">hospitality.property</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_hospitality_property_auto_audit_list"/>
+        </record>
+
+        <!-- The Auto-Audit Settings menu moved to
+             hospitality_night_audit_menus.xml. Its parent is now
+             menu_night_audit_run, which that file declares, and this
+             file loads BEFORE it - a parent= pointing forwards would
+             fail to resolve at install. -->
+
+    </data>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             Client action — renders the FloorPlanView OWL component
+        ============================================================ -->
+        <record id="action_floor_plan_client" model="ir.actions.client">
+            <field name="name">Floor Plan</field>
+            <field name="tag">hospitality_floor_plan</field>
+            <field name="context">{}</field>
+        </record>
+
+    </data>
+</odoo>

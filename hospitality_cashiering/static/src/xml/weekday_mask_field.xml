@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hospitality_rate.WeekdayMaskField">
+        <div class="o_field_weekday_mask d-flex flex-row gap-1" role="group">
+            <t t-foreach="days" t-as="day" t-key="day.bit">
+                <span t-att-title="day.title"
+                      t-on-click="() => this.onToggle(day.bit)"
+                      t-attf-class="o_weekday_mask_chip badge rounded-pill
+                        {{ isActive(day.bit) ? 'text-bg-primary' : 'text-bg-light border' }}
+                        {{ isEditable ? 'o_weekday_mask_chip_editable' : '' }}">
+                    <t t-esc="day.label"/>
+                </span>
+            </t>
+        </div>
+    </t>
+
+</templates>

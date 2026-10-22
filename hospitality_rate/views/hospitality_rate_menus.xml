@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <!-- Rates is a ROOT menu (an app of its own): revenue management is
+         a different job from cashiering, and this is six screens' worth
+         of it. -->
+    <menuitem id="menu_hospitality_rates" name="Rates"
+              web_icon="hospitality_rate,static/description/icon.png"
+              sequence="80"
+              groups="hospitality_rate.group_rate_user,hospitality_base.group_hospitality_admin"/>
+
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Rate Codes
+    ═══════════════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_hospitality_rate_code"
+              name="Rate Codes"
+              parent="menu_hospitality_rates"
+              action="action_hospitality_rate_code"
+              groups="hospitality_rate.group_rate_user,hospitality_base.group_hospitality_admin"
+              sequence="5"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Rate Plans
+    ═══════════════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_hospitality_rate_plan"
+              name="Rate Plans"
+              parent="menu_hospitality_rates"
+              action="action_hospitality_rate_plan"
+              groups="hospitality_rate.group_rate_user,hospitality_base.group_hospitality_admin"
+              sequence="10"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Rate Calendar
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_rate_calendar" model="ir.actions.client">
+        <field name="name">Rate Calendar</field>
+        <field name="tag">hospitality_rate.rate_calendar</field>
+    </record>
+
+    <menuitem id="menu_rate_calendar"
+              name="Rate Calendar"
+              parent="menu_hospitality_rates"
+              action="action_rate_calendar"
+              groups="hospitality_rate.group_rate_user,hospitality_base.group_hospitality_admin"
+              sequence="15"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Restrictions Matrix
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="action_restrictions_matrix" model="ir.actions.client">
+        <field name="name">Restrictions Matrix</field>
+        <field name="tag">hospitality_rate.restrictions_matrix</field>
+    </record>
+
+    <menuitem id="menu_restrictions_matrix"
+              name="Restrictions"
+              parent="menu_hospitality_rates"
+              action="action_restrictions_matrix"
+              groups="hospitality_rate.group_rate_user,hospitality_base.group_hospitality_admin"
+              sequence="20"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Packages
+    ═══════════════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_hospitality_package"
+              name="Packages"
+              parent="menu_hospitality_rates"
+              action="action_hospitality_package"
+              groups="hospitality_rate.group_rate_user,hospitality_base.group_hospitality_admin"
+              sequence="30"/>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Rate Changes / Audit Log
+    ═══════════════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_hospitality_rate_audit"
+              name="Rate Changes"
+              parent="menu_hospitality_rates"
+              action="action_hospitality_rate_audit"
+              groups="hospitality_rate.group_rate_admin,hospitality_base.group_hospitality_admin"
+              sequence="90"/>
+
+<!--    &lt;!&ndash;-->
+<!--        menuitem's groups attribute links groups but does not remove groups-->
+<!--        left by older menu definitions. Replace each menu's group set on-->
+<!--        upgrade so broad legacy groups cannot keep exposing Rate menus.-->
+<!--    &ndash;&gt;-->
+<!--    <record id="menu_hospitality_rates" model="ir.ui.menu">-->
+<!--        <field name="group_ids" eval="[(6, 0, [ref('hospitality_rate.group_rate_user'), ref('hospitality_base.group_hospitality_admin')])]"/>-->
+<!--    </record>-->
+<!--    <record id="menu_hospitality_rate_code" model="ir.ui.menu">-->
+<!--        <field name="group_ids" eval="[(6, 0, [ref('hospitality_rate.group_rate_user'), ref('hospitality_base.group_hospitality_admin')])]"/>-->
+<!--    </record>-->
+<!--    <record id="menu_hospitality_rate_plan" model="ir.ui.menu">-->
+<!--        <field name="group_ids" eval="[(6, 0, [ref('hospitality_rate.group_rate_user'), ref('hospitality_base.group_hospitality_admin')])]"/>-->
+<!--    </record>-->
+<!--    <record id="menu_rate_calendar" model="ir.ui.menu">-->
+<!--        <field name="group_ids" eval="[(6, 0, [ref('hospitality_rate.group_rate_user'), ref('hospitality_base.group_hospitality_admin')])]"/>-->
+<!--    </record>-->
+<!--    <record id="menu_restrictions_matrix" model="ir.ui.menu">-->
+<!--        <field name="group_ids" eval="[(6, 0, [ref('hospitality_rate.group_rate_user'), ref('hospitality_base.group_hospitality_admin')])]"/>-->
+<!--    </record>-->
+<!--    <record id="menu_hospitality_package" model="ir.ui.menu">-->
+<!--        <field name="group_ids" eval="[(6, 0, [ref('hospitality_rate.group_rate_user'), ref('hospitality_base.group_hospitality_admin')])]"/>-->
+<!--    </record>-->
+<!--    <record id="menu_hospitality_rate_audit" model="ir.ui.menu">-->
+<!--        <field name="group_ids" eval="[(6, 0, [ref('hospitality_rate.group_rate_admin'), ref('hospitality_base.group_hospitality_admin')])]"/>-->
+<!--    </record>-->
+</odoo>

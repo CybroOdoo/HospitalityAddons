@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         hospitality.contract.terminate.wizard — Form view
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_contract_terminate_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.contract.terminate.wizard.form</field>
+        <field name="model">hospitality.contract.terminate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Terminate Contract">
+                <group>
+                    <field name="contract_id" readonly="1"/>
+                    <field name="reason" placeholder="State the reason for termination…"/>
+                </group>
+                <footer>
+                    <button name="action_terminate"
+                            string="Terminate Contract"
+                            type="object"
+                            class="btn-danger"
+                            groups="hospitality_company_profile.group_corporate_manager"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- "Guests" sub-menu under Configuration -->
+    <menuitem id="menu_hospitality_config_guests"
+              name="Guests"
+              parent="hospitality_base.menu_hospitality_config"
+              sequence="10"/>
+
+    <!-- Preferences -->
+    <menuitem id="menu_guest_preference_config"
+              name="Preferences"
+              parent="menu_hospitality_config_guests"
+              action="hospitality_guest_profile.action_guest_preference"
+              sequence="10"/>
+
+    <!-- Dietary Restrictions -->
+    <menuitem id="menu_dietary_config"
+              name="Dietary Restrictions"
+              parent="menu_hospitality_config_guests"
+              action="hospitality_guest_profile.action_hospitality_dietary"
+              sequence="20"/>
+
+
+    <!-- ================================================================
+         Server action — Merge Duplicate Guests
+    ================================================================ -->
+    <record id="action_merge_duplicate_guests" model="ir.actions.server">
+        <field name="name">Merge Duplicate Guests</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Merge Duplicate Guests',
+    'res_model': 'base.partner.merge.automatic.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {
+        'active_ids': env['res.partner'].search([('is_guest', '=', True)]).ids,
+        'active_model': 'res.partner',
+        'default_state': 'selection',
+    },
+}
+        </field>
+    </record>
+
+    <!-- Guests menu item for the merge action -->
+    <menuitem id="menu_merge_duplicate_guests"
+              name="Merge Duplicate Guests"
+              parent="hospitality_base.menu_hospitality_guests"
+              action="action_merge_duplicate_guests"
+              sequence="90"
+              groups="hospitality_guest_profile.group_guest_pii"/>
+
+</odoo>

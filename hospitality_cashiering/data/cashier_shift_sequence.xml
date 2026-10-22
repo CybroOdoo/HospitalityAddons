@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Sequence used to generate unique references for cashier shifts.
+        Format: CSH/YYYY/00001 -->
+        <record id="seq_hospitality_cashier_shift" model="ir.sequence">
+            <field name="name">Hospitality Cashier Shift</field>
+            <field name="code">hospitality.cashier.shift</field>
+            <field name="prefix">CSH/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

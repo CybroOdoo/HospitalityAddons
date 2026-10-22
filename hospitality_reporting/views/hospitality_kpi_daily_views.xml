@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             List view — one row per (property, business_date) snapshot.
+             Core KPIs shown by default; flow counts collapsed behind
+             the optional-columns toggle to keep the default view usable.
+        ============================================================ -->
+        <record id="view_hospitality_kpi_daily_list" model="ir.ui.view">
+            <field name="name">hospitality.kpi.daily.list</field>
+            <field name="model">hospitality.kpi.daily</field>
+            <field name="arch" type="xml">
+                <list string="Daily KPIs" default_order="business_date desc, property_id">
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="property_id"/>
+                    <field name="business_date"/>
+                    <field name="occupancy_pct" widget="percentage"/>
+                    <field name="adr" widget="monetary"/>
+                    <field name="rev_par" widget="monetary"/>
+                    <field name="room_revenue" widget="monetary" optional="show"/>
+                    <field name="fnb_revenue" widget="monetary" optional="show"/>
+                    <field name="other_revenue" widget="monetary" optional="hide"/>
+                    <field name="total_revenue" widget="monetary"/>
+                    <field name="rooms_available" optional="hide"/>
+                    <field name="rooms_sold" optional="hide"/>
+                    <field name="rooms_ooo" optional="hide"/>
+                    <field name="rooms_complimentary" optional="hide"/>
+                    <field name="arrivals" optional="hide"/>
+                    <field name="departures" optional="hide"/>
+                    <field name="no_shows" optional="hide"/>
+                    <field name="walkins" optional="hide"/>
+                    <field name="cancellations" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Form view — read at a glance; raw counters editable only
+             by whoever has write access per ir.model.access.csv
+             (Reporting Manager / system), matching the model's own
+             access rights rather than re-restricting in the view.
+        ============================================================ -->
+        <record id="view_hospitality_kpi_daily_form" model="ir.ui.view">
+            <field name="name">hospitality.kpi.daily.form</field>
+            <field name="model">hospitality.kpi.daily</field>
+            <field name="arch" type="xml">
+                <form string="Daily KPI Snapshot">
+                    <sheet>
+                        <field name="currency_id" invisible="1"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="property_id" required="1"/>
+                            </h1>
+                            <field name="business_date" required="1"/>
+                        </div>
+                        <group>
+                            <group string="Headline KPIs">
+                                <field name="occupancy_pct" widget="percentage"/>
+                                <field name="adr" widget="monetary"/>
+                                <field name="rev_par" widget="monetary"/>
+                                <field name="total_revenue" widget="monetary"/>
+                            </group>
+                            <group string="Room Inventory">
+                                <field name="rooms_available"/>
+                                <field name="rooms_sold"/>
+                                <field name="rooms_ooo"/>
+                                <field name="rooms_complimentary"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Revenue" name="revenue">
+                                <group>
+                                    <field name="room_revenue" widget="monetary"/>
+                                    <field name="fnb_revenue" widget="monetary"/>
+                                    <field name="other_revenue" widget="monetary"/>
+                                </group>
+                            </page>
+                            <page string="Flow" name="flow">
+                                <group>
+                                    <field name="arrivals"/>
+                                    <field name="departures"/>
+                                    <field name="no_shows"/>
+                                    <field name="walkins"/>
+                                    <field name="cancellations"/>
+                                </group>
+                            </page>
+                            <page string="Breakdowns" name="breakdowns">
+                                <group col="2">
+                                    <group string="By Market Segment">
+                                        <field name="segment_breakdown_display" nolabel="1"/>
+                                    </group>
+                                    <group string="By Source">
+                                        <field name="source_breakdown_display" nolabel="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Search view — filter by recency, group by property or
+             business date for quick property/date comparisons.
+        ============================================================ -->
+        <record id="view_hospitality_kpi_daily_search" model="ir.ui.view">
+            <field name="name">hospitality.kpi.daily.search</field>
+            <field name="model">hospitality.kpi.daily</field>
+            <field name="arch" type="xml">
+                <search string="Search Daily KPIs">
+                    <field name="property_id"/>
+                    <field name="business_date"/>
+                    <filter string="Today" name="filter_today"
+                            domain="[('business_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last 7 Days" name="filter_last_7_days"
+                            domain="[('business_date', '&gt;=', (context_today() - relativedelta(days=6)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month" name="filter_this_month"
+                            domain="[('business_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                    <separator/>
+                    <filter string="Property" name="groupby_property" context="{'group_by': 'property_id'}"/>
+                    <filter string="Business Date" name="groupby_business_date" context="{'group_by': 'business_date'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Pivot view — property x date grid over the core KPI
+             measures, for quick cross-property comparison / export.
+        ============================================================ -->
+        <record id="view_hospitality_kpi_daily_pivot" model="ir.ui.view">
+            <field name="name">hospitality.kpi.daily.pivot</field>
+            <field name="model">hospitality.kpi.daily</field>
+            <field name="arch" type="xml">
+                <pivot string="Daily KPIs" disable_linking="1">
+                    <field name="property_id" type="row"/>
+                    <field name="business_date" type="col" interval="day"/>
+                    <field name="occupancy_pct" type="measure" widget="percentage"/>
+                    <field name="adr" type="measure"/>
+                    <field name="rev_par" type="measure"/>
+                    <field name="room_revenue" type="measure"/>
+                    <field name="fnb_revenue" type="measure"/>
+                    <field name="other_revenue" type="measure"/>
+                    <field name="total_revenue" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Graph view — occupancy / RevPAR trend over business_date,
+             per property.
+        ============================================================ -->
+        <record id="view_hospitality_kpi_daily_graph" model="ir.ui.view">
+            <field name="name">hospitality.kpi.daily.graph</field>
+            <field name="model">hospitality.kpi.daily</field>
+            <field name="arch" type="xml">
+                <graph string="Occupancy &amp; RevPAR Trend" type="line">
+                    <field name="business_date" type="row" interval="day"/>
+                    <field name="property_id" type="row"/>
+                    <field name="occupancy_pct" type="measure"/>
+                    <field name="rev_par" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             Action — list is the landing view (managers can also flip
+             to pivot/graph for cross-property drills; both groups have
+             at least read access per ir.model.access.csv).
+        ============================================================ -->
+        <record id="action_hospitality_kpi_daily" model="ir.actions.act_window">
+            <field name="name">Daily KPIs</field>
+            <field name="res_model">hospitality.kpi.daily</field>
+            <field name="view_mode">list,form,pivot,graph</field>
+            <field name="search_view_id" ref="view_hospitality_kpi_daily_search"/>
+            <field name="context">{'search_default_groupby_property': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nobutton">
+                    No KPI snapshots yet. Rows here are written
+                    automatically by step 8 of the night audit — run a
+                    night audit for a property to see its first
+                    snapshot.
+                </p>
+            </field>
+        </record>
+
+        <!-- Wire the action into the REP-01 placeholder "Dashboards"
+             menu (menu_hospitality_reporting_dashboards), same
+             group visibility as its parent. -->
+        <menuitem id="menu_hospitality_reporting_kpi_daily"
+                  name="Daily KPIs"
+                  parent="menu_hospitality_reporting_dashboards"
+                  action="action_hospitality_kpi_daily"
+                  sequence="10"
+                  groups="hospitality_reporting.group_reporting_user,hospitality_reporting.group_reporting_manager"/>
+
+    </data>
+</odoo>

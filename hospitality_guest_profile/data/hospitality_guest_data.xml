@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================
+             Guest Preferences
+        ============================================================ -->
+        <record id="pref_high_floor" model="hospitality.guest.preference">
+            <field name="name">High Floor</field>
+            <field name="code">HIGH_FLOOR</field>
+            <field name="category">room_attribute</field>
+            <field name="description">Guest prefers a room on an upper floor.</field>
+        </record>
+
+        <record id="pref_low_floor" model="hospitality.guest.preference">
+            <field name="name">Low Floor</field>
+            <field name="code">LOW_FLOOR</field>
+            <field name="category">room_attribute</field>
+            <field name="description">Guest prefers a room on a lower floor (e.g. accessibility, fear of heights).</field>
+        </record>
+
+        <record id="pref_away_elev" model="hospitality.guest.preference">
+            <field name="name">Away from Elevator</field>
+            <field name="code">AWAY_ELEV</field>
+            <field name="category">room_attribute</field>
+            <field name="description">Guest prefers a room away from elevator noise.</field>
+        </record>
+
+        <record id="pref_near_elev" model="hospitality.guest.preference">
+            <field name="name">Near Elevator</field>
+            <field name="code">NEAR_ELEV</field>
+            <field name="category">room_attribute</field>
+            <field name="description">Guest prefers a room close to the elevator for convenience.</field>
+        </record>
+
+        <record id="pref_quiet" model="hospitality.guest.preference">
+            <field name="name">Quiet Room</field>
+            <field name="code">QUIET</field>
+            <field name="category">room_attribute</field>
+            <field name="description">Guest prefers a quiet room away from street or function rooms.</field>
+        </record>
+
+        <record id="pref_feather_pillow" model="hospitality.guest.preference">
+            <field name="name">Feather Pillow</field>
+            <field name="code">FEATHER_PILLOW</field>
+            <field name="category">room_attribute</field>
+            <field name="description">Guest requests feather-filled pillows.</field>
+        </record>
+
+        <record id="pref_hypo_pillow" model="hospitality.guest.preference">
+            <field name="name">Hypoallergenic Pillow</field>
+            <field name="code">HYPO_PILLOW</field>
+            <field name="category">room_attribute</field>
+            <field name="description">Guest requires hypoallergenic, feather-free pillows.</field>
+        </record>
+
+        <record id="pref_extra_towels" model="hospitality.guest.preference">
+            <field name="name">Extra Towels</field>
+            <field name="code">EXTRA_TOWELS</field>
+            <field name="category">service</field>
+            <field name="description">Guest requests additional towels to be provided at check-in.</field>
+        </record>
+
+        <record id="pref_turndown_pm" model="hospitality.guest.preference">
+            <field name="name">Evening Turndown Service</field>
+            <field name="code">TURNDOWN_PM</field>
+            <field name="category">service</field>
+            <field name="description">Guest requests evening turndown / bed preparation service.</field>
+        </record>
+
+        <record id="pref_late_hk" model="hospitality.guest.preference">
+            <field name="name">Late Housekeeping</field>
+            <field name="code">LATE_HK</field>
+            <field name="category">service</field>
+            <field name="description">Guest prefers housekeeping service in the afternoon rather than morning.</field>
+        </record>
+
+        <!-- ============================================================
+             Dietary Restrictions
+        ============================================================ -->
+
+        <record id="dietary_veg" model="hospitality.dietary">
+            <field name="name">Vegetarian</field>
+            <field name="code">VEG</field>
+            <field name="icon">fa-leaf</field>
+            <field name="description">No meat or fish; dairy and eggs are permitted.</field>
+        </record>
+
+        <record id="dietary_vegan" model="hospitality.dietary">
+            <field name="name">Vegan</field>
+            <field name="code">VEGAN</field>
+            <field name="icon">fa-seedling</field>
+            <field name="description">No animal products of any kind including dairy, eggs, and honey.</field>
+        </record>
+
+        <record id="dietary_gf" model="hospitality.dietary">
+            <field name="name">Gluten-Free</field>
+            <field name="code">GF</field>
+            <field name="icon">fa-ban</field>
+            <field name="description">No gluten-containing grains (wheat, barley, rye). May be medical (coeliac).</field>
+        </record>
+
+        <record id="dietary_halal" model="hospitality.dietary">
+            <field name="name">Halal</field>
+            <field name="code">HALAL</field>
+            <field name="icon">fa-moon</field>
+            <field name="description">Food prepared according to Islamic dietary law.</field>
+        </record>
+
+        <record id="dietary_kosher" model="hospitality.dietary">
+            <field name="name">Kosher</field>
+            <field name="code">KOSHER</field>
+            <field name="icon">fa-star-of-david</field>
+            <field name="description">Food prepared according to Jewish dietary law.</field>
+        </record>
+
+        <record id="dietary_nut_allergy" model="hospitality.dietary">
+            <field name="name">Nut Allergy</field>
+            <field name="code">NUT_ALLERGY</field>
+            <field name="icon">fa-exclamation-triangle</field>
+            <field name="description">Allergy to tree nuts and/or peanuts. Potentially life-threatening — flag for kitchen.</field>
+        </record>
+
+        <record id="dietary_lactose_free" model="hospitality.dietary">
+            <field name="name">Lactose-Free</field>
+            <field name="code">LACTOSE_FREE</field>
+            <field name="icon">fa-tint-slash</field>
+            <field name="description">Cannot consume lactose; dairy-free or lactase-treated products required.</field>
+        </record>
+
+        <record id="dietary_pescatarian" model="hospitality.dietary">
+            <field name="name">Pescatarian</field>
+            <field name="code">PESCATARIAN</field>
+            <field name="icon">fa-fish</field>
+            <field name="description">No meat but fish and other seafood are permitted.</field>
+        </record>
+
+    </data>
+</odoo>

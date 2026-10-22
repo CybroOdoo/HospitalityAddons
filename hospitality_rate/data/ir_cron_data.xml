@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Cron: Expire Rate Codes Daily
+    ═══════════════════════════════════════════════════════════════════ -->
+    <record id="cron_expire_rate_codes" model="ir.cron">
+        <field name="name">Hospitality: Expire Rate Codes</field>
+        <field name="model_id" ref="model_hospitality_rate_code"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_rate_codes()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

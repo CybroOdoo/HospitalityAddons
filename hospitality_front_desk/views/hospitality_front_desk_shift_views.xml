@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for front desk shift records. -->
+    <record id="view_fd_shift_list" model="ir.ui.view">
+        <field name="name">hospitality.front.desk.shift.list</field>
+        <field name="model">hospitality.front.desk.shift</field>
+        <field name="arch" type="xml">
+            <list string="Front Desk Shifts" decoration-success="state == 'open'"
+                  decoration-muted="state == 'closed'">
+                <field name="user_id"/>
+                <field name="property_id"/>
+                <field name="started_at"/>
+                <field name="ended_at"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'open'"
+                       decoration-muted="state == 'closed'"/>
+                <button name="action_close_shift" string="Close Shift" type="object"
+                        invisible="state != 'open'" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for managing front desk shifts. -->
+    <record id="view_fd_shift_form" model="ir.ui.view">
+        <field name="name">hospitality.front.desk.shift.form</field>
+        <field name="model">hospitality.front.desk.shift</field>
+        <field name="arch" type="xml">
+            <form string="Front Desk Shift">
+                <header>
+                    <button name="action_close_shift" string="Close Shift" type="object"
+                            invisible="state != 'open'" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="property_id"/>
+                        </group>
+                        <group>
+                            <field name="started_at"/>
+                            <field name="ended_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="opening_notes"/>
+                        <field name="closing_notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view with filters and grouping for shifts. -->
+    <record id="view_fd_shift_search" model="ir.ui.view">
+        <field name="name">hospitality.front.desk.shift.search</field>
+        <field name="model">hospitality.front.desk.shift</field>
+        <field name="arch" type="xml">
+            <search string="Search Shifts">
+                <field name="user_id"/>
+                <field name="property_id"/>
+                <filter name="open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <filter name="group_by_property" string="Property"
+                        context="{'group_by': 'property_id'}"/>
+                <filter name="group_by_user" string="Agent"
+                        context="{'group_by': 'user_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action to open the Front Desk Shifts views. -->
+    <record id="action_fd_shift" model="ir.actions.act_window">
+        <field name="name">FD Shifts</field>
+        <field name="res_model">hospitality.front.desk.shift</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+    <!-- Client action that opens the OWL Front Desk Dashboard. -->
+    <record id="action_fd_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">hospitality_front_desk.fd_dashboard</field>
+    </record>
+
+    <!-- Menu entry for the Front Desk Dashboard. -->
+    <menuitem id="menu_fd_dashboard"
+              name="Dashboard"
+              parent="hospitality_base.menu_hm_front_office"
+              action="action_fd_dashboard"
+              sequence="5"/>
+
+    <!-- Menu entry for Front Desk Shift management. -->
+    <menuitem id="menu_fd_shift"
+              name="FD Shifts"
+              parent="hospitality_base.menu_hm_front_office"
+              action="action_fd_shift"
+              sequence="60"/>
+
+</odoo>

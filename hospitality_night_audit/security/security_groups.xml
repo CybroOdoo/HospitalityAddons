@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="group_night_auditor" model="res.groups">
+            <field name="name">Night Auditor</field>
+            <field name="comment">Allows running the night audit wizard and advancing the property business date.</field>
+        </record>
+
+        <!-- NA-04: force-close is a supervisor-only override. Implies
+             group_night_auditor so a supervisor can also do everything
+             a regular auditor can. -->
+        <record id="group_night_audit_supervisor" model="res.groups">
+            <field name="name">Night Audit Supervisor</field>
+            <field name="comment">Can force-close a night audit run even when steps have failed.</field>
+            <field name="implied_ids" eval="[(4, ref('group_night_auditor'))]"/>
+            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+
+        </record>
+
+    </data>
+</odoo>

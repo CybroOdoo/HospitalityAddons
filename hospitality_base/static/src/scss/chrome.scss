@@ -1,0 +1,258 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Backend chrome: navbar, apps button and the icon rail.
+//
+// Scope rule: every selector here is either one of our own .ht_* classes
+// or a navbar/action-manager selector that the rail layout needs. Views,
+// buttons, inputs, modals, Discuss and the Chatter are untouched and
+// keep Odoo's own styling.
+
+// One class per tint family, generated from the map so the drawer tiles
+// and the rail plates can never drift apart.
+//
+// The tint colours the GLYPH, not the plate. Every plate is the same
+// material, which is what makes a mixed grid of app artwork and
+// monograms read as one set; a pastel chip beside a full-colour Odoo
+// icon does not. Which half of the tint pair the glyph takes depends on
+// that shared material, and a material may override the tint entirely -
+// see $ht-plate-materials in variables.scss.
+@each $name, $tint in $ht-app-tints {
+    .ht_tint_#{$name} {
+        color: if($ht-plate-glyph-fixed,
+                  $ht-plate-glyph-fixed,
+                  map-get($tint, $ht-plate-glyph-key));
+    }
+}
+
+// ── Navbar ────────────────────────────────────────────────────────────
+.o_main_navbar {
+    background-color: $ht-ink;
+    border-bottom: 1px solid $ht-ink-line;
+}
+
+// Apps button: brass plate carrying a hospitality glyph.
+//
+// Odoo gives .o_navbar_apps_menu no padding of its own and the navbar
+// starts hard against the viewport edge, so the plate has to inset
+// itself; without that it sits in the very corner with its left edge
+// clipped by the window. The wrapper is centred on the full navbar
+// height rather than relying on the button's own box, which is what
+// left it riding high against the top border.
+.ht_apps_btn_wrap {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    height: $ht-navbar-height;
+    padding: 0 14px 0 12px;
+}
+
+.ht_apps_btn {
+    @include ht-plate($ht-apps-btn-size, 11px, 17px);
+    background: $ht-brass;
+    color: $ht-ink;
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    cursor: pointer;
+    transition: filter .15s ease, transform .15s ease;
+
+    &:hover {
+        filter: brightness(1.08);
+        transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+        outline: none;
+        box-shadow: $ht-focus-ring;
+    }
+}
+
+// FontAwesome's own metrics leave the glyph a shade low in a centred
+// box; the nudge puts it on the plate's optical centre.
+.ht_apps_btn_icon {
+    display: block;
+    line-height: 1;
+    transform: translateY(.5px);
+}
+
+// Sub-menu entries along the top. Odoo paints these with its own brand
+// colour (#71639E) rather than inheriting the navbar, so each entry is
+// reset to transparent on ink. This is still chrome: the dropdown
+// panels they open keep Odoo's styling.
+.o_main_navbar .o_menu_sections {
+    .o_nav_entry,
+    .dropdown-toggle {
+        background-color: transparent !important;
+        color: $ht-on-ink-2 !important;
+        border-radius: 6px;
+
+        &:hover,
+        &:focus {
+            background-color: $ht-ink-hover !important;
+            color: $ht-on-ink !important;
+        }
+    }
+
+    .o_nav_entry.active,
+    .show > .dropdown-toggle {
+        background-color: $ht-ink-raise !important;
+        color: $ht-on-ink !important;
+    }
+}
+
+// The current app name beside the brand.
+.o_main_navbar .o_menu_brand {
+    color: $ht-on-ink !important;
+    font-weight: 600;
+}
+
+// ── Business-date pill (systray) ──────────────────────────────────────
+.ht_date_systray {
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+}
+
+.ht_date_pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: $ht-radius-pill;
+    border: 1px solid $ht-ink-line-2;
+    background: rgba(255, 255, 255, .04);
+    color: $ht-brass;
+    @include ht-label;
+}
+
+.ht_live_dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $ht-ok;
+    flex: 0 0 auto;
+}
+
+// On the drawer the previous app's sections and name are stale: you
+// are not in that app any more. Hiding them is what makes the grid
+// button read as "back to all apps".
+body.ht_on_home .o_main_navbar {
+    .o_menu_sections,
+    .o_menu_brand { display: none !important; }
+}
+
+// ── Icon rail ─────────────────────────────────────────────────────────
+// Collapsed to icons; expands over the content on hover rather than
+// pushing it, so nothing reflows as the pointer crosses it.
+.ht_rail {
+    position: fixed;
+    top: $ht-navbar-height;
+    left: 0;
+    bottom: 0;
+    width: $ht-rail-width;
+    background: $ht-ink;
+    border-right: 1px solid $ht-ink-line;
+    padding: 10px 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: width .18s ease-in-out;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, .16) transparent;
+
+    &:hover { width: $ht-rail-width-open; }
+
+    @media (max-width: 768px) { display: none; }
+}
+
+// The drawer carries its own full-bleed surface.
+body.ht_on_home .ht_rail { display: none; }
+
+.ht_rail_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ht_rail_item { position: relative; }
+
+.ht_rail_link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 7px 0 7px 16px;
+    text-decoration: none;
+    color: $ht-on-ink-2;
+    @include ht-nowrap;
+
+    &:hover {
+        background: $ht-ink-hover;
+        color: $ht-on-ink;
+    }
+}
+
+// Active app: brass marker on the leading edge.
+.ht_rail_item.ht_current {
+    .ht_rail_link {
+        background: $ht-ink-raise;
+        color: $ht-on-ink;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 3px;
+        border-radius: 0 3px 3px 0;
+        background: $ht-brass;
+    }
+}
+
+// Rail plates take the same material as the drawer tiles, so an app
+// looks like itself in both places.
+.ht_rail_plate {
+    @include ht-plate(40px, 11px, 14px);
+    background-color: $ht-plate-bg;
+    border: 1px solid $ht-plate-border;
+
+    @if $ht-plate-image { background-image: $ht-plate-image; }
+}
+
+.ht_rail_icon {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 11px;
+    object-fit: contain;
+    background-color: $ht-plate-bg;
+    border: 1px solid $ht-plate-border;
+
+    @if $ht-plate-image { background-image: $ht-plate-image; }
+}
+
+// Name is revealed only while the rail is open.
+.ht_rail_name {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity .12s ease-in-out;
+    pointer-events: none;
+}
+
+.ht_rail:hover .ht_rail_name { opacity: 1; }
+
+// ── Content offset ────────────────────────────────────────────────────
+// The rail is fixed, so the action manager is inset to clear it. It is
+// NOT inset on the drawer, which runs full bleed.
+.o_action_manager {
+    margin-left: $ht-rail-width;
+
+    @media (max-width: 768px) { margin-left: 0; }
+}
+
+body.ht_on_home .o_action_manager { margin-left: 0; }

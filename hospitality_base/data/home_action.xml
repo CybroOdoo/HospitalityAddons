@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- The app drawer. Reached from the navbar's grid button, and
+             set as the landing page by models/res_users.py. -->
+        <record id="action_home" model="ir.actions.client">
+            <field name="name">Home</field>
+            <field name="tag">hospitality_home</field>
+            <field name="target">main</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+// Brand theme (hospitality.be.config.theme == 'brand').
+//
+// Leans on --be-primary-color for the surfaces themselves, not only for button
+// accents, so a property's colour tints the whole page. color-mix() is resolved
+// by the browser at render time rather than by the SCSS compiler, which is what
+// lets it combine with the per-request CSS variable; each one is preceded by a
+// flat fallback for browsers without color-mix() support.
+.be-theme-brand {
+    --be-canvas: #FAF9FC;
+    --be-canvas: color-mix(in srgb, var(--be-primary-color) 5%, #FFFFFF);
+    --be-surface: #FFFFFF;
+    --be-surface-sunken: #F4F3F8;
+    --be-surface-sunken: color-mix(in srgb, var(--be-primary-color) 8%, #FFFFFF);
+    --be-line: #E4E2EC;
+    --be-line: color-mix(in srgb, var(--be-primary-color) 14%, #FFFFFF);
+    --be-line-strong: #CFCBDC;
+    --be-line-strong: color-mix(in srgb, var(--be-primary-color) 28%, #FFFFFF);
+    --be-ink: #1F1D29;
+    --be-ink: color-mix(in srgb, var(--be-primary-color) 72%, #000000);
+    --be-ink-soft: #4C4958;
+    --be-muted: #7B7889;
+
+    .o_be_hero::before {
+        background:
+            linear-gradient(to top, rgba(10, 12, 20, .88) 0%, rgba(10, 12, 20, .5) 48%, rgba(10, 12, 20, .2) 100%),
+            radial-gradient(circle 700px at 15% 110%, var(--be-primary-color), transparent 72%);
+    }
+}

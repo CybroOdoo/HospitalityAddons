@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hospitality_reporting.ManagerFlashDashboard">
+        <div class="of-mf">
+
+            <!-- Header: title, property switcher, refresh -->
+            <div class="of-mf-header">
+                <div class="of-mf-header-title">
+                    <h2>Manager Flash</h2>
+                    <span class="of-mf-business-date" t-if="state.data and state.data.business_date">
+                        Business date: <t t-esc="state.data.business_date"/>
+                    </span>
+                </div>
+                <div class="of-mf-header-controls">
+                    <select class="of-mf-property-select"
+                            t-if="state.properties.length"
+                            t-on-change="onPropertyChange">
+                        <option t-foreach="state.properties" t-as="prop" t-key="prop.id"
+                                t-att-value="prop.id"
+                                t-att-selected="state.data and state.data.property_id === prop.id">
+                            <t t-esc="prop.name"/>
+                        </option>
+                    </select>
+                    <button class="btn btn-secondary of-mf-refresh" t-on-click="onRefreshClick">
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading / error states -->
+            <div class="of-mf-loading" t-if="state.loading">Loading Manager Flash…</div>
+            <div class="of-mf-error alert alert-danger" t-if="state.error and !state.loading">
+                <t t-esc="state.error"/>
+            </div>
+
+            <t t-if="!state.loading and !state.error and state.data">
+                <div class="of-mf-empty" t-if="!state.data.has_data">
+                    No KPI snapshot yet for this property. Run a night audit to populate
+                    Manager Flash.
+                </div>
+
+                <t t-if="state.data.has_data">
+                    <!-- Today's KPIs with day-over-day deltas -->
+                    <div class="of-mf-kpi-row">
+                        <div class="of-mf-kpi-card">
+                            <div class="of-mf-kpi-label">Occupancy</div>
+                            <div class="of-mf-kpi-value" t-esc="formatPct(state.data.kpis.occupancy_pct)"/>
+                            <div t-attf-class="of-mf-kpi-delta {{deltaClass(state.data.kpis.occupancy_pct_delta)}}"
+                                 t-esc="formatDelta(state.data.kpis.occupancy_pct_delta, {isPct: true})"/>
+                        </div>
+                        <div class="of-mf-kpi-card">
+                            <div class="of-mf-kpi-label">ADR</div>
+                            <div class="of-mf-kpi-value" t-esc="formatAmount(state.data.kpis.adr)"/>
+                            <div t-attf-class="of-mf-kpi-delta {{deltaClass(state.data.kpis.adr_delta)}}"
+                                 t-esc="formatDelta(state.data.kpis.adr_delta)"/>
+                        </div>
+                        <div class="of-mf-kpi-card">
+                            <div class="of-mf-kpi-label">RevPAR</div>
+                            <div class="of-mf-kpi-value" t-esc="formatAmount(state.data.kpis.rev_par)"/>
+                            <div t-attf-class="of-mf-kpi-delta {{deltaClass(state.data.kpis.rev_par_delta)}}"
+                                 t-esc="formatDelta(state.data.kpis.rev_par_delta)"/>
+                        </div>
+                        <div class="of-mf-kpi-card">
+                            <div class="of-mf-kpi-label">Room Revenue</div>
+                            <div class="of-mf-kpi-value" t-esc="formatAmount(state.data.kpis.room_revenue)"/>
+                            <div t-attf-class="of-mf-kpi-delta {{deltaClass(state.data.kpis.room_revenue_delta)}}"
+                                 t-esc="formatDelta(state.data.kpis.room_revenue_delta)"/>
+                        </div>
+                    </div>
+
+                    <div class="of-mf-mid-row">
+                        <!-- Tonight's in-house count + balance -->
+                        <div class="of-mf-panel of-mf-inhouse">
+                            <h3>Tonight</h3>
+                            <div class="of-mf-inhouse-stat">
+                                <span class="of-mf-inhouse-value" t-esc="state.data.in_house.count"/>
+                                <span class="of-mf-inhouse-label">In-House</span>
+                            </div>
+                            <div class="of-mf-inhouse-stat">
+                                <span class="of-mf-inhouse-value"
+                                      t-esc="formatAmount(state.data.in_house.balance)"/>
+                                <span class="of-mf-inhouse-label">Outstanding Balance</span>
+                            </div>
+                        </div>
+
+                        <!-- Arrivals / Departures / No-shows / Walk-ins -->
+                        <div class="of-mf-panel of-mf-flow">
+                            <h3>Flow</h3>
+                            <div class="of-mf-flow-grid">
+                                <div class="of-mf-flow-stat">
+                                    <span class="of-mf-flow-value" t-esc="state.data.flow.arrivals"/>
+                                    <span class="of-mf-flow-label">Arrivals</span>
+                                </div>
+                                <div class="of-mf-flow-stat">
+                                    <span class="of-mf-flow-value" t-esc="state.data.flow.departures"/>
+                                    <span class="of-mf-flow-label">Departures</span>
+                                </div>
+                                <div class="of-mf-flow-stat">
+                                    <span class="of-mf-flow-value" t-esc="state.data.flow.no_shows"/>
+                                    <span class="of-mf-flow-label">No-Shows</span>
+                                </div>
+                                <div class="of-mf-flow-stat">
+                                    <span class="of-mf-flow-value" t-esc="state.data.flow.walkins"/>
+                                    <span class="of-mf-flow-label">Walk-Ins</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Channel mix / Source mix donuts -->
+                    <div class="of-mf-donut-row">
+                        <div class="of-mf-panel of-mf-donut-panel">
+                            <h3>Channel Mix</h3>
+                            <div class="of-mf-donut-body">
+                                <div class="of-mf-donut" t-att-style="donutGradient(state.data.channel_mix)"/>
+                                <ul class="of-mf-legend">
+                                    <li t-foreach="mixWithShare(state.data.channel_mix)" t-as="m" t-key="m.label">
+                                        <span t-attf-class="of-mf-legend-dot of-mf-color-{{m.colorIndex}}"/>
+                                        <span class="of-mf-legend-label" t-esc="m.label"/>
+                                        <span class="of-mf-legend-share" t-esc="m.share"/>
+                                    </li>
+                                    <li t-if="!state.data.channel_mix.length" class="of-mf-legend-empty">
+                                        No data
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="of-mf-panel of-mf-donut-panel">
+                            <h3>Source Mix</h3>
+                            <div class="of-mf-donut-body">
+                                <div class="of-mf-donut" t-att-style="donutGradient(state.data.source_mix)"/>
+                                <ul class="of-mf-legend">
+                                    <li t-foreach="mixWithShare(state.data.source_mix)" t-as="m" t-key="m.label">
+                                        <span t-attf-class="of-mf-legend-dot of-mf-color-{{m.colorIndex}}"/>
+                                        <span class="of-mf-legend-label" t-esc="m.label"/>
+                                        <span class="of-mf-legend-share" t-esc="m.share"/>
+                                    </li>
+                                    <li t-if="!state.data.source_mix.length" class="of-mf-legend-empty">
+                                        No data
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+
+</templates>

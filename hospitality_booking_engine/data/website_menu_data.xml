@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+            Adds a "Book Now" entry to the website's main top navigation
+            so a real visitor can reach the booking engine without
+            knowing or typing the /booking URL directly. Without this,
+            /booking existed but was undiscoverable from the site itself.
+
+            parent_id assumes the standard Odoo website root menu
+            external ID (website.main_menu). If your site has multiple
+            websites configured, you may need a website_id field here
+            too, scoping this menu item to the correct one — omitted
+            for now since this project appears to be single-website.
+        -->
+        <record id="website_menu_booking" model="website.menu">
+            <field name="name">Book Now</field>
+            <field name="url">/booking</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">15</field>
+        </record>
+    </data>
+</odoo>

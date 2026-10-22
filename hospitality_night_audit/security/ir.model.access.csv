@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hospitality_night_audit_run_night_auditor,hospitality.night.audit.run.night_auditor,model_hospitality_night_audit_run,group_night_auditor,1,1,1,1
+access_hospitality_night_audit_step_night_auditor,hospitality.night.audit.step.night_auditor,model_hospitality_night_audit_step,group_night_auditor,1,1,1,1

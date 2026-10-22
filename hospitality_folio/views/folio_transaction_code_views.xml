@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+         TRANSACTION CODE — List View Extension
+    ================================================================ -->
+    <record id="view_hospitality_transaction_code_list_inherit"
+            model="ir.ui.view">
+        <field name="name">hospitality.transaction.code.list.inherit</field>
+        <field name="model">hospitality.transaction.code</field>
+        <field name="inherit_id" ref="hospitality_base.view_hospitality_transaction_code_list"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="transaction_type"
+                       widget="badge"
+                       decoration-success="transaction_type == 'payment'"
+                       decoration-warning="transaction_type == 'adjustment'"
+                       decoration-danger="transaction_type == 'write_off'"
+                       decoration-info="transaction_type == 'charge'"/>
+                <field name="requires_supervisor"/>
+            </field>
+        </field>
+    </record>
+
+
+    <!-- ================================================================
+         TRANSACTION CODE — Form View Extension
+    ================================================================ -->
+    <record id="view_hospitality_transaction_code_form_inherit" model="ir.ui.view">
+        <field name="name">hospitality.transaction.code.form.inherit</field>
+        <field name="model">hospitality.transaction.code</field>
+        <field name="inherit_id" ref="hospitality_base.view_hospitality_transaction_code_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category']" position="after">
+                <field name="transaction_type"/>
+                <field name="requires_supervisor"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- ================================================================
+         TRANSACTION CODE — Search View Extension
+    ================================================================ -->
+    <record id="view_hospitality_transaction_code_search_inherit" model="ir.ui.view">
+        <field name="name">hospitality.transaction.code.search.inherit</field>
+        <field name="model">hospitality.transaction.code</field>
+        <field name="inherit_id" ref="hospitality_base.view_hospitality_transaction_code_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='cat_deposit']" position="after">
+                <filter name="transaction_charge"
+                        string="Charges"
+                        domain="[('transaction_type', '=', 'charge')]"/>
+                <filter name="transaction_payment"
+                        string="Payments"
+                        domain="[('transaction_type', '=', 'payment')]"/>
+                <filter name="transaction_adjustment"
+                        string="Adjustments"
+                        domain="[('transaction_type', '=', 'adjustment')]"/>
+                <filter name="transaction_writeoff"
+                        string="Write Off"
+                        domain="[('transaction_type', '=', 'write_off')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================
+            TRANSACTION CODE — Menu Access Extension
+       ================================================================ -->
+    <record id="hospitality_base.menu_hospitality_transaction_codes"
+            model="ir.ui.menu">
+        <field name="group_ids"
+               eval="[(4, ref('hospitality_folio.group_folio_supervisor'))]"/>
+    </record>
+
+</odoo>

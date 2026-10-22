@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ── Charge codes ──────────────────────────────────────────── -->
+
+        <record id="tc_room" model="hospitality.transaction.code">
+            <field name="code">FOLIO_ROOM</field>
+            <field name="name">Room Charge</field>
+            <field name="transaction_type">charge</field>
+            <field name="category">room</field>
+            <field name="sign">debit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="tc_fb" model="hospitality.transaction.code">
+            <field name="code">FOLIO_FB</field>
+            <field name="name">Food &amp; Beverage</field>
+            <field name="transaction_type">charge</field>
+            <field name="category">fnb</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="tc_misc" model="hospitality.transaction.code">
+            <field name="code">FOLIO_MISC</field>
+            <field name="name">Miscellaneous Charge</field>
+            <field name="transaction_type">charge</field>
+            <field name="category">other_revenue</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ── Adjustment ────────────────────────────────────────────── -->
+
+        <record id="tc_adjust" model="hospitality.transaction.code">
+            <field name="code">FOLIO_ADJUST</field>
+            <field name="name">Adjustment</field>
+            <field name="transaction_type">adjustment</field>
+            <field name="requires_supervisor" eval="True"/>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ── Payment codes ─────────────────────────────────────────── -->
+
+        <record id="tc_cash" model="hospitality.transaction.code">
+            <field name="code">FOLIO_CASH</field>
+            <field name="name">Cash Payment</field>
+            <field name="transaction_type">payment</field>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="tc_cc" model="hospitality.transaction.code">
+            <field name="code">FOLIO_CC</field>
+            <field name="name">Credit Card Payment</field>
+            <field name="transaction_type">payment</field>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ── Write-off ──────────────────────────────────────────────── -->
+
+        <record id="tc_write_off" model="hospitality.transaction.code">
+            <field name="code">FOLIO_WRITE_OFF</field>
+            <field name="name">Write Off</field>
+            <field name="transaction_type">write_off</field>
+            <field name="requires_supervisor" eval="True"/>
+            <field name="category">payment</field>
+            <field name="sign">credit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ── Deposit codes (FOL-04) ─────────────────────────────────── -->
+
+        <record id="tc_deposit_in" model="hospitality.transaction.code">
+            <field name="code">FOLIO_DEPOSIT_IN</field>
+            <field name="name">Deposit Applied</field>
+            <field name="transaction_type">payment</field>
+            <field name="category">deposit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="tc_deposit_ref" model="hospitality.transaction.code">
+            <field name="code">FOLIO_DEPOSIT_REFUND</field>
+            <field name="name">Deposit Refund</field>
+            <field name="transaction_type">payment</field>
+            <field name="category">deposit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ── Allowance ─────────────────────────────────────────────── -->
+
+        <record id="tc_allowance" model="hospitality.transaction.code">
+            <field name="code">FOLIO_ALLOWANCE</field>
+            <field name="name">Allowance</field>
+            <field name="transaction_type">adjustment</field>
+            <field name="requires_supervisor" eval="True"/>
+            <field name="category">allowance</field>
+            <field name="sign">credit</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

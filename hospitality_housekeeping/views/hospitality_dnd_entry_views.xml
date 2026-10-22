@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for DND entries, displaying active and cleared
+     Do Not Disturb records with details such as space,
+     timestamps, users, and reason. -->
+    <record id="view_hk_dnd_entry_list" model="ir.ui.view">
+        <field name="name">hospitality.dnd.entry.list</field>
+        <field name="model">hospitality.dnd.entry</field>
+        <field name="arch" type="xml">
+            <list string="DND Entries" decoration-info="not cleared_at">
+                <field name="name"/>
+                <field name="space_id"/>
+                <field name="set_at"/>
+                <field name="set_by"/>
+                <field name="reason"/>
+                <field name="cleared_at"/>
+                <field name="cleared_by"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for viewing and managing individual DND entries.
+     Allows authorized users to clear active DND records and
+     review all recorded details. -->
+    <record id="view_hk_dnd_entry_form" model="ir.ui.view">
+        <field name="name">hospitality.dnd.entry.form</field>
+        <field name="model">hospitality.dnd.entry</field>
+        <field name="arch" type="xml">
+            <form string="DND Entry">
+                <header>
+                    <button name="action_clear" type="object"
+                            string="Clear DND" class="oe_highlight"
+                            invisible="cleared_at != False"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="space_id"/>
+                            <field name="set_at"/>
+                            <field name="set_by"/>
+                            <field name="reason"/>
+                        </group>
+                        <group>
+                            <field name="cleared_at"/>
+                            <field name="cleared_by"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view for DND entries, providing search fields,
+     filters for active and cleared records, and grouping
+     by space. -->
+    <record id="view_hk_dnd_entry_search" model="ir.ui.view">
+        <field name="name">hospitality.dnd.entry.search</field>
+        <field name="model">hospitality.dnd.entry</field>
+        <field name="arch" type="xml">
+            <search string="DND Entries">
+                <field name="name"/>
+                <field name="space_id"/>
+                <field name="set_by"/>
+                <filter string="Active" name="filter_active"
+                        domain="[('cleared_at', '=', False)]"/>
+                <filter string="Cleared" name="filter_cleared"
+                        domain="[('cleared_at', '!=', False)]"/>
+                <separator/>
+                <filter string="Room" name="group_by_space"
+                        context="{'group_by': 'space_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action for accessing DND entries through list and
+     form views, with the Active filter applied by default
+     to show uncleared records. -->
+    <record id="action_hk_dnd_entry" model="ir.actions.act_window">
+        <field name="name">DND</field>
+        <field name="res_model">hospitality.dnd.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hk_dnd_entry_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No DND entries logged yet.
+            </p>
+        </field>
+    </record>
+
+</odoo>

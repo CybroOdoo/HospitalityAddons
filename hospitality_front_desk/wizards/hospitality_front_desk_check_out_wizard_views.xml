@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Check-Out Wizard — dialog form
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_front_desk_check_out_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.front.desk.check.out.wizard.form</field>
+        <field name="model">hospitality.front.desk.check.out.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Check-Out">
+
+                <!-- ── Folio Summary ──────────────────────────────── -->
+                <group string="Folio Summary">
+                    <field name="reservation_id" readonly="id != False"/>
+                    <field name="folio_id" readonly="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="balance" readonly="1" widget="monetary"/>
+                </group>
+
+                <!-- ── Settlement ─────────────────────────────────── -->
+                <group string="Settlement">
+                    <field name="settle_now"/>
+                    <field name="settlement_method"
+                           required="settle_now == True"
+                           invisible="settle_now == False"/>
+                    <field name="late_checkout_fee" widget="monetary"/>
+                </group>
+
+                <!-- ── Invoice ────────────────────────────────────── -->
+                <group string="Invoice">
+                    <field name="email_invoice_to"
+                           placeholder="guest@example.com"/>
+                </group>
+
+                <!-- ── Guest Feedback ─────────────────────────────── -->
+                <group string="Guest Feedback">
+                    <field name="feedback_rating" widget="priority"/>
+                    <field name="feedback_text" placeholder="Optional comments…"/>
+                </group>
+
+                <footer>
+                    <button name="action_check_out"
+                            string="Check Out"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="q"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Window action that opens the wizard
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="action_front_desk_check_out_wizard" model="ir.actions.act_window">
+        <field name="name">Check Out</field>
+        <field name="res_model">hospitality.front.desk.check.out.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_front_desk_check_out_wizard_form"/>
+        <field name="target">new</field>
+        <field name="context">{'default_reservation_id': active_id}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Inherit reservation form — replace the direct Check Out button
+         with the wizard action button
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="view_reservation_form_fd_check_out_button" model="ir.ui.view">
+        <field name="name">hospitality.reservation.form.fd.check.out</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="inherit_id" ref="hospitality_reservation.view_reservation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_check_out']" position="replace">
+                <button name="%(hospitality_front_desk.action_front_desk_check_out_wizard)d"
+                        string="Check Out"
+                        type="action"
+                        class="btn-primary"
+                        invisible="state != 'checked_in'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         Fallback mail template for invoice email
+    ════════════════════════════════════════════════════════════════ -->
+    <record id="mail_template_folio_invoice" model="mail.template">
+        <field name="name">Folio Invoice — Check-Out</field>
+        <field name="model_id" ref="hospitality_folio.model_hospitality_folio"/>
+        <field name="subject">Your Invoice — {{ object.name }}</field>
+        <field name="body_html"><![CDATA[
+            <p>Dear {{ object.partner_id.name }},</p>
+            <p>Thank you for staying with us. Please find your invoice attached.</p>
+            <p>We hope to welcome you again soon.</p>
+        ]]></field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

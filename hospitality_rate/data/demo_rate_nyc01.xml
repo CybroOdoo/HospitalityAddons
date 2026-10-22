@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Rate Code: BAR — Best Available Rate (public, master)
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="rate_code_bar_nyc01" model="hospitality.rate.code">
+            <field name="name">Best Available Rate</field>
+            <field name="code">BAR</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="type">public</field>
+            <field name="derive_method">none</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Standard Room -->
+        <record id="rate_plan_bar_std_nyc01" model="hospitality.rate.plan">
+            <field name="rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="space_type_id"
+                   ref="hospitality_property.demo_stype_std_k"/>
+            <field name="date_from"
+                   eval="(datetime.today()).strftime('%Y-%m-%d')"/>
+            <field name="date_to"
+                   eval="(datetime.today() + timedelta(days=90)).strftime('%Y-%m-%d')"/>
+            <field name="occupancy_pricing">per_pax</field>
+            <field name="price_single">120.00</field>
+            <field name="price_double">150.00</field>
+            <field name="price_extra_adult">35.00</field>
+            <field name="price_extra_child">18.00</field>
+            <field name="weekday_mask">127</field>
+        </record>
+
+        <!-- Deluxe Room -->
+        <record id="rate_plan_bar_dlx_nyc01" model="hospitality.rate.plan">
+            <field name="rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="space_type_id"
+                   ref="hospitality_property.demo_stype_std_t"/>
+            <field name="date_from"
+                   eval="(datetime.today()).strftime('%Y-%m-%d')"/>
+            <field name="date_to"
+                   eval="(datetime.today() + timedelta(days=90)).strftime('%Y-%m-%d')"/>
+            <field name="occupancy_pricing">per_pax</field>
+            <field name="price_single">160.00</field>
+            <field name="price_double">200.00</field>
+            <field name="price_extra_adult">40.00</field>
+            <field name="price_extra_child">20.00</field>
+            <field name="weekday_mask">127</field>
+        </record>
+
+        <!-- Junior Suite -->
+        <record id="rate_plan_bar_jrs_nyc01" model="hospitality.rate.plan">
+            <field name="rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="space_type_id"
+                   ref="hospitality_property.demo_stype_dlx_k"/>
+            <field name="date_from"
+                   eval="(datetime.today()).strftime('%Y-%m-%d')"/>
+            <field name="date_to"
+                   eval="(datetime.today() + timedelta(days=90)).strftime('%Y-%m-%d')"/>
+            <field name="occupancy_pricing">per_pax</field>
+            <field name="price_single">220.00</field>
+            <field name="price_double">270.00</field>
+            <field name="price_extra_adult">50.00</field>
+            <field name="price_extra_child">25.00</field>
+            <field name="weekday_mask">127</field>
+        </record>
+
+        <!-- Executive Suite -->
+        <record id="rate_plan_bar_exs_nyc01" model="hospitality.rate.plan">
+            <field name="rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="space_type_id"
+                   ref="hospitality_property.demo_stype_jr_suite"/>
+            <field name="date_from"
+                   eval="(datetime.today()).strftime('%Y-%m-%d')"/>
+            <field name="date_to"
+                   eval="(datetime.today() + timedelta(days=90)).strftime('%Y-%m-%d')"/>
+            <field name="occupancy_pricing">per_pax</field>
+            <field name="price_single">300.00</field>
+            <field name="price_double">360.00</field>
+            <field name="price_extra_adult">60.00</field>
+            <field name="price_extra_child">30.00</field>
+            <field name="weekday_mask">127</field>
+        </record>
+
+        <!-- Penthouse -->
+        <record id="rate_plan_bar_pnt_nyc01" model="hospitality.rate.plan">
+            <field name="rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="space_type_id"
+                   ref="hospitality_property.demo_stype_acc"/>
+            <field name="date_from"
+                   eval="(datetime.today()).strftime('%Y-%m-%d')"/>
+            <field name="date_to"
+                   eval="(datetime.today() + timedelta(days=90)).strftime('%Y-%m-%d')"/>
+            <field name="occupancy_pricing">per_pax</field>
+            <field name="price_single">500.00</field>
+            <field name="price_double">600.00</field>
+            <field name="price_extra_adult">80.00</field>
+            <field name="price_extra_child">40.00</field>
+            <field name="weekday_mask">127</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Rate Code: CORP-ACME — Corporate rate derived from BAR (−10 %)
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="rate_code_corp_acme_nyc01" model="hospitality.rate.code">
+            <field name="name">Acme Corporation Rate</field>
+            <field name="code">CORP-ACME</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="type">corporate</field>
+            <field name="derive_method">percent</field>
+            <field name="derive_value">-10.0</field>
+            <field name="base_rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="state">active</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Rate Code: PKG-BB — Package rate backed by BB package
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <record id="rate_code_pkg_bb_nyc01" model="hospitality.rate.code">
+            <field name="name">Bed &amp; Breakfast Package</field>
+            <field name="code">PKG-BB</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="type">package</field>
+            <field name="derive_method">none</field>
+            <field name="package_id" ref="package_bb"/>
+            <field name="state">active</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════════
+             Restrictions on BAR
+        ═══════════════════════════════════════════════════════════════ -->
+
+        <!--
+            MLOS = 2 on Fri (bit 4) + Sat (bit 5) = 0b0110000 = 48
+            Applied across the full 90-day window.
+        -->
+        <record id="restriction_bar_mlos_fri_sat" model="hospitality.rate.restriction">
+            <field name="rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="date_from"
+                   eval="(datetime.today()).strftime('%Y-%m-%d')"/>
+            <field name="date_to"
+                   eval="(datetime.today() + timedelta(days=90)).strftime('%Y-%m-%d')"/>
+            <field name="min_stay">2</field>
+            <field name="weekday_mask">48</field>
+        </record>
+
+        <!-- Christmas Eve closed (fixed calendar date) -->
+        <record id="restriction_bar_xmas_eve_closed" model="hospitality.rate.restriction">
+            <field name="rate_code_id" ref="rate_code_bar_nyc01"/>
+            <field name="date_from">2026-12-24</field>
+            <field name="date_to">2026-12-24</field>
+            <field name="closed">True</field>
+        </record>
+
+    </data>
+</odoo>

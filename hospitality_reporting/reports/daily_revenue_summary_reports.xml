@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--
+            QWeb PDF report action for the Daily Revenue Summary.
+
+            This report is bound to the hospitality.kpi.daily model so that
+            users can generate a PDF directly from KPI snapshot records.
+        -->
+        <record id="action_report_daily_revenue_summary" model="ir.actions.report">
+            <field name="name">Daily Revenue Summary</field>
+            <field name="model">hospitality.kpi.daily</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hospitality_reporting.report_daily_revenue_summary</field>
+            <field name="report_file">hospitality_reporting.report_daily_revenue_summary</field>
+            <field name="binding_model_id" ref="model_hospitality_kpi_daily"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'Daily Revenue Summary - %s' % (object[:1].property_id.name or '')</field>
+        </record>
+
+    </data>
+</odoo>

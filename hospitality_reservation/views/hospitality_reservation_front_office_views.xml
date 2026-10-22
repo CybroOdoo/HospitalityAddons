@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Arrivals list view -->
+    <record id="view_reservation_arrivals_list" model="ir.ui.view">
+        <field name="name">hospitality.reservation.arrivals.list</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <list string="Arrivals" default_order="arrival_time asc" create="false">
+                <header>
+                    <button name="action_check_in" string="Check In" type="object"
+                            class="btn-primary"/>
+                    <button name="action_walk_guest" string="Walk Guest" type="object"
+                            class="btn-secondary"/>
+                    <button name="action_print_reg_card" string="Print Reg Card"
+                            type="object" class="btn-secondary"/>
+                    <button name="action_add_trace" string="Add Trace" type="object"
+                            class="btn-secondary"/>
+                </header>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vip_level" widget="badge"
+                       decoration-warning="vip_level == 'vip'"
+                       decoration-danger="vip_level == 'vvip'"/>
+                <field name="arrival_time" widget="float_time"/>
+                <field name="space_type_id"/>
+                <field name="space_id"/>
+                <field name="nights"/>
+                <field name="adults"/>
+                <field name="children"/>
+                <field name="deposit_paid"/>
+                <field name="guarantee_type"/>
+                <field name="trace_count" string="Open Traces"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Arrivals search view -->
+    <record id="view_reservation_arrivals_search" model="ir.ui.view">
+        <field name="name">hospitality.reservation.arrivals.search</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Arrivals">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="space_id"/>
+                <field name="vip_level"/>
+                <filter name="filter_vip" string="VIP / VVIP"
+                        domain="[('vip_level','in',('vip','vvip'))]"/>
+                <filter name="filter_no_deposit" string="Deposit Outstanding"
+                        domain="[('deposit_outstanding','=',True)]"/>
+                <separator/>
+                <filter name="group_space_type" string="Room Type"
+                        context="{'group_by': 'space_type_id'}"/>
+                <filter name="group_guarantee" string="Guarantee Type"
+                        context="{'group_by': 'guarantee_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action for Arrivals -->
+    <record id="action_reservation_arrivals" model="ir.actions.act_window">
+        <field name="name">Arrivals</field>
+        <field name="res_model">hospitality.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_reservation_arrivals_list"/>
+        <field name="search_view_id" ref="view_reservation_arrivals_search"/>
+        <field name="domain">[('state', '=', 'confirmed'), ('arrival', '=', context_today())]</field>
+        <field name="context">{'search_default_group_space_type': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No arrivals expected today.
+            </p>
+        </field>
+    </record>
+
+    <!-- Server action to open Arrivals -->
+    <record id="action_server_open_arrivals" model="ir.actions.server">
+        <field name="name">Arrivals</field>
+        <field name="model_id" ref="model_hospitality_reservation"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_arrivals()</field>
+    </record>
+
+    <!-- In-House list view -->
+    <record id="view_reservation_in_house_list" model="ir.ui.view">
+        <field name="name">hospitality.reservation.in.house.list</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <list string="In-House" default_order="space_id asc" create="false">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vip_level" widget="badge"
+                       decoration-warning="vip_level == 'vip'"
+                       decoration-danger="vip_level == 'vvip'"/>
+                <field name="space_id"/>
+                <field name="arrival"/>
+                <field name="departure"/>
+                <field name="nights_remaining"/>
+                <field name="balance" widget="monetary"
+                       decoration-danger="balance > 0"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- In-House search view -->
+    <record id="view_reservation_in_house_search" model="ir.ui.view">
+        <field name="name">hospitality.reservation.in.house.search</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <search string="In-House">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="space_id"/>
+                <filter name="filter_balance_due" string="Balance Due"
+                        domain="[('balance','&gt;',0)]"/>
+                <filter name="filter_departing_today" string="Departing Today"
+                        domain="[('departure','=',context_today())]"/>
+                <separator/>
+                <filter name="group_space" string="Room"
+                        context="{'group_by': 'space_id'}"/>
+                <filter name="group_space_type" string="Room Type"
+                        context="{'group_by': 'space_type_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action for In-House -->
+    <record id="action_reservation_in_house" model="ir.actions.act_window">
+        <field name="name">In-House</field>
+        <field name="res_model">hospitality.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_reservation_in_house_list"/>
+        <field name="search_view_id" ref="view_reservation_in_house_search"/>
+        <field name="domain">[('state', '=', 'checked_in')]</field>
+        <field name="context">{'search_default_group_space': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No guests currently in house.
+            </p>
+        </field>
+    </record>
+
+    <!-- Server action to open In-House -->
+    <record id="action_server_open_in_house" model="ir.actions.server">
+        <field name="name">In-House</field>
+        <field name="model_id" ref="model_hospitality_reservation"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_in_house()</field>
+    </record>
+
+    <!-- Departures list view -->
+    <record id="view_reservation_departures_list" model="ir.ui.view">
+        <field name="name">hospitality.reservation.departures.list</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <list string="Departures" default_order="expected_departure_time asc" create="false">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="space_id"/>
+                <field name="balance" widget="monetary"
+                       decoration-danger="balance > 0"/>
+                <field name="expected_departure_time" widget="float_time"/>
+                <field name="settlement_method"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Departures search view -->
+    <record id="view_reservation_departures_search" model="ir.ui.view">
+        <field name="name">hospitality.reservation.departures.search</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Departures">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="space_id"/>
+                <filter name="filter_balance_due" string="Balance Due"
+                        domain="[('balance','&gt;',0)]"/>
+                <separator/>
+                <filter name="group_settlement" string="Settlement Method"
+                        context="{'group_by': 'settlement_method'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action for Departures -->
+    <record id="action_reservation_departures" model="ir.actions.act_window">
+        <field name="name">Departures</field>
+        <field name="res_model">hospitality.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_reservation_departures_list"/>
+        <field name="search_view_id" ref="view_reservation_departures_search"/>
+        <field name="domain">[('state', '=', 'checked_in'), ('departure', '=', context_today())]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No departures expected today.
+            </p>
+        </field>
+    </record>
+
+    <!-- Server action to open Departures -->
+    <record id="action_server_open_departures" model="ir.actions.server">
+        <field name="name">Departures</field>
+        <field name="model_id" ref="model_hospitality_reservation"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_departures()</field>
+    </record>
+
+    <!-- Server action to open Trace Pickups -->
+    <record id="action_server_open_trace_pickup" model="ir.actions.server">
+        <field name="name">Trace Pickup</field>
+        <field name="model_id" ref="model_hospitality_reservation"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_trace_pickup()</field>
+    </record>
+
+    <!-- menu_front_office_root is gone. It was a container named
+         "Front Office" sitting directly inside the root also named
+         "Front Office", so the drawer and the sub-menu bar both read
+         "Front Office". Its reservation views now hang off
+         menu_reservation_root; the desk views that were under it
+         (Dashboard, Walk-In, FD Shifts, all from hospitality_front_desk)
+         moved up to the root itself. -->
+    <!-- Arrivals menu -->
+    <menuitem id="menu_reservation_arrivals"
+              name="Arrivals"
+              parent="menu_reservation_root"
+              action="action_server_open_arrivals"
+              sequence="10"
+              groups="hospitality_reservation.group_reservation_agent,hospitality_reservation.group_reservation_supervisor,hospitality_base.group_hospitality_admin"/>
+    <!-- In-House menu -->
+    <menuitem id="menu_reservation_in_house"
+              name="In-House"
+              parent="menu_reservation_root"
+              action="action_server_open_in_house"
+              sequence="20"
+              groups="hospitality_reservation.group_reservation_agent,hospitality_reservation.group_reservation_supervisor,hospitality_base.group_hospitality_admin"/>
+    <!-- Departures menu -->
+    <menuitem id="menu_reservation_departures"
+              name="Departures"
+              parent="menu_reservation_root"
+              action="action_server_open_departures"
+              sequence="30"
+              groups="hospitality_reservation.group_reservation_agent,hospitality_reservation.group_reservation_supervisor,hospitality_base.group_hospitality_admin"/>
+    <!-- Trace Pickup menu -->
+    <menuitem id="menu_trace_pickup"
+              name="Trace Pickup"
+              parent="menu_reservation_root"
+              action="action_server_open_trace_pickup"
+              sequence="40"
+              groups="hospitality_reservation.group_reservation_agent,hospitality_reservation.group_reservation_supervisor,hospitality_base.group_hospitality_admin"/>
+
+</odoo>

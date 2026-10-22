@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ── Fallback property (only created if none exists) ──────── -->
+        <record id="demo_property_folio" model="hospitality.property">
+            <field name="property_image" type="base64" file="hospitality_base/static/src/img/demo/prop_boutique.jpg"/>
+            <field name="name">Demo Boutique (Folio)</field>
+            <field name="code">DBF</field>
+        </record>
+
+        <!-- ── Partners ─────────────────────────────────────────────── -->
+        <record id="demo_partner_guest_alpha" model="res.partner">
+            <field name="name">Alice Demo Guest</field>
+            <field name="email">alice.demo@hospitality.test</field>
+        </record>
+
+        <record id="demo_partner_guest_beta" model="res.partner">
+            <field name="name">Bob Demo Guest</field>
+            <field name="email">bob.demo@hospitality.test</field>
+        </record>
+
+        <record id="demo_partner_company_payer" model="res.partner">
+            <field name="name">Horizon Corp (Demo)</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">ar@horizoncorp.demo</field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!--  Folio 1 — open / checked-in folio                         -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+
+        <record id="demo_folio_checked_in" model="hospitality.folio">
+            <field name="property_id" ref="demo_property_folio"/>
+            <field name="partner_id" ref="demo_partner_guest_alpha"/>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="state">open</field>
+            <field name="window_count">1</field>
+        </record>
+
+        <record id="demo_folio_checked_in_win1" model="hospitality.folio.window">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="sequence">1</field>
+            <field name="label">Room</field>
+            <field name="partner_id" ref="demo_partner_guest_alpha"/>
+        </record>
+
+        <!-- 3 ROOM charges -->
+        <record id="demo_line_ci_room1" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="window_id" ref="demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 1</field>
+            <field name="qty">1</field>
+            <field name="unit_price">150.00</field>
+            <field name="post_date">2026-03-01</field>
+            <field name="business_date">2026-03-01</field>
+        </record>
+
+        <record id="demo_line_ci_room2" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="window_id" ref="demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 2</field>
+            <field name="qty">1</field>
+            <field name="unit_price">150.00</field>
+            <field name="post_date">2026-03-02</field>
+            <field name="business_date">2026-03-02</field>
+        </record>
+
+        <record id="demo_line_ci_room3" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="window_id" ref="demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 3</field>
+            <field name="qty">1</field>
+            <field name="unit_price">150.00</field>
+            <field name="post_date">2026-03-03</field>
+            <field name="business_date">2026-03-03</field>
+        </record>
+
+        <!-- F&B charge -->
+        <record id="demo_line_ci_fnb" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="window_id" ref="demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="tc_fb"/>
+            <field name="description">Restaurant — Dinner</field>
+            <field name="qty">2</field>
+            <field name="unit_price">45.00</field>
+            <field name="post_date">2026-03-01</field>
+            <field name="business_date">2026-03-01</field>
+        </record>
+
+        <!-- Tax / surcharge line -->
+        <record id="demo_line_ci_tax" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="window_id" ref="demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="tc_misc"/>
+            <field name="description">City Tax</field>
+            <field name="qty">3</field>
+            <field name="unit_price">4.50</field>
+            <field name="post_date">2026-03-01</field>
+            <field name="business_date">2026-03-01</field>
+        </record>
+
+        <!-- 2 payments -->
+        <record id="demo_line_ci_pay1" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="window_id" ref="demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="tc_cc"/>
+            <field name="description">Credit Card Pre-Auth</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-200.00</field>
+            <field name="post_date">2026-03-01</field>
+            <field name="business_date">2026-03-01</field>
+        </record>
+
+        <record id="demo_line_ci_pay2" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_in"/>
+            <field name="window_id" ref="demo_folio_checked_in_win1"/>
+            <field name="transaction_code_id" ref="tc_cash"/>
+            <field name="description">Cash Top-Up</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-50.00</field>
+            <field name="post_date">2026-03-02</field>
+            <field name="business_date">2026-03-02</field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!--  Folio 2 — open folio                                       -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+
+        <record id="demo_folio_checked_out" model="hospitality.folio">
+            <field name="property_id" ref="demo_property_folio"/>
+            <field name="partner_id" ref="demo_partner_guest_beta"/>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="state">open</field>
+            <field name="window_count">1</field>
+        </record>
+
+        <record id="demo_folio_checked_out_win1" model="hospitality.folio.window">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="sequence">1</field>
+            <field name="label">Room</field>
+            <field name="partner_id" ref="demo_partner_guest_beta"/>
+        </record>
+
+        <!-- 3 ROOM charges (3 × 180 = 540) -->
+        <record id="demo_line_co_room1" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 1</field>
+            <field name="qty">1</field>
+            <field name="unit_price">180.00</field>
+            <field name="post_date">2026-02-26</field>
+            <field name="business_date">2026-02-26</field>
+        </record>
+
+        <record id="demo_line_co_room2" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 2</field>
+            <field name="qty">1</field>
+            <field name="unit_price">180.00</field>
+            <field name="post_date">2026-02-27</field>
+            <field name="business_date">2026-02-27</field>
+        </record>
+
+        <record id="demo_line_co_room3" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 3</field>
+            <field name="qty">1</field>
+            <field name="unit_price">180.00</field>
+            <field name="post_date">2026-02-28</field>
+            <field name="business_date">2026-02-28</field>
+        </record>
+
+        <!-- 2 F&B charges -->
+        <record id="demo_line_co_fnb1" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_fb"/>
+            <field name="description">Restaurant — Breakfast</field>
+            <field name="qty">1</field>
+            <field name="unit_price">28.00</field>
+            <field name="post_date">2026-02-27</field>
+            <field name="business_date">2026-02-27</field>
+        </record>
+
+        <record id="demo_line_co_fnb2" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_fb"/>
+            <field name="description">Bar — Mini-bar</field>
+            <field name="qty">1</field>
+            <field name="unit_price">35.00</field>
+            <field name="post_date">2026-02-28</field>
+            <field name="business_date">2026-02-28</field>
+        </record>
+
+        <!-- MISC -->
+        <record id="demo_line_co_misc" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_misc"/>
+            <field name="description">Laundry Service</field>
+            <field name="qty">1</field>
+            <field name="unit_price">22.00</field>
+            <field name="post_date">2026-02-27</field>
+            <field name="business_date">2026-02-27</field>
+        </record>
+
+        <!-- Tax line -->
+        <record id="demo_line_co_tax" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_misc"/>
+            <field name="description">Resort Fee</field>
+            <field name="qty">3</field>
+            <field name="unit_price">5.00</field>
+            <field name="post_date">2026-02-26</field>
+            <field name="business_date">2026-02-26</field>
+        </record>
+
+        <!-- 3 payments — total = 540 + 63 + 22 + 15 = 640; pay 640 to zero -->
+        <record id="demo_line_co_pay1" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_cc"/>
+            <field name="description">Credit Card — Check-in Deposit</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-300.00</field>
+            <field name="post_date">2026-02-26</field>
+            <field name="business_date">2026-02-26</field>
+        </record>
+
+        <record id="demo_line_co_pay2" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_cc"/>
+            <field name="description">Credit Card — Final Settlement</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-285.00</field>
+            <field name="post_date">2026-02-28</field>
+            <field name="business_date">2026-02-28</field>
+        </record>
+
+        <record id="demo_line_co_pay3" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_checked_out"/>
+            <field name="window_id" ref="demo_folio_checked_out_win1"/>
+            <field name="transaction_code_id" ref="tc_cash"/>
+            <field name="description">Cash — Gratuities</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-55.00</field>
+            <field name="post_date">2026-02-28</field>
+            <field name="business_date">2026-02-28</field>
+        </record>
+
+        <!-- Now close folio 2  -->
+        <record id="demo_folio_checked_out" model="hospitality.folio">
+            <field name="state">closed</field>
+            <field name="closing_date">2026-02-28</field>
+        </record>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!--  Folio 3 — routed F&B folio (2 windows)                    -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+
+        <record id="demo_folio_routed" model="hospitality.folio">
+            <field name="property_id" ref="demo_property_folio"/>
+            <field name="partner_id" ref="demo_partner_company_payer"/>
+            <field name="currency_id" ref="base.USD"/>
+            <field name="state">open</field>
+            <field name="window_count">2</field>
+        </record>
+
+        <!-- Window 1 — ROOM / company payer -->
+        <record id="demo_folio_routed_win1" model="hospitality.folio.window">
+            <field name="folio_id" ref="demo_folio_routed"/>
+            <field name="sequence">1</field>
+            <field name="label">Room (Company)</field>
+            <field name="partner_id" ref="demo_partner_company_payer"/>
+        </record>
+
+        <!-- Window 2 — F&B / guest payer -->
+        <record id="demo_folio_routed_win2" model="hospitality.folio.window">
+            <field name="folio_id" ref="demo_folio_routed"/>
+            <field name="sequence">2</field>
+            <field name="label">F&amp;B (Guest)</field>
+            <field name="partner_id" ref="demo_partner_guest_alpha"/>
+        </record>
+
+        <record id="demo_routing_fnb_to_win2" model="hospitality.routing.instruction">
+            <field name="name">F&amp;B → Guest Window (Demo)</field>
+            <field name="sequence">10</field>
+            <field name="active" eval="True"/>
+            <field name="category_filter">fnb</field>
+            <field name="target_folio_id" ref="demo_folio_routed"/>
+            <field name="target_window_id" ref="demo_folio_routed_win2"/>
+            <field name="target_window_seq">2</field>
+            <field name="percent">100.0</field>
+            <field name="max_amount">0.0</field>
+        </record>
+
+        <!-- ROOM → window 1 (company) -->
+        <record id="demo_line_routed_room1" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_routed"/>
+            <field name="window_id" ref="demo_folio_routed_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 1 (Company)</field>
+            <field name="qty">1</field>
+            <field name="unit_price">200.00</field>
+            <field name="post_date">2026-03-10</field>
+            <field name="business_date">2026-03-10</field>
+        </record>
+
+        <record id="demo_line_routed_room2" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_routed"/>
+            <field name="window_id" ref="demo_folio_routed_win1"/>
+            <field name="transaction_code_id" ref="tc_room"/>
+            <field name="description">Room Charge — Night 2 (Company)</field>
+            <field name="qty">1</field>
+            <field name="unit_price">200.00</field>
+            <field name="post_date">2026-03-11</field>
+            <field name="business_date">2026-03-11</field>
+        </record>
+
+        <!-- F&B → window 2 (guest) -->
+        <record id="demo_line_routed_fnb" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_routed"/>
+            <field name="window_id" ref="demo_folio_routed_win2"/>
+            <field name="transaction_code_id" ref="tc_fb"/>
+            <field name="description">Restaurant — Dinner (Guest)</field>
+            <field name="qty">2</field>
+            <field name="unit_price">55.00</field>
+            <field name="post_date">2026-03-10</field>
+            <field name="business_date">2026-03-10</field>
+        </record>
+
+        <!-- Tax line -->
+        <record id="demo_line_routed_tax" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_routed"/>
+            <field name="window_id" ref="demo_folio_routed_win1"/>
+            <field name="transaction_code_id" ref="tc_misc"/>
+            <field name="description">City Tax</field>
+            <field name="qty">2</field>
+            <field name="unit_price">4.50</field>
+            <field name="post_date">2026-03-10</field>
+            <field name="business_date">2026-03-10</field>
+        </record>
+
+        <!-- Guest pays F&B via window 2 -->
+        <record id="demo_line_routed_pay_guest" model="hospitality.folio.line">
+            <field name="folio_id" ref="demo_folio_routed"/>
+            <field name="window_id" ref="demo_folio_routed_win2"/>
+            <field name="transaction_code_id" ref="tc_cc"/>
+            <field name="description">Credit Card — Guest F&amp;B</field>
+            <field name="qty">1</field>
+            <field name="unit_price">-110.00</field>
+            <field name="post_date">2026-03-11</field>
+            <field name="business_date">2026-03-11</field>
+        </record>
+
+    </data>
+</odoo>

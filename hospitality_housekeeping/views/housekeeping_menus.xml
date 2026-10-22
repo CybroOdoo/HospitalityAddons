@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- NOT noupdate. These records were flagged noupdate="1", which
+         means an upgrade never rewrites them: any later change to the
+         menu tree silently applied to new databases only. Menu structure
+         has to follow the module. -->
+    <data>
+
+        <!-- Housekeeping is a ROOT menu (an app of its own): its own
+             module, its own staff and its own shift, rather than a
+             section of Rooms. -->
+        <menuitem id="menu_hk_root"
+                  name="Housekeeping"
+                  web_icon="hospitality_housekeeping,static/description/icon.png"
+                  sequence="50"
+                  groups="group_hk_attendant"/>
+
+        <!-- Housekeeping Board — flattened directly under Operations,
+             alongside the other Front Office style entries.
+             HK-04: now opens the HK Board kanban (action_hk_board),
+             scoped to the current property's business date, rather
+             than the plain list-first action_hk_task. -->
+        <menuitem id="menu_hk_board"
+                  name="Housekeeping Board"
+                  parent="menu_hk_root"
+                  action="action_hk_board"
+                  sequence="51"
+                  groups="group_hk_attendant"/>
+
+        <menuitem id="menu_hk_dnd"
+                  name="DND"
+                  parent="menu_hk_root"
+                  action="action_hk_dnd_entry"
+                  sequence="15"
+                  groups="group_hk_attendant"/>
+
+        <menuitem id="menu_hk_assignments"
+                  name="Assignments"
+                  parent="menu_hk_root"
+                  sequence="20"
+                  groups="group_hk_supervisor"/>
+
+        <menuitem id="menu_hk_inspections"
+                  name="Inspections"
+                  parent="menu_hk_root"
+                  sequence="30"
+                  groups="group_hk_supervisor"/>
+
+        <menuitem id="menu_hk_lost_and_found"
+                  name="Lost &amp; Found"
+                  parent="menu_hk_root"
+                  action="action_hk_lost_found"
+                  sequence="40"
+                  groups="group_hk_supervisor"/>
+
+        <menuitem id="menu_hk_linen_count"
+                  name="Linen Counts"
+                  parent="menu_hk_root"
+                  action="action_hk_linen_count"
+                  sequence="50"
+                  groups="group_hk_supervisor"/>
+
+        <!-- Housekeepers — moved into the shared Hospitality
+             Configuration menu, alongside Folios, Deposits, etc. -->
+        <menuitem id="menu_hk_housekeepers"
+                  name="Housekeepers"
+                  parent="hospitality_base.menu_hospitality_config"
+                  action="action_hk_housekeeper"
+                  sequence="80"
+                  groups="group_hk_supervisor"/>
+
+        <!-- HK-05: report menus, under the shared Reports top-level
+             menu alongside other business kit modules' reports.
+
+             ASSUMPTION: hospitality_base.menu_hospitality_reports is
+             assumed to exist (mirroring menu_hospitality_operations
+             and menu_hospitality_config, both used elsewhere in this
+             module). If its actual xmlid differs, this is the one
+             place to fix it. -->
+        <menuitem id="menu_hk_reports"
+                  name="Housekeeping"
+                  parent="hospitality_base.menu_hospitality_reports"
+                  sequence="40"
+                  groups="group_hk_supervisor"/>
+
+        <menuitem id="menu_hk_status_report"
+                  name="HK Status"
+                  parent="menu_hk_reports"
+                  action="action_hk_status_report"
+                  sequence="10"
+                  groups="group_hk_supervisor"/>
+
+        <menuitem id="menu_hk_discrepancy_report"
+                  name="HK Discrepancy"
+                  parent="menu_hk_reports"
+                  action="action_hk_discrepancy_report"
+                  sequence="20"
+                  groups="group_hk_supervisor"/>
+
+    </data>
+</odoo>

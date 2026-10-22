@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Reservation list view -->
+    <record id="view_reservation_list" model="ir.ui.view">
+        <field name="name">hospitality.reservation.list</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <list string="Reservations" create="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="arrival"/>
+                <field name="departure"/>
+                <field name="nights"/>
+                <field name="space_type_id"/>
+                <field name="space_id"/>
+                <field name="state" widget="badge"/>
+                <field name="total_amount"/>
+                <field name="currency_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Reservation form view -->
+    <record id="view_reservation_form" model="ir.ui.view">
+        <field name="name">hospitality.reservation.form</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <form string="Reservation">
+                <header>
+                    <button name="action_save_option" string="Save as Option"
+                            type="object" class="btn-secondary"
+                            invisible="state not in ('draft',)"/>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('draft','option')"/>
+                    <button name="action_check_in" string="Check In"
+                            type="object" class="btn-primary"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_check_out" string="Check Out"
+                            type="object" class="btn-primary"
+                            invisible="state != 'checked_in'"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object" class="btn-secondary"
+                            invisible="state not in ('draft','option','confirmed')"/>
+                    <button name="action_no_show" string="Mark No-Show"
+                            type="object" class="btn-secondary"
+                            groups="hospitality_reservation.group_reservation_supervisor"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_undo_check_in" string="Undo Check-In"
+                            type="object" class="btn-secondary"
+                            groups="hospitality_reservation.group_reservation_supervisor"
+                            invisible="state != 'checked_in'"/>
+                    <button name="action_add_share"
+                            string="Add Share"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state not in ('option','confirmed')"/>
+                    <button name="action_add_another_room"
+                            string="Add Another Room"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state not in ('option','confirmed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,option,confirmed,checked_in,checked_out"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="is_walkin"/>
+                        </group>
+                        <group>
+                            <field name="created_via"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Stay" name="stay">
+                            <group>
+                                <group string="Dates">
+                                    <field name="arrival"/>
+                                    <field name="departure"/>
+                                    <field name="nights"/>
+                                    <field name="arrival_time" widget="float_time"/>
+                                    <field name="option_expires_at" />
+                                </group>
+                                <group string="Room">
+                                    <field name="space_type_id" readonly="state not in ['draft', 'option']"/>
+                                    <field name="space_id" readonly="state not in ['draft', 'option']"/>
+                                </group>
+                            </group>
+                            <group string="Occupancy">
+                                <group>
+                                    <field name="adults"/>
+                                    <field name="children"/>
+                                    <field name="infants"/>
+                                    <field name="child_ages"/>
+                                </group>
+                                <group>
+                                    <field name="market_segment_id"/>
+                                    <field name="source_code_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Guests" name="guests">
+                            <group>
+                                <group>
+                                    <field name="partner_id"/>
+                                    <field name="contact_partner_id"/>
+                                    <field name="company_partner_id"/>
+                                </group>
+                                <group>
+                                    <field name="preferences"/>
+                                </group>
+                            </group>
+                            <separator string="Sharers"/>
+                            <field name="share_with_ids">
+                                <list string="Sharers">
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="arrival"/>
+                                    <field name="departure"/>
+                                    <field name="space_id"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Rate &amp; Charges" name="rate">
+                            <group>
+                                <group string="Rate">
+                                    <field name="rate_code_id"/>
+                                    <field name="package_id"/>
+                                    <field name="total_amount"/>
+                                </group>
+                                <group string="Deposit">
+                                    <field name="deposit_policy_id"/>
+                                    <field name="deposit_amount"/>
+                                    <field name="deposit_paid"/>
+                                    <field name="guarantee_type"/>
+                                    <field name="cc_token"
+                                           groups="hospitality_reservation.group_reservation_supervisor"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Cancellation">
+                                    <field name="cancellation_policy_id"/>
+                                    <field name="policy_charge_amount"
+                                           invisible="state != 'cancelled'"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Routing" name="routing">
+                            <p class="text-muted">
+                                Routing instructions will be available once the Folio module (FOL-05) is installed.
+                            </p>
+                        </page>
+                        <page string="Preferences" name="preferences">
+                            <field name="preferences"
+                                   placeholder="Guest preferences and special requests…"/>
+                            <separator string="Comments"/>
+                            <field name="comments"/>
+                        </page>
+                        <page string="Traces" name="traces">
+                            <p class="text-muted">
+                                Traces for this reservation are managed via
+                                Front Office &gt; Trace Pickup (hospitality_base),
+                                and via the "Add Trace" button on the
+                                Arrivals list.
+                            </p>
+                        </page>
+                        <page string="Audit" name="audit">
+                            <group>
+                                <group>
+                                    <field name="created_via" readonly="1"/>
+                                    <field name="channel_id"/>
+                                    <field name="external_id"/>
+                                    <field name="group_id"/>
+                                </group>
+                                <group>
+                                    <field name="cancelled_at" readonly="1"/>
+                                    <field name="cancelled_by" readonly="1"/>
+                                    <field name="cancellation_reason"
+                                           invisible="state != 'cancelled'"/>
+                                    <field name="is_no_show" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Reservation search -->
+    <record id="view_reservation_search" model="ir.ui.view">
+        <field name="name">hospitality.reservation.search</field>
+        <field name="model">hospitality.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Reservations">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="space_id"/>
+                <field name="state"/>
+                <filter name="filter_today_arrivals" string="Today's Arrivals"
+                        domain="[('arrival','=',context_today())]"/>
+                <filter name="filter_today_departures" string="Today's Departures"
+                        domain="[('departure','=',context_today())]"/>
+                <filter name="filter_in_house" string="In House"
+                        domain="[('state','=','checked_in')]"/>
+                <filter name="filter_walkin" string="Walk-in"
+                        domain="[('is_walkin','=',True)]"/>
+                <filter name="filter_no_show" string="No Show"
+                        domain="[('state','=','no_show')]"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state','=','draft')]"/>
+                <filter name="filter_option" string="Option"
+                        domain="[('state','=','option')]"/>
+                <filter name="filter_confirmed" string="Confirmed"
+                        domain="[('state','=','confirmed')]"/>
+                <filter name="filter_cancelled" string="Cancelled"
+                        domain="[('state','=','cancelled')]"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+                <filter name="group_space_type" string="Room Type"
+                        context="{'group_by': 'space_type_id'}"/>
+                <filter name="group_source" string="Source Code"
+                        context="{'group_by': 'source_code_id'}"/>
+                <filter name="group_market" string="Market Segment"
+                        context="{'group_by': 'market_segment_id'}"/>
+                <filter name="group_arrival" string="Arrival Date"
+                        context="{'group_by': 'arrival'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Reservation window action -->
+    <record id="action_reservation_list" model="ir.actions.act_window">
+        <field name="name">Reservations</field>
+        <field name="res_model">hospitality.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_reservation_list"/>
+        <field name="search_view_id" ref="view_reservation_search"/>
+        <field name="context">{'search_default_filter_in_house': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first reservation
+            </p>
+        </field>
+    </record>
+
+    <!-- Reservations: a ROOT menu (an app of its own).
+
+         It keeps its action rather than becoming an empty container, so
+         the app opens the reservation list and the desk views below sit
+         in the sub-menu bar. A container here would have produced a
+         "Reservations > Reservations" pair, the same duplicate label the
+         old "Front Office > Front Office" had. -->
+    <menuitem id="menu_reservation_root"
+              name="Reservations"
+              web_icon="hospitality_reservation,static/description/icon.png"
+              action="action_reservation_list"
+              sequence="20"
+              groups="hospitality_reservation.group_reservation_agent,hospitality_reservation.group_reservation_supervisor,hospitality_base.group_hospitality_admin"/>
+
+</odoo>

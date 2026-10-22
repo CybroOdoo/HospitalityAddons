@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Maintenance is a ROOT menu (an app of its own), holding both
+             engineering work and assets.
+
+             The group is group_maintenance_USER, not _supervisor: the
+             root gates the whole app, and a technician who may open Work
+             Orders must be able to see the app that contains them. The
+             supervisor-only entries below keep their own stricter
+             groups. -->
+        <menuitem id="menu_hospitality_maintenance_root"
+                  name="Maintenance"
+                  web_icon="hospitality_maintenance,static/description/icon.png"
+                  sequence="60"
+                  groups="hospitality_maintenance.group_maintenance_user"/>
+
+        <!-- menu_hospitality_maintenance_engineering is gone. This
+             module used to put TWO containers side by side under Rooms -
+             "Engineering" (work orders) and "Maintenance" (assets) - for
+             what is one job. They are now one root; Work Orders and WO
+             Aging hang off it directly. -->
+        <!-- Opens the Work Orders view for maintenance staff to create,
+        track, and manage maintenance requests. -->
+        <menuitem id="menu_hospitality_maintenance_work_orders"
+                  name="Work Orders"
+                  parent="menu_hospitality_maintenance_root"
+                  action="action_hospitality_work_order"
+                  sequence="10"
+                  groups="hospitality_maintenance.group_maintenance_user"/>
+        <!-- Opens the Work Order Aging report for supervisors to monitor
+        outstanding work orders based on their age buckets. -->
+        <menuitem id="menu_hospitality_maintenance_wo_aging"
+                  name="WO Aging"
+                  parent="menu_hospitality_maintenance_root"
+                  action="action_hospitality_work_order_aging"
+                  sequence="20"
+                  groups="hospitality_maintenance.group_maintenance_supervisor"/>
+        <!-- Opens the Assets menu for managing maintenance equipment,
+        fixtures, furniture, vehicles, and other tracked assets. -->
+        <menuitem id="menu_hospitality_maintenance_assets"
+                  name="Assets"
+                  parent="menu_hospitality_maintenance_root"
+                  action="action_hospitality_asset"
+                  sequence="20"
+                  groups="hospitality_maintenance.group_maintenance_supervisor"/>
+        <!-- Configuration menu for maintenance-specific settings and
+        preventive maintenance configuration. -->
+        <menuitem id="menu_hospitality_maintenance_config"
+                  name="Maintenance"
+                  parent="hospitality_base.menu_hospitality_config"
+                  groups="hospitality_maintenance.group_maintenance_admin"
+                  sequence="20"/>
+        <!-- Opens Preventive Maintenance (PPM) Templates used to
+        automatically generate scheduled maintenance work orders. -->
+        <menuitem id="menu_hospitality_maintenance_ppm_templates"
+                  name="PPM Templates"
+                  parent="menu_hospitality_maintenance_config"
+                  action="action_hospitality_ppm_template"
+                  sequence="10"
+                  groups="hospitality_maintenance.group_maintenance_admin"/>
+
+    </data>
+</odoo>

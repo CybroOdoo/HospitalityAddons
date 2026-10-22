@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hospitality Management - Base | Odoo 19</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+</head>
+<body style="font-family:Montserrat,sans-serif;background-color:#FBFAF8;color:#3A4049;">
+<div class="container" style="padding-top:26px;padding-bottom:40px;">
+    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-radius:16px;padding:22px 28px;box-shadow:0 10px 26px rgba(22,35,59,.07);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;">
+            <img src="./assets/misc/cybrosys-logo.png" alt="Cybrosys Technologies" style="width:210px;max-width:100%;"/>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;">
+                    <span style="font-size:13.5px;font-weight:700;color:#16233B;margin-right:2px;">Supports:</span>
+                    <span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>Community</span><span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>Enterprise</span>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;">
+                    <span style="font-size:13.5px;font-weight:700;color:#16233B;margin-right:2px;">Availability:</span>
+                    <span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>On Premise</span><span style="display:inline-flex;align-items:center;gap:7px;background-color:#E9F6EE;border:1px solid #C2E3CE;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#1C7C45;white-space:nowrap;"><i class="fa fa-check-circle" style="font-size:14px;"></i>Odoo.sh</span><span style="display:inline-flex;align-items:center;gap:7px;background-color:#FDECEA;border:1px solid #F5C6C0;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:#B03A2E;white-space:nowrap;"><i class="fa fa-times-circle" style="font-size:14px;"></i>Odoo Online</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color:#16233B;border-radius:22px;padding:52px 48px;margin-top:26px;box-shadow:0 22px 50px rgba(22,35,59,.28);">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 style="color:#ffffff;font-size:46px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:0;">Hospitality Management <span style="color:#E2C488;"></span></h1>
+                <p style="color:rgba(255,255,255,.78);font-size:17px;line-height:1.75;margin:20px 0 0;max-width:720px;">Properties, rooms, reservations, housekeeping, folios, rates, night audit and a direct booking engine &mdash; one foundation the whole property runs on, built for Odoo 19 Community and Enterprise.</p>
+                <div style="margin-top:28px;">
+                    <a href="mailto:odoo@cybrosys.com" style="display:inline-block;background-color:#B58A45;color:#16233B;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:13px 24px;margin:5px 8px 5px 0;"><i class="fa fa-envelope" style="margin-right:8px;"></i>Email us</a>
+                    <a href="https://wa.me/919074270811" style="display:inline-block;background-color:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:13px 24px;margin:5px 8px 5px 0;"><i class="fa fa-whatsapp" style="margin-right:8px;"></i>WhatsApp</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center" style="margin-top:22px;">
+                <div style="background-color:#0F1A2E;border:1px solid rgba(226,196,136,.30);border-radius:18px;padding:28px 22px;">
+                    <div style="font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#E2C488;">Instant support</div>
+                    <div style="color:#ffffff;font-size:15px;line-height:1.7;margin-top:12px;">Questions before you install?<br/>We answer within one business day.</div>
+                    <div style="border-top:1px solid rgba(255,255,255,.14);margin-top:18px;padding-top:18px;">
+                        <div style="color:rgba(255,255,255,.62);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;">14 modules &middot; 12 apps</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The animation opens on the hero artwork, then walks the seven main
+         screens in the same order as the gallery further down. -->
+    <div style="margin-top:26px;">
+        <img src="./assets/suite_tour.gif" alt="Hospitality Management Suite for Odoo 19 - guided tour of the main screens" style="width:100%;border-radius:20px;box-shadow:0 20px 44px rgba(22,35,59,.18);"/>
+    </div>
+
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">What you get</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Key <span style="color:#B58A45;">Highlights</span></h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-building" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:19px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Multi-Property Management</h3>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:0;">Brands, properties and companies with their own currency, timezone, check-in and check-out times, and an independent business date per property.</p>
+                </div>
+            </div>
+            <div class="col-md-4" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-bed" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:19px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Room Inventory Management</h3>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:0;">Buildings, floors, sections, room types and features. Every room carries a live housekeeping status and can be taken out of order or out of service.</p>
+                </div>
+            </div>
+            <div class="col-md-4" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-calendar" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:19px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Room Booking Management</h3>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:0;">A drag-ready tape chart, arrivals, in-house and departure lists, trace pickup, shift handling and a front-desk dashboard built for the desk.</p>
+                </div>
+            </div>
+            <div class="col-md-4" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-paint-brush" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:19px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Housekeeping Management</h3>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:0;">A task board by status, DND entries, lost and found, linen counts and discrepancy handling, all tied back to the room's live status.</p>
+                </div>
+            </div>
+            <div class="col-md-4" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-credit-card" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:19px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Billing and Revenue Management</h3>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:0;">Rate codes with occupancy pricing and restrictions, guest folios with windows and routing, deposits, allowances, cashiering and an auditable night run.</p>
+                </div>
+            </div>
+            <div class="col-md-4" style="margin-bottom:24px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #B58A45;border-radius:16px;padding:30px 26px;box-shadow:0 12px 30px rgba(22,35,59,.10);height:100%;">
+                    <div style="width:60px;height:60px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;background-color:#16233B;box-shadow:0 8px 18px rgba(22,35,59,.30);margin-bottom:20px;"><i class="fa fa-globe" style="color:#E2C488;font-size:24px;line-height:1;"></i></div>
+                    <h3 style="font-size:19px;font-weight:700;color:#16233B;margin:0 0 10px;letter-spacing:-.01em;">Online Booking Management</h3>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:0;">A public search, live availability and pricing, promo codes, upsells, payment-provider checkout and a self-service booking lookup on your own website.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">Inside the suite</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Detailed <span style="color:#B58A45;">Screenshots</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">Every screen your team works in, in the order they meet them &mdash; sign in, the operations drawer, rooms and properties, the tape chart, then on through housekeeping, rates, folios and the booking engine.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:40px;">
+            <img src="./assets/screenshots/m1_login.jpg" alt="Sign In" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">01</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Sign In</span>
+                <p style="font-size:15.5px;line-height:1.75;color:#5B6472;margin:15px 0 0;">A split sign-in carrying your logo, company name and slogan - all configurable without touching code.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:40px;">
+            <img src="./assets/screenshots/m2_drawer.jpg" alt="Operations Drawer" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">02</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Operations Drawer</span>
+                <p style="font-size:15.5px;line-height:1.75;color:#5B6472;margin:15px 0 0;">The landing page after sign-in: live occupancy, arrivals, departures and rooms to clean, counted against the property's own business date.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:40px;">
+            <img src="./assets/screenshots/m3_rooms.jpg" alt="Room Management" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">03</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Room Management</span>
+                <p style="font-size:15.5px;line-height:1.75;color:#5B6472;margin:15px 0 0;">Every room as a card with its live housekeeping status, room type, floor and bed count - the whole inventory readable at a glance.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:40px;">
+            <img src="./assets/screenshots/m4_properties.jpg" alt="Property Register" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">04</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Property Register</span>
+                <p style="font-size:15.5px;line-height:1.75;color:#5B6472;margin:15px 0 0;">Multiple properties side by side with their code, type, star rating and photo gallery.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:40px;">
+            <img src="./assets/screenshots/m5_room_types.jpg" alt="Room Types" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">05</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Room Types</span>
+                <p style="font-size:15.5px;line-height:1.75;color:#5B6472;margin:15px 0 0;">Occupancy, bed configuration, size and amenities per type, each with its own gallery.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:40px;">
+            <img src="./assets/screenshots/m6_guests.jpg" alt="Guest Profiles" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">06</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Guest Profiles</span>
+                <p style="font-size:15.5px;line-height:1.75;color:#5B6472;margin:15px 0 0;">Loyalty tier, stay history, preferences, dietary notes and blacklist state on one card.</p>
+            </div>
+        </div>
+        <div style="margin-bottom:40px;">
+            <img src="./assets/screenshots/m7_tape.jpg" alt="Tape Chart" style="width:100%;display:block;border-radius:10px;box-shadow:0 10px 26px rgba(22,35,59,.10);"/>
+            <div style="padding:20px 2px 0;">
+                <span style="display:inline-block;background-color:#16233B;color:#E2C488;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;margin-right:10px;">07</span>
+                <span style="display:inline-block;background-color:#B58A45;color:#16233B;border-radius:999px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Tape Chart</span>
+                <p style="font-size:15.5px;line-height:1.75;color:#5B6472;margin:15px 0 0;">Two weeks of inventory at a glance, colour-coded by reservation state and filterable by room, type, source and market segment.</p>
+            </div>
+        </div>
+        <div style="text-align:center;margin:10px 0 36px;">
+            <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;">And the rest of the suite</div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g1_fd.jpg" alt="Front Desk Dashboard" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Front Desk Dashboard</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Arrivals, in-house, departures, availability by room type and outstanding AR for the shift in front of you.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g4_resv.jpg" alt="Reservations" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Reservations</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">The full booking list with states, dates, rate plan and source.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g2_hk.jpg" alt="Housekeeping Board" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Housekeeping Board</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Tasks grouped by state, with rush flags, assignment and a jump straight to the floor plan.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g7_floor.jpg" alt="Floor Plan" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Floor Plan</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">The property laid out floor by floor, each room showing its current status.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g3_wo.jpg" alt="Maintenance Work Orders" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Maintenance Work Orders</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Work orders by state and category, with priority, assets and photographs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g5_rates.jpg" alt="Rate Plans" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Rate Plans</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Rate codes, occupancy pricing, derived rates and restrictions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g6_folios.jpg" alt="Guest Folios" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Guest Folios</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Charges, payments, windows and routing per folio, ready for check-out.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g8_flash.jpg" alt="Manager Flash" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Manager Flash</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Occupancy, ADR, RevPAR and revenue with day-over-day movement, built from the night audit.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g9_booking.jpg" alt="Direct Booking Engine" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Direct Booking Engine</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Your own branded search on the website, with the property's hero image and brand colour.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:28px;">
+                <div style="height:100%;">
+                    <img src="./assets/screenshots/g10_booking_results.jpg" alt="Live Availability" style="width:100%;display:block;border-radius:10px;box-shadow:0 8px 20px rgba(22,35,59,.09);"/>
+                    <div style="padding:16px 2px 0;">
+                        <span style="display:inline-block;background-color:#F6F3EC;border:1px solid #E7E1D6;color:#16233B;border-radius:999px;padding:4px 13px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Live Availability</span>
+                        <p style="font-size:14.5px;line-height:1.72;color:#5B6472;margin:13px 0 0;">Room types with occupancy, bed configuration, size, amenities and both nightly and total pricing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">Capabilities</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">What the suite <span style="color:#B58A45;">actually does</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">Twelve things the foundation and its modules handle, in the order you meet them.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">01</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Properties, brands and companies</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Group properties under brands, bind users to the properties they may operate in, and switch the working property without leaving the screen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">02</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Independent business date</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Every property runs on its own business date, rolled forward by night audit rather than by the system clock, so after-midnight figures still agree.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">03</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Rooms, types and features</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Buildings, floors, sections, room types, amenities and virtual rooms, with photo galleries on both properties and room types.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">04</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Live housekeeping status</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Vacant and occupied, clean and dirty, inspected, pickup, out of order and out of service - one status that the whole suite reads from.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">05</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Reservations end to end</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Option, confirmed, checked in, checked out, no-show and cancelled, with arrivals, in-house, departures and trace pickup lists.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">06</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Rate plans and restrictions</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Rate codes with per-occupancy pricing, derived rates, date ranges, weekday masks and restriction rules evaluated at quote time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">07</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Folios and cashiering</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Folio windows, charge routing, deposits, allowances, write-offs, transfers to accounts receivable and shift cash handling.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">08</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Night audit</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">An auditable roll-forward that posts room charges, settles the date and materialises the day's KPI snapshot.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">09</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Guest profiles and PII</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Loyalty tiers, stay history, preferences and dietary notes, with identity documents behind a dedicated PII group and read logging.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">10</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Maintenance and assets</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Work orders by category and priority, tracked assets, preventive maintenance templates and work-order aging.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">11</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Direct booking engine</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">Public search, availability, promo codes, upsells, payment-provider checkout, confirmation email and a booking lookup.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="margin-bottom:20px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-left:4px solid #B58A45;border-radius:14px;padding:24px 24px;box-shadow:0 8px 22px rgba(22,35,59,.07);height:100%;">
+                    <div style="display:flex;align-items:flex-start;">
+                        <div style="width:38px;height:38px;flex:0 0 38px;border-radius:11px;background-color:#16233B;color:#E2C488;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-right:16px;">12</div>
+                        <div>
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;letter-spacing:-.01em;">Backend theme included</h3>
+                            <p style="font-size:14px;line-height:1.72;color:#5B6472;margin:0;">An ink, ivory and brass chrome for the login, the app drawer and the navbar rail - views keep Odoo's own styling.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">Before you install</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Frequent <span style="color:#B58A45;">questions</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">The things people ask us most often about the suite.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <details style="background-color:#ffffff;border:1px solid #E7E1D6;border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:0 8px 20px rgba(22,35,59,.06);">
+                    <summary style="font-size:16px;font-weight:700;color:#16233B;cursor:pointer;list-style:none;">Do I need every module in the suite?</summary>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:14px 0 0;">No. hospitality_base is the foundation and the rest sit on top of it. Install only the areas you run - front desk, housekeeping, folios, rates, maintenance, booking engine - and add the others later.</p>
+                </details>
+                <details style="background-color:#ffffff;border:1px solid #E7E1D6;border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:0 8px 20px rgba(22,35,59,.06);">
+                    <summary style="font-size:16px;font-weight:700;color:#16233B;cursor:pointer;list-style:none;">Does it work on Odoo Community?</summary>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:14px 0 0;">Yes. The suite is built for Odoo 19 and runs on both Community and Enterprise. Nothing in it depends on an Enterprise-only module.</p>
+                </details>
+                <details style="background-color:#ffffff;border:1px solid #E7E1D6;border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:0 8px 20px rgba(22,35,59,.06);">
+                    <summary style="font-size:16px;font-weight:700;color:#16233B;cursor:pointer;list-style:none;">Can one database run several properties?</summary>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:14px 0 0;">Yes. Properties are first-class records with their own currency, timezone, sequences and business date, and users are bound to the properties they are allowed to operate in.</p>
+                </details>
+                <details style="background-color:#ffffff;border:1px solid #E7E1D6;border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:0 8px 20px rgba(22,35,59,.06);">
+                    <summary style="font-size:16px;font-weight:700;color:#16233B;cursor:pointer;list-style:none;">Does the booking engine need a payment provider?</summary>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:14px 0 0;">Checkout lists whatever payment providers you have enabled in Odoo. Searching, pricing and availability all work before any provider is configured, so you can evaluate the flow first.</p>
+                </details>
+                <details style="background-color:#ffffff;border:1px solid #E7E1D6;border-radius:14px;padding:20px 24px;margin-bottom:14px;box-shadow:0 8px 20px rgba(22,35,59,.06);">
+                    <summary style="font-size:16px;font-weight:700;color:#16233B;cursor:pointer;list-style:none;">Will it change how my other Odoo apps look?</summary>
+                    <p style="font-size:14.5px;line-height:1.75;color:#5B6472;margin:14px 0 0;">No. The included theme styles the login, the app drawer and the navbar only. Form views, list views, buttons, modals, Discuss and the Chatter keep Odoo's own styling.</p>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">More from the suite</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Related <span style="color:#B58A45;">modules</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">Each module installs on top of this foundation and can be added when you need it.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4" style="margin-bottom:22px;">
+                <a href="https://apps.odoo.com/apps/modules/19.0/hospitality_property" style="text-decoration:none;display:block;height:100%;">
+                    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(113,99,158,.12);height:100%;">
+                        <img src="./assets/modules/1.jpg" alt="Hospitality - Property" style="width:100%;display:block;"/>
+                        <div style="padding:22px 22px 26px;">
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;">Hospitality - Property</h3>
+                            <p style="font-size:13.5px;line-height:1.7;color:#5B6472;margin:0 0 14px;">Property-level space and inventory management.</p>
+                            <span style="font-size:12.5px;font-weight:700;color:#71639e;letter-spacing:.06em;">View on Odoo Apps <i class="fa fa-angle-right" style="margin-left:4px;"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4" style="margin-bottom:22px;">
+                <a href="https://apps.odoo.com/apps/modules/19.0/hospitality_front_desk" style="text-decoration:none;display:block;height:100%;">
+                    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(113,99,158,.12);height:100%;">
+                        <img src="./assets/modules/2.jpg" alt="Hospitality - Front Desk" style="width:100%;display:block;"/>
+                        <div style="padding:22px 22px 26px;">
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;">Hospitality - Front Desk</h3>
+                            <p style="font-size:13.5px;line-height:1.7;color:#5B6472;margin:0 0 14px;">Front desk operations for hospitality management.</p>
+                            <span style="font-size:12.5px;font-weight:700;color:#71639e;letter-spacing:.06em;">View on Odoo Apps <i class="fa fa-angle-right" style="margin-left:4px;"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4" style="margin-bottom:22px;">
+                <a href="https://apps.odoo.com/apps/modules/19.0/hospitality_reservation" style="text-decoration:none;display:block;height:100%;">
+                    <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(113,99,158,.12);height:100%;">
+                        <img src="./assets/modules/3.jpg" alt="Hospitality - Reservation" style="width:100%;display:block;"/>
+                        <div style="padding:22px 22px 26px;">
+                            <h3 style="font-size:17px;font-weight:700;color:#16233B;margin:0 0 8px;">Hospitality - Reservation</h3>
+                            <p style="font-size:13.5px;line-height:1.7;color:#5B6472;margin:0 0 14px;">Reservation management for the hospitality kit.</p>
+                            <span style="font-size:12.5px;font-weight:700;color:#71639e;letter-spacing:.06em;">View on Odoo Apps <i class="fa fa-angle-right" style="margin-left:4px;"></i></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top:62px;margin-bottom:20px;">
+        <div class="row justify-content-center text-center" style="margin-bottom:46px;">
+            <div class="col-lg-9">
+                <div style="font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#B58A45;margin-bottom:14px;">Cybrosys Technologies</div>
+                <h2 style="font-size:36px;font-weight:800;letter-spacing:-.02em;color:#16233B;margin:0 0 14px;">Our <span style="color:#B58A45;">services</span></h2>
+                <p style="font-size:16px;line-height:1.75;color:#5B6472;margin:0;">An Odoo Gold Partner delivering implementation, customisation and support worldwide.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/tms.png" alt="Odoo Customization" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Customization</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/imple.png" alt="Odoo Implementation" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Implementation</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/support.png" alt="Odoo Support" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Support</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/transfer.png" alt="Odoo Migration" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Migration</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/setting.png" alt="Odoo Integration" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Integration</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/people.png" alt="Hire Odoo Developer" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Hire Odoo Developer</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/chart.png" alt="Odoo Consultancy" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Consultancy</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" style="margin-bottom:22px;">
+                <div style="background-color:#ffffff;border:1px solid #E7E1D6;border-top:4px solid #71639e;border-radius:16px;padding:26px 18px;text-align:center;box-shadow:0 10px 24px rgba(113,99,158,.10);height:100%;">
+                    <div style="width:62px;height:62px;border-radius:17px;display:inline-flex;align-items:center;justify-content:center;background-color:#71639e;box-shadow:0 8px 18px rgba(113,99,158,.32);margin-bottom:14px;"><img src="./assets/icons/idea.png" alt="Odoo Licensing Consultancy" style="width:30px;height:30px;object-fit:contain;"/></div>
+                    <div style="font-size:14px;font-weight:700;color:#16233B;line-height:1.5;">Odoo Licensing Consultancy</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color:#16233B;border-radius:22px;padding:46px 44px;margin-top:40px;box-shadow:0 22px 50px rgba(22,35,59,.26);">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div style="font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#E2C488;">Need a hand?</div>
+                <h2 style="color:#ffffff;font-size:30px;font-weight:800;letter-spacing:-.02em;margin:14px 0 0;">Tell us about your property</h2>
+                <p style="color:rgba(255,255,255,.76);font-size:15.5px;line-height:1.75;margin:14px 0 0;max-width:640px;">Implementation, customisation, migration and support for the whole suite &mdash; from a single boutique hotel to a multi-property group.</p>
+            </div>
+            <div class="col-lg-5 text-lg-end" style="margin-top:22px;">
+                <a href="mailto:odoo@cybrosys.com" style="display:inline-block;background-color:#B58A45;color:#16233B;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:14px 26px;margin:5px;"><i class="fa fa-envelope" style="margin-right:8px;"></i>odoo@cybrosys.com</a>
+                <a href="https://wa.me/919074270811" style="display:inline-block;background-color:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:10px;padding:14px 26px;margin:5px;"><i class="fa fa-whatsapp" style="margin-right:8px;"></i>WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align:center;padding:34px 0 10px;">
+        <img src="./assets/misc/cybrosys-logo.png" alt="Cybrosys Technologies" style="width:170px;max-width:100%;opacity:.75;"/>
+        <p style="font-size:12.5px;color:#5B6472;margin:14px 0 0;">Cybrosys Technologies &middot; Odoo Gold Partner</p>
+    </div>
+</div>
+</body>
+</html>

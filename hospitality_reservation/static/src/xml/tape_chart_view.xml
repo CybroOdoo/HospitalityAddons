@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+     Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+     See LICENSE file for full copyright and licensing details. -->
+<templates xml:space="preserve">
+
+    <t t-name="hospitality_reservation.TapeChartView" owl="1">
+        <div class="o_tape_chart_view h-100">
+            <div class="o_tape_chart_root" t-ref="tapeChartRoot">
+
+                <!-- ============================================================
+                     Top toolbar: property selector, date navigator, range,
+                     view mode, filters
+                ============================================================= -->
+                <div class="o_tape_chart_toolbar d-flex flex-wrap align-items-center gap-2 p-2 border-bottom">
+
+                    <select class="o_tape_chart_property form-select form-select-sm w-auto"
+                            t-on-change="onChangeProperty">
+                        <t t-foreach="state.properties" t-as="prop" t-key="prop.id">
+                            <option t-att-value="prop.id"
+                                    t-att-selected="prop.id === state.propertyId">
+                                <t t-esc="prop.name"/>
+                            </option>
+                        </t>
+                    </select>
+
+                    <div class="o_tape_chart_nav btn-group btn-group-sm" role="group">
+                        <button class="btn btn-outline-secondary" t-on-click="onClickPrev"
+                                title="Previous">
+                            <i class="fa fa-chevron-left"/>
+                        </button>
+                        <button class="btn btn-outline-secondary" t-on-click="onClickToday">
+                            Today
+                        </button>
+                        <button class="btn btn-outline-secondary" t-on-click="onClickNext"
+                                title="Next">
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                    </div>
+
+                    <span class="o_tape_chart_range_label text-muted small">
+                        <t t-esc="state.dateFrom"/> → <t t-esc="dateTo"/>
+                    </span>
+
+                    <select class="o_tape_chart_range form-select form-select-sm w-auto"
+                            t-on-change="onChangeRange">
+                        <t t-foreach="rangeOptions" t-as="opt" t-key="opt">
+                            <option t-att-value="opt" t-att-selected="opt === state.rangeDays">
+                                <t t-esc="opt"/> days
+                            </option>
+                        </t>
+                    </select>
+
+                    <div class="o_tape_chart_viewmode btn-group btn-group-sm" role="group">
+                        <input type="radio" class="btn-check" name="viewmode" id="viewmode_space"
+                               value="space" t-att-checked="state.viewMode === 'space'"
+                               t-on-change="onChangeViewMode"/>
+                        <label class="btn btn-outline-secondary" for="viewmode_space">
+                            By Space
+                        </label>
+                        <input type="radio" class="btn-check" name="viewmode" id="viewmode_type"
+                               value="space_type" t-att-checked="state.viewMode === 'space_type'"
+                               t-on-change="onChangeViewMode"/>
+                        <label class="btn btn-outline-secondary" for="viewmode_type">
+                            By Space Type
+                        </label>
+                    </div>
+
+                    <select class="o_tape_chart_filter_state form-select form-select-sm w-auto"
+                            t-on-change="(ev) => this.onChangeFilter('state', ev)">
+                        <option value="">All States</option>
+                        <option value="draft">Draft</option>
+                        <option value="option">Option</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="checked_in">Checked In</option>
+                        <option value="checked_out">Checked Out</option>
+                        <option value="no_show">No Show</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+
+                    <select class="o_tape_chart_filter_source form-select form-select-sm w-auto"
+                            t-on-change="(ev) => this.onChangeFilter('sourceCodeId', ev)">
+                        <option value="">All Sources</option>
+                        <t t-foreach="state.sourceCodes" t-as="src" t-key="src.id">
+                            <option t-att-value="src.id"><t t-esc="src.name"/></option>
+                        </t>
+                    </select>
+
+                    <select class="o_tape_chart_filter_market form-select form-select-sm w-auto"
+                            t-on-change="(ev) => this.onChangeFilter('marketSegmentId', ev)">
+                        <option value="">All Market Segments</option>
+                        <t t-foreach="state.marketSegments" t-as="ms" t-key="ms.id">
+                            <option t-att-value="ms.id"><t t-esc="ms.name"/></option>
+                        </t>
+                    </select>
+
+                    <!-- Legend -->
+                    <div class="o_tape_chart_legend d-flex gap-2 ms-auto small">
+                        <t t-foreach="Object.entries(stateLabels)" t-as="entry" t-key="entry[0]">
+                            <span t-if="entry[0] !== 'draft'"
+                                  class="o_tape_legend_item d-flex align-items-center gap-1">
+                                <span t-att-class="'o_tape_legend_swatch o_tape_bar_' + (stateColors[entry[0]] or 'default')"/>
+                                <t t-esc="entry[1]"/>
+                            </span>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                     Loading indicator
+                ============================================================= -->
+                <div t-if="state.isLoading" class="o_tape_chart_loading text-center p-5">
+                    <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+                </div>
+
+                <!-- ============================================================
+                     Grid: row labels (left, fixed) + scrollable date grid
+                ============================================================= -->
+                <div t-else="" class="o_tape_chart_body d-flex">
+
+                    <!-- Row label column -->
+                    <div class="o_tape_chart_row_labels">
+                        <div class="o_tape_chart_corner"
+                             t-attf-style="height: {{headerHeight}}px;"/>
+                        <t t-foreach="rows" t-as="row" t-key="row.id">
+                            <div class="o_tape_chart_row_label"
+                                 t-attf-style="height: {{rowHeight}}px;"
+                                 t-attf-class="{{row.stateClass ? 'o_tape_row_label_' + row.stateClass : ''}}">
+                                <t t-esc="row.label"/>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Scrollable grid -->
+                    <div class="o_tape_chart_grid_scroll" t-ref="tapeChartGrid">
+                        <div class="o_tape_chart_grid_inner"
+                             t-attf-style="width: {{state.rangeDays * dayWidth}}px;">
+
+                            <!-- Date header -->
+                            <div class="o_tape_chart_date_header d-flex"
+                                 t-attf-style="height: {{headerHeight}}px;">
+                                <t t-foreach="dateColumns" t-as="col" t-key="col_index">
+                                    <div class="o_tape_chart_date_col"
+                                         t-attf-style="width: {{dayWidth}}px;"
+                                         t-attf-class="{{col.getDay() === 0 || col.getDay() === 6 ? 'o_tape_weekend' : ''}}">
+                                        <div class="o_tape_date_dow">
+                                            <t t-esc="col.toLocaleDateString(undefined, {weekday: 'short'})"/>
+                                        </div>
+                                        <div class="o_tape_date_num">
+                                            <t t-esc="col.getDate()"/>/<t t-esc="col.getMonth() + 1"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- Rows -->
+                            <div class="o_tape_chart_rows position-relative">
+
+                                <!-- Drag ghost overlay (single reusable element, positioned via JS) -->
+                                <div class="o_tape_drag_ghost" style="display:none;"/>
+
+                                <t t-foreach="rows" t-as="row" t-key="row.id">
+                                    <div class="o_tape_chart_row position-relative d-flex"
+                                         t-attf-style="height: {{rowHeight}}px;">
+
+                                        <!-- Empty drop cells (one per day) -->
+                                        <t t-foreach="dateColumns" t-as="col" t-key="col_index">
+                                            <div class="o_tape_chart_cell"
+                                                 t-attf-style="width: {{dayWidth}}px;"
+                                                 t-attf-class="{{col.getDay() === 0 || col.getDay() === 6 ? 'o_tape_weekend' : ''}}"
+                                                 t-on-pointerdown="(ev) => this.onPointerDownCell(row, col_index, ev)"/>
+                                        </t>
+
+                                        <!-- OOO / OOS blocks -->
+                                        <t t-foreach="oooBlocksForRow(row)" t-as="ooo" t-key="ooo_index">
+                                            <div class="o_tape_ooo_block position-absolute"
+                                                 t-attf-style="left: {{ooo.left}}px; width: {{ooo.width}}px; top:0; height: {{rowHeight}}px;"
+                                                 t-att-title="ooo.block.state">
+                                            </div>
+                                        </t>
+
+                                        <!-- Reservation bars -->
+                                        <t t-foreach="barsForRow(row)" t-as="bar" t-key="bar.reservation.id">
+                                            <div t-attf-class="o_tape_chart_bar position-absolute {{bar.colorClass}}"
+                                                 t-attf-style="left: {{bar.left}}px; width: {{bar.width}}px; top: 2px; height: {{rowHeight - 4}}px;"
+                                                 t-att-title="bar.label"
+                                                 t-on-pointerdown="(ev) => this.onPointerDownBarBody(bar.reservation, ev)"
+                                                 t-on-click="(ev) => this.onClickBar(bar.reservation, ev)">
+                                                <div class="o_tape_bar_edge o_tape_bar_edge_start"
+                                                     t-on-pointerdown="(ev) => this.onPointerDownBarEdge(bar.reservation, 'start', ev)"/>
+                                                <span class="o_tape_bar_label">
+                                                    <t t-esc="bar.label"/>
+                                                </span>
+                                                <div class="o_tape_bar_edge o_tape_bar_edge_end"
+                                                     t-on-pointerdown="(ev) => this.onPointerDownBarEdge(bar.reservation, 'end', ev)"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.folio.line — Embedded list (used inside folio form)
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_folio_line_list_embedded" model="ir.ui.view">
+        <field name="name">hospitality.folio.line.list.embedded</field>
+        <field name="model">hospitality.folio.line</field>
+        <field name="arch" type="xml">
+            <list string="Folio Lines"
+                  decoration-muted="is_void == True"
+                  decoration-danger="transaction_type in ('charge','transfer') and not is_void"
+                  decoration-success="transaction_type in ('payment','write_off') and not is_void"
+                  decoration-warning="transaction_type == 'adjustment' and not is_void"
+                  editable="bottom" >
+                <field name="post_date"/>
+                <field name="transaction_code_id"/>
+                <field name="transaction_type" column_invisible="True"/>
+                <field name="window_id" optional="hide"/>
+                <field name="description" optional="hide"/>
+                <field name="qty"/>
+                <field name="unit_price"/>
+                <field name="tax_ids" widget="many2many_tags" optional="hide"/>
+                <field name="tax_amount" optional="hide"/>
+                <field name="amount_total" string="Total"/>
+                <field name="reference" optional="show"/>
+                <field name="is_void"/>
+                <field name="currency_id" column_invisible="True"/>
+                <button name="action_void"
+                        string="Void"
+                        type="object"
+                        icon="fa-ban"
+                        invisible="is_void == True"
+                        groups="hospitality_folio.group_folio_supervisor"
+                        confirm="Void this line? A reversing mirror line will be created."/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.folio.line — Standalone list (for reporting)
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_folio_line_list" model="ir.ui.view">
+        <field name="name">hospitality.folio.line.list</field>
+        <field name="model">hospitality.folio.line</field>
+        <field name="arch" type="xml">
+            <list string="Folio Lines"
+                  decoration-muted="is_void == True">
+                <field name="folio_id"/>
+                <field name="property_id" optional="show"/>
+                <field name="post_date"/>
+                <field name="transaction_code_id"/>
+                <field name="transaction_type" widget="badge"
+                       decoration-danger="transaction_type in ('charge','transfer')"
+                       decoration-success="transaction_type in ('payment','write_off')"
+                       decoration-warning="transaction_type == 'adjustment'"/>
+                <field name="window_id" optional="hide"/>
+                <field name="qty" optional="hide"/>
+                <field name="unit_price" optional="hide"/>
+                <field name="amount_total" string="Total"/>
+                <field name="reference" optional="show"/>
+                <field name="is_void" optional="show"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.folio.line — Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_folio_line_search" model="ir.ui.view">
+        <field name="name">hospitality.folio.line.search</field>
+        <field name="model">hospitality.folio.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Folio Lines">
+                <field name="folio_id"/>
+                <field name="transaction_code_id"/>
+                <field name="reference"/>
+                <filter name="charges" string="Charges"
+                        domain="[('transaction_type','in',('charge','transfer'))]"/>
+                <filter name="payments" string="Payments"
+                        domain="[('transaction_type','in',('payment','write_off'))]"/>
+                <filter name="voided" string="Voided"
+                        domain="[('is_void','=',True)]"/>
+                <filter name="active_only" string="Active Only"
+                        domain="[('is_void','=',False)]"/>
+                <separator/>
+                <filter name="group_folio" string="Folio"
+                        context="{'group_by': 'folio_id'}"/>
+                <filter name="group_code" string="Transaction Code"
+                        context="{'group_by': 'transaction_code_id'}"/>
+                <filter name="group_date" string="Posting Date"
+                        context="{'group_by': 'post_date'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Action (standalone — for managers/reporting)
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_hospitality_folio_line" model="ir.actions.act_window">
+        <field name="name">Folio Transactions</field>
+        <field name="res_model">hospitality.folio.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_hospitality_folio_line_search"/>
+        <field name="domain">[('is_void','=',False)]</field>
+    </record>
+
+</odoo>

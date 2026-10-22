@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             BUILDING
+        ============================================================ -->
+        <record id="demo_building_main" model="hospitality.building">
+            <field name="name">Main</field>
+            <field name="code">MAIN</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- ============================================================
+             FLOORS
+        ============================================================ -->
+        <record id="demo_floor_f1" model="hospitality.floor">
+            <field name="name">Floor 1</field>
+            <field name="code">F1</field>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="demo_floor_f2" model="hospitality.floor">
+            <field name="name">Floor 2</field>
+            <field name="code">F2</field>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="demo_floor_f3" model="hospitality.floor">
+            <field name="name">Floor 3</field>
+            <field name="code">F3</field>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="demo_floor_f4" model="hospitality.floor">
+            <field name="name">Floor 4</field>
+            <field name="code">F4</field>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <!-- ============================================================
+             SECTIONS
+        ============================================================ -->
+        <record id="demo_section_east_wing" model="hospitality.section">
+            <field name="name">East Wing</field>
+            <field name="code">EW</field>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="demo_section_pool_side" model="hospitality.section">
+            <field name="name">Pool Side</field>
+            <field name="code">PS</field>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- ============================================================
+             SPACE TYPES
+        ============================================================ -->
+        <record id="demo_stype_std_k" model="hospitality.space.type">
+            <field name="image" type="base64" file="hospitality_base/static/src/img/demo/type_standard.jpg"/>
+            <field name="name">Standard King</field>
+            <field name="code">STD-K</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="category">room</field>
+            <field name="default_occupancy">2</field>
+            <field name="max_occupancy">2</field>
+            <field name="bed_config">king</field>
+            <field name="smoking">False</field>
+            <field name="size_sqm">28.0</field>
+            <field name="sequence">10</field>
+            <field name="amenity_ids" eval="[
+                (4, ref('hospitality_property.feature_wifi')),
+                (4, ref('hospitality_property.feature_aircon')),
+                (4, ref('hospitality_property.feature_workdesk')),
+            ]"/>
+            <field name="description">&lt;p&gt;Spacious king room with city views, work desk, and complimentary Wi-Fi.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_stype_std_t" model="hospitality.space.type">
+            <field name="image" type="base64" file="hospitality_base/static/src/img/demo/type_twin.jpg"/>
+            <field name="name">Standard Twin</field>
+            <field name="code">STD-T</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="category">room</field>
+            <field name="default_occupancy">2</field>
+            <field name="max_occupancy">2</field>
+            <field name="bed_config">twin</field>
+            <field name="smoking">False</field>
+            <field name="size_sqm">26.0</field>
+            <field name="sequence">20</field>
+            <field name="amenity_ids" eval="[
+                (4, ref('hospitality_property.feature_wifi')),
+                (4, ref('hospitality_property.feature_aircon')),
+            ]"/>
+            <field name="description">&lt;p&gt;Comfortable twin room, ideal for two guests travelling together.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_stype_dlx_k" model="hospitality.space.type">
+            <field name="image" type="base64" file="hospitality_base/static/src/img/demo/type_deluxe.jpg"/>
+            <field name="name">Deluxe King</field>
+            <field name="code">DLX-K</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="category">room</field>
+            <field name="default_occupancy">2</field>
+            <field name="max_occupancy">3</field>
+            <field name="bed_config">king</field>
+            <field name="smoking">False</field>
+            <field name="size_sqm">36.0</field>
+            <field name="sequence">30</field>
+            <field name="amenity_ids" eval="[
+                (4, ref('hospitality_property.feature_wifi')),
+                (4, ref('hospitality_property.feature_aircon')),
+                (4, ref('hospitality_property.feature_balcony')),
+                (4, ref('hospitality_property.feature_bathtub')),
+                (4, ref('hospitality_property.feature_workdesk')),
+            ]"/>
+            <field name="description">&lt;p&gt;Premium king room with private balcony, soaking tub, and upgraded amenities.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_stype_jr_suite" model="hospitality.space.type">
+            <field name="image" type="base64" file="hospitality_base/static/src/img/demo/type_junior.jpg"/>
+            <field name="name">Junior Suite</field>
+            <field name="code">JR-SUITE</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="category">suite</field>
+            <field name="default_occupancy">2</field>
+            <field name="max_occupancy">4</field>
+            <field name="bed_config">king</field>
+            <field name="smoking">False</field>
+            <field name="size_sqm">55.0</field>
+            <field name="sequence">40</field>
+            <field name="amenity_ids" eval="[
+                (4, ref('hospitality_property.feature_wifi')),
+                (4, ref('hospitality_property.feature_aircon')),
+                (4, ref('hospitality_property.feature_balcony')),
+                (4, ref('hospitality_property.feature_bathtub')),
+                (4, ref('hospitality_property.feature_sea_view')),
+                (4, ref('hospitality_property.feature_kitchenette')),
+            ]"/>
+            <field name="description">&lt;p&gt;Elegant junior suite with separate sitting area, sea view, and kitchenette.&lt;/p&gt;</field>
+        </record>
+
+        <record id="demo_stype_acc" model="hospitality.space.type">
+            <field name="image" type="base64" file="hospitality_base/static/src/img/demo/type_accessible.jpg"/>
+            <field name="name">Accessible</field>
+            <field name="code">ACC</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="category">room</field>
+            <field name="default_occupancy">2</field>
+            <field name="max_occupancy">2</field>
+            <field name="bed_config">king</field>
+            <field name="smoking">False</field>
+            <field name="size_sqm">32.0</field>
+            <field name="sequence">50</field>
+            <field name="amenity_ids" eval="[
+                (4, ref('hospitality_property.feature_wifi')),
+                (4, ref('hospitality_property.feature_aircon')),
+                (4, ref('hospitality_property.feature_accessible')),
+            ]"/>
+            <field name="description">&lt;p&gt;Fully accessible room with roll-in shower, grab rails, and wide doorways.&lt;/p&gt;</field>
+        </record>
+
+        <!-- ============================================================
+             SPACES — Floor 1
+        ============================================================ -->
+        <record id="demo_space_101" model="hospitality.space">
+            <field name="name">Room 101</field>
+            <field name="code">101</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f1"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+        <record id="demo_space_102" model="hospitality.space">
+            <field name="name">Room 102</field>
+            <field name="code">102</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_t"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f1"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">2</field>
+            <field name="status">occupied_clean</field>
+        </record>
+
+        <record id="demo_space_103" model="hospitality.space">
+            <field name="name">Room 103</field>
+            <field name="code">103</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f1"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_dirty</field>
+        </record>
+
+        <record id="demo_space_104" model="hospitality.space">
+            <field name="name">Room 104</field>
+            <field name="code">104</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_acc"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f1"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+        <record id="demo_space_105" model="hospitality.space">
+            <field name="name">Room 105</field>
+            <field name="code">105</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f1"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">1</field>
+            <field name="status">ooo</field>
+            <field name="ooo_reason">Carpet replacement</field>
+            <field name="ooo_from" eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="ooo_to" eval="(datetime.now() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+        </record>
+
+        <!-- ============================================================
+             SPACES — Floor 2
+        ============================================================ -->
+        <record id="demo_space_201" model="hospitality.space">
+            <field name="name">Room 201</field>
+            <field name="code">201</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_dlx_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f2"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+        <record id="demo_space_202" model="hospitality.space">
+            <field name="name">Room 202</field>
+            <field name="code">202</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_dlx_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f2"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">occupied_dirty</field>
+        </record>
+
+        <record id="demo_space_203" model="hospitality.space">
+            <field name="name">Room 203</field>
+            <field name="code">203</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_t"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f2"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">2</field>
+            <field name="status">inspected</field>
+        </record>
+
+        <record id="demo_space_204" model="hospitality.space">
+            <field name="name">Room 204</field>
+            <field name="code">204</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f2"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">1</field>
+            <field name="status">pickup</field>
+        </record>
+
+        <record id="demo_space_205" model="hospitality.space">
+            <field name="name">Room 205</field>
+            <field name="code">205</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_dlx_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f2"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">oos</field>
+            <field name="oos_reason">Renovation block</field>
+            <field name="oos_from" eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="oos_to" eval="(datetime.now() + relativedelta(days=30)).strftime('%Y-%m-%d')"/>
+        </record>
+
+        <!-- ============================================================
+             SPACES — Floor 3
+        ============================================================ -->
+        <record id="demo_space_301" model="hospitality.space">
+            <field name="name">Room 301</field>
+            <field name="code">301</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_jr_suite"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f3"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+        <record id="demo_space_302" model="hospitality.space">
+            <field name="name">Room 302</field>
+            <field name="code">302</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_jr_suite"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f3"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">1</field>
+            <field name="status">occupied_clean</field>
+        </record>
+
+        <record id="demo_space_303" model="hospitality.space">
+            <field name="name">Room 303</field>
+            <field name="code">303</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_dlx_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f3"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_dirty</field>
+        </record>
+
+        <record id="demo_space_304" model="hospitality.space">
+            <field name="name">Room 304</field>
+            <field name="code">304</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f3"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">occupied_clean</field>
+        </record>
+
+        <record id="demo_space_305" model="hospitality.space">
+            <field name="name">Room 305</field>
+            <field name="code">305</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_t"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f3"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">2</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+        <!-- ============================================================
+             SPACES — Floor 4
+        ============================================================ -->
+        <record id="demo_space_401" model="hospitality.space">
+            <field name="name">Room 401</field>
+            <field name="code">401</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_jr_suite"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f4"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+        <record id="demo_space_402" model="hospitality.space">
+            <field name="name">Room 402</field>
+            <field name="code">402</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_jr_suite"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f4"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">1</field>
+            <field name="status">occupied_dirty</field>
+        </record>
+
+        <record id="demo_space_403" model="hospitality.space">
+            <field name="name">Room 403</field>
+            <field name="code">403</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_dlx_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f4"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">inspected</field>
+        </record>
+
+        <record id="demo_space_404" model="hospitality.space">
+            <field name="name">Room 404</field>
+            <field name="code">404</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_std_k"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f4"/>
+            <field name="section_id" ref="demo_section_pool_side"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+        <record id="demo_space_405" model="hospitality.space">
+            <field name="name">Room 405</field>
+            <field name="code">405</field>
+            <field name="property_id" ref="hospitality_base.demo_property_nyc01"/>
+            <field name="space_type_id" ref="demo_stype_acc"/>
+            <field name="building_id" ref="demo_building_main"/>
+            <field name="floor_id" ref="demo_floor_f4"/>
+            <field name="section_id" ref="demo_section_east_wing"/>
+            <field name="bed_count">1</field>
+            <field name="status">vacant_clean</field>
+        </record>
+
+    </data>
+</odoo>

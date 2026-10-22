@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================
+             PROPERTY — Tree / List View
+        ================================================================ -->
+        <record id="view_hospitality_property_tree" model="ir.ui.view">
+            <field name="name">hospitality.property.tree</field>
+            <field name="model">hospitality.property</field>
+            <field name="arch" type="xml">
+                <list string="Properties">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="brand_id"/>
+                    <field name="property_type"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="business_date"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             PROPERTY — Form View
+        ================================================================ -->
+        <record id="view_hospitality_property_form" model="ir.ui.view">
+            <field name="name">hospitality.property.form</field>
+            <field name="model">hospitality.property</field>
+            <field name="arch" type="xml">
+                <form string="Property">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                        <field name="property_image"
+                               widget="image"
+                               class="oe_avatar"
+                               options="{'preview_image': 'property_image'}"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Property Name"/>
+                            </h1>
+                            <h2>
+                                <field name="code" placeholder="Code e.g. NYC01"/>
+                            </h2>
+                        </div>
+                        <notebook>
+                            <page string="General" name="general">
+                                <group>
+                                    <group string="Identity">
+                                        <field name="brand_id"/>
+                                        <field name="property_type"/>
+                                        <field name="star_rating"/>
+                                        <field name="company_id"
+                                               groups="base.group_multi_company"/>
+                                    </group>
+                                    <group string="Location and Finance">
+                                        <field name="address_id"/>
+                                        <field name="partner_id"/>
+                                        <field name="timezone"/>
+                                        <field name="currency_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Operations" name="operations">
+                                <group>
+                                    <group string="Check-In / Check-Out">
+                                        <field name="default_check_in_time"
+                                               widget="float_time"/>
+                                        <field name="default_check_out_time"
+                                               widget="float_time"/>
+                                    </group>
+                                    <group string="Night Audit">
+                                        <field name="auto_audit"/>
+                                        <field name="business_date"/>
+                                    </group>
+                                </group>
+                                <group string="Assigned Users">
+                                    <field name="user_ids"
+                                           widget="many2many_tags"
+                                           nolabel="1"/>
+                                </group>
+                            </page>
+                            <page string="Sequences" name="sequences"
+                                  groups="hospitality_base.group_hospitality_admin">
+                                <group>
+                                    <field name="sequence_reservation_id"/>
+                                    <field name="sequence_folio_id"/>
+                                    <field name="sequence_invoice_id"/>
+                                </group>
+                            </page>
+                            <page string="Images" name="image">
+                                <group string="Cover">
+                                    <!-- The one representative shot. The
+                                         kanban card reads this field. -->
+                                    <field name="property_image"
+                                           widget="image"
+                                           nolabel="1"/>
+                                </group>
+                                <group string="Gallery">
+                                    <!-- default_name seeds the title so
+                                         adding an image never stops on a
+                                         required field with nothing in
+                                         it. -->
+                                    <field name="image_ids"
+                                           class="o_hm_property_gallery"
+                                           mode="kanban"
+                                           add-label="Add Image"
+                                           nolabel="1"
+                                           colspan="2"
+                                           context="{'default_name': name}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             PROPERTY — Kanban View
+        ================================================================ -->
+        <record id="view_hospitality_property_kanban" model="ir.ui.view">
+            <field name="name">hospitality.property.kanban</field>
+            <field name="model">hospitality.property</field>
+            <field name="arch" type="xml">
+                <!--
+                    A media card: 16:9 cover, the name over a gradient
+                    scrim, then a row of facts.
+
+                    property_image is deliberately NOT declared as a
+                    field. Reading an Image field in a kanban pulls the
+                    whole base64 payload into the list read - roughly
+                    300 KB per record for a 1024px cover, so a chain with
+                    a hundred properties would transfer ~30 MB just to
+                    decide whether to show a picture. The <img> instead
+                    points at /web/image with a 640x360 resize, which
+                    Odoo serves from its own cache and which falls back
+                    to a placeholder when the field is empty.
+                -->
+                <kanban class="o_hm_property_kanban" default_order="name">
+                    <!-- Every field the card reads has to be declared.
+                         Odoo registers fields from <field> nodes only:
+                         a record.x reference inside t-out or t-attf does
+                         NOT pull x into the read, and the card then
+                         throws "Cannot read properties of undefined
+                         (reading 'value')" on first render.
+
+                         property_image is the deliberate omission - see
+                         the note above. -->
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="brand_id"/>
+                    <field name="property_type"/>
+                    <field name="star_rating"/>
+                    <field name="business_date"/>
+                    <field name="active"/>
+                    <field name="image_count"/>
+                    <templates>
+                        <t t-name="card" class="o_hm_prop_card p-0">
+                            <widget name="web_ribbon" title="Archived"
+                                    bg_color="text-bg-danger"
+                                    invisible="active"/>
+
+                            <div class="o_hm_prop_media">
+                                <img class="o_hm_prop_img"
+                                     t-attf-src="/web/image/hospitality.property/#{record.id.raw_value}/property_image/640x360"
+                                     t-att-alt="record.name.value"/>
+
+                                <span t-if="record.image_count.raw_value"
+                                      class="o_hm_prop_count"
+                                      t-attf-title="#{record.image_count.value} gallery images">
+                                    <i class="fa fa-camera me-1" aria-hidden="true"/>
+                                    <t t-out="record.image_count.value"/>
+                                </span>
+
+                                <div class="o_hm_prop_scrim">
+                                    <div class="o_hm_prop_name"
+                                         t-out="record.name.value"/>
+                                    <div class="o_hm_prop_sub">
+                                        <span class="o_hm_prop_code"
+                                              t-out="record.code.value"/>
+                                        <span class="o_hm_prop_dot">·</span>
+                                        <span t-out="record.property_type.value"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_hm_prop_body">
+                                <!-- s is a number and raw_value a string
+                                     like "4"; JS coerces the string side
+                                     of a <= comparison, so no parseInt is
+                                     needed here. -->
+                                <span t-if="record.star_rating.raw_value"
+                                      class="o_hm_prop_stars"
+                                      t-att-title="record.star_rating.value">
+                                    <t t-foreach="[1,2,3,4,5]" t-as="s" t-key="s">
+                                        <i t-attf-class="fa fa-star#{s &lt;= record.star_rating.raw_value ? '' : '-o'}"
+                                           aria-hidden="true"/>
+                                    </t>
+                                </span>
+                                <span t-else="" class="o_hm_prop_unrated">
+                                    Unrated
+                                </span>
+
+                                <span class="o_hm_prop_date"
+                                      title="Business date">
+                                    <i class="fa fa-calendar-o me-1"
+                                       aria-hidden="true"/>
+                                    <t t-out="record.business_date.value"/>
+                                </span>
+                            </div>
+
+                            <div t-if="record.brand_id.value"
+                                 class="o_hm_prop_foot">
+                                <i class="fa fa-tag me-1" title="Brand" aria-hidden="true"/>
+                                <t t-out="record.brand_id.value"/>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             PROPERTY — Search View
+        ================================================================ -->
+        <record id="view_hospitality_property_search" model="ir.ui.view">
+            <field name="name">hospitality.property.search</field>
+            <field name="model">hospitality.property</field>
+            <field name="arch" type="xml">
+                <search string="Search Properties">
+                    <field name="name" string="Property"/>
+                    <field name="code"/>
+                    <field name="brand_id"/>
+                    <filter name="active" string="Active"
+                            domain="[('active','=',True)]"/>
+                    <filter name="archived" string="Archived"
+                            domain="[('active','=',False)]"/>
+                    <filter name="type_hotel" string="Hotel"
+                            domain="[('property_type','=','hotel')]"/>
+                    <filter name="type_resort" string="Resort"
+                            domain="[('property_type','=','resort')]"/>
+                    <filter name="type_vacation" string="Vacation Rental"
+                            domain="[('property_type','=','vacation_rental')]"/>
+                    <filter name="type_hostel" string="Hostel"
+                            domain="[('property_type','=','hostel')]"/>
+                    <filter name="type_serviced" string="Serviced Apartment"
+                            domain="[('property_type','=','serviced_apt')]"/>
+                    <filter name="group_brand" string="Brand"
+                            context="{'group_by': 'brand_id'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                    <filter name="group_type" string="Property Type"
+                            context="{'group_by': 'property_type'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             PROPERTY — Window Action
+        ================================================================ -->
+        <record id="action_hospitality_property" model="ir.actions.act_window">
+            <field name="name">Properties</field>
+            <field name="res_model">hospitality.property</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="view_hospitality_property_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Add your first property!
+                </p>
+                <p>Properties are the core operational units of the Hospitality suite.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

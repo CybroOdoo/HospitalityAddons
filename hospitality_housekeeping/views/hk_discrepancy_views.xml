@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- HK-05: HK Discrepancy — list of spaces where hospitality.space.status
+         and PMS occupancy disagree. Rows are recomputed fresh every time
+         action_hk_discrepancy_report() runs (see the TransientModel). -->
+    <record id="view_hk_discrepancy_list" model="ir.ui.view">
+        <field name="name">hospitality.hk.discrepancy.list</field>
+        <field name="model">hospitality.hk.discrepancy</field>
+        <field name="arch" type="xml">
+            <list string="HK Discrepancy" create="false" edit="false" delete="false">
+                <field name="space_id"/>
+                <field name="pms_state"/>
+                <field name="hk_state"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Bound as a server action so the discrepancy rows are
+         recomputed for the current property every time this is
+         opened; see action_hk_discrepancy_report() on the model. -->
+    <record id="action_hk_discrepancy_report" model="ir.actions.server">
+        <field name="name">HK Discrepancy</field>
+        <field name="model_id" ref="model_hospitality_hk_discrepancy"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_hk_discrepancy_report()</field>
+    </record>
+
+</odoo>

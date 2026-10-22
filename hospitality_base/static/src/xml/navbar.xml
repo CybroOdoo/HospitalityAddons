@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        Navbar additions.
+
+        The <nav> is NOT replaced. oil_erp_base replaces it wholesale and
+        has to re-call the apps menu, breadcrumbs, sections and systray
+        by hand; anything forgotten disappears from the product. One
+        surgical insert gives the same result and cannot drop a feature:
+        the icon rail, as a sibling of <nav> inside <header>.
+
+        The company name is NOT added here: Odoo's own systray already
+        prints it on the right, and two copies in one bar read as a bug.
+    -->
+    <t t-inherit="web.NavBar" t-inherit-mode="extension" owl="1">
+
+        <!-- Icon rail, inside the header and after the navbar -->
+        <xpath expr="//nav[hasclass('o_main_navbar')]" position="after">
+            <div class="ht_rail" t-ref="ht_rail">
+                <ul class="ht_rail_list">
+                    <t t-foreach="menuService.getApps()" t-as="app"
+                       t-key="app.id">
+                        <li t-attf-class="ht_rail_item {{ menuService.getCurrentApp() and menuService.getCurrentApp().id === app.id ? 'ht_current' : '' }}">
+                            <a class="ht_rail_link"
+                               t-attf-href="#menu_id={{ app.id }}"
+                               t-att-data-menu-xmlid="app.xmlid"
+                               t-att-title="app.name"
+                               t-on-click.prevent="() => this.onRailAppClick(app)">
+                                <t t-if="htIcon(app)">
+                                    <img class="ht_rail_icon"
+                                         t-att-src="htIcon(app)"
+                                         t-att-alt="app.name"/>
+                                </t>
+                                <t t-else="">
+                                    <span t-attf-class="ht_rail_plate ht_tint_{{ htTint(app) }}"
+                                          t-esc="htMonogram(app.name)"/>
+                                </t>
+                                <span class="ht_rail_name" t-esc="app.name"/>
+                            </a>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+        </xpath>
+
+    </t>
+
+</templates>

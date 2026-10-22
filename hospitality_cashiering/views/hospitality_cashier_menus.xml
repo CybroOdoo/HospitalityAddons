@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- CASH-02: mounted under the suite's shared "Operations" top-bar
+         tab, per the spec's explicit parent="menu_hospitality_operations".
+         Confirmed via grep: this menu is defined in hospitality_base
+         (views/menus.xml), the module that builds the "Hospitality" app
+         shell and top menu bar - same as hospitality_folio,
+         hospitality_night_audit, hospitality_property, and
+         hospitality_reservation, which all mount under it the same way.
+
+         The standalone "Cashiering" top-level app from CASH-01 has been
+         dropped in favour of this, since the suite uses a single
+         "Hospitality" app with shared top-bar tabs rather than one app
+         per module. -->
+    <menuitem id="menu_cashier_shifts"
+              name="Cashier Shifts"
+              parent="hospitality_base.menu_hm_finance"
+              action="hospitality_cashier_shift_action"
+              groups="group_cashier,group_cashier_supervisor"
+              sequence="60"/>
+
+    <!-- CASH-03: "Void Requests" parent menu is menu_hospitality_operations
+         per the spec, visible to supervisor only. The spec calls for a
+         single "Void Requests" menu; it's pointed at the supervisor
+         inbox action (filtered to state=requested) since that's the
+         actionable queue a supervisor needs day-to-day. Cashiers see
+         and create their own requests from the Folio Line UI /
+         action_void, not from this menu. -->
+    <menuitem id="menu_void_requests"
+              name="Void Requests"
+              parent="hospitality_base.menu_hm_finance"
+              action="hospitality_void_request_action_inbox"
+              groups="group_cashier_supervisor"
+              sequence="70"/>
+
+</odoo>

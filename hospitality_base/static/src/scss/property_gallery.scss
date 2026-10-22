@@ -1,0 +1,68 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Sizing for the property gallery kanban on the property form.
+//
+// Odoo's own product-image kanban gets its card size from
+// .o_squared_image, which is declared in website_sale's BACKEND
+// stylesheet. This module does not depend on website_sale, so copying
+// that markup alone leaves the cards unstyled and each one stretches to
+// half the form's width. These rules are the small amount of CSS that
+// replaces it, scoped to the one field that uses it.
+
+.o_hm_property_gallery {
+    .o_kanban_renderer {
+        align-content: start;
+    }
+
+    .o_kanban_record,
+    .o_kanban_record.o_kanban_ghost {
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
+        margin: 0 12px 12px 0;
+    }
+
+    // 4:3, cropped rather than letterboxed, so a gallery of mixed
+    // aspect ratios still lines up on a grid.
+    .o_hm_gallery_image {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border-top-left-radius: inherit;
+        border-top-right-radius: inherit;
+    }
+
+    // Remove control, revealed on hover so a gallery of cards stays calm
+    // until you reach for one.
+    .o_hm_gallery_remove {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        z-index: 2;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, .55);
+        color: #FFFFFF;
+        text-decoration: none;
+        opacity: 0;
+        transition: opacity .12s ease-in-out, background-color .12s ease-in-out;
+
+        &:hover,
+        &:focus-visible {
+            background: #B03A2E;
+            color: #FFFFFF;
+        }
+    }
+
+    .o_kanban_record:hover .o_hm_gallery_remove,
+    .o_hm_gallery_remove:focus-visible {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================
+             ACTIVITY TRACE — Tree
+        ================================================================ -->
+        <record id="view_hospitality_activity_trace_tree" model="ir.ui.view">
+            <field name="name">hospitality.activity.trace.tree</field>
+            <field name="model">hospitality.activity.trace</field>
+            <field name="arch" type="xml">
+                <list string="Activity Traces"
+                      decoration-muted="resolved == True">
+                    <field name="type" widget="badge"/>
+                    <field name="text" string="Trace Text"/>
+                    <field name="property_id"/>
+                    <field name="create_uid" string="Created By"/>
+                    <field name="create_date" string="Created On"/>
+                    <field name="resolved" widget="boolean_toggle"/>
+                    <field name="resolved_by"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             ACTIVITY TRACE — Form
+        ================================================================ -->
+        <record id="view_hospitality_activity_trace_form" model="ir.ui.view">
+            <field name="name">hospitality.activity.trace.form</field>
+            <field name="model">hospitality.activity.trace</field>
+            <field name="arch" type="xml">
+                <form string="Activity Trace">
+                    <header>
+                        <button name="action_resolve"
+                                string="Mark as Resolved"
+                                type="object"
+                                class="btn-primary"
+                                invisible="resolved == True"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group string="Trace Details">
+                                <field name="type"/>
+                                <field name="property_id"/>
+                            </group>
+                            <group string="Resolution">
+                                <field name="resolved" widget="boolean_toggle"/>
+                                <field name="resolved_by"
+                                       invisible="resolved == False"/>
+                                <field name="resolved_at"
+                                       invisible="resolved == False"/>
+                            </group>
+                        </group>
+                        <separator string="Trace Text"/>
+                        <field name="text" placeholder="Enter trace details..."/>
+                        <group string="Audit">
+                            <field name="create_uid" readonly="1"/>
+                            <field name="create_date" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             ACTIVITY TRACE — Search
+        ================================================================ -->
+        <record id="view_hospitality_activity_trace_search" model="ir.ui.view">
+            <field name="name">hospitality.activity.trace.search</field>
+            <field name="model">hospitality.activity.trace</field>
+            <field name="arch" type="xml">
+                <search string="Search Activity Traces">
+                    <field name="text" string="Trace Text"/>
+                    <field name="property_id"/>
+                <filter name="unresolved" string="Unresolved"
+                            domain="[('resolved','=',False)]"/>
+                    <filter name="resolved" string="Resolved"
+                            domain="[('resolved','=',True)]"/>
+                <filter name="type_arrival" string="Arrival"
+                            domain="[('type','=','arrival')]"/>
+                    <filter name="type_departure" string="Departure"
+                            domain="[('type','=','departure')]"/>
+                    <filter name="type_inhouse" string="In House"
+                            domain="[('type','=','in_house')]"/>
+                    <filter name="type_anytime" string="Anytime"
+                            domain="[('type','=','anytime')]"/>
+                <filter name="group_type" string="Type"
+                            context="{'group_by': 'type'}"/>
+                    <filter name="group_property" string="Property"
+                            context="{'group_by': 'property_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             ACTIVITY TRACE — Action
+        ================================================================ -->
+        <record id="action_hospitality_activity_trace" model="ir.actions.act_window">
+            <field name="name">Activity Traces</field>
+            <field name="res_model">hospitality.activity.trace</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id"
+                   ref="view_hospitality_activity_trace_search"/>
+            <field name="context">{'search_default_unresolved': 1}</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Guest History List view -->
+    <record id="view_guest_history_line_list" model="ir.ui.view">
+        <field name="name">hospitality.guest.history.line.list</field>
+        <field name="model">hospitality.guest.history.line</field>
+        <field name="arch" type="xml">
+            <list string="Guest Stay History" default_order="check_in desc">
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <field name="reservation_ref"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="nights" readonly="1"/>
+                <field name="source_id" optional="hide"/>
+                <field name="segment_id" optional="hide"/>
+                <field name="currency_id" optional="hide"/>
+                <field name="revenue" widget="monetary"/>
+                <field name="rating" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Guest History Form view -->
+    <record id="view_guest_history_line_form" model="ir.ui.view">
+        <field name="name">hospitality.guest.history.line.form</field>
+        <field name="model">hospitality.guest.history.line</field>
+        <field name="arch" type="xml">
+            <form string="Stay History Entry">
+                <sheet>
+                    <group>
+                        <group string="Guest &amp; Property">
+                            <field name="partner_id"/>
+                            <field name="property_id"/>
+                            <field name="reservation_ref"/>
+                            <field name="reservation_id"/>
+                        </group>
+                        <group string="Stay Dates">
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="nights" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Revenue">
+                            <field name="currency_id"/>
+                            <field name="revenue" widget="monetary"/>
+                            <field name="payment_revenue" widget="monetary"/>
+                        </group>
+                        <group string="Segmentation &amp; Rating">
+                            <field name="source_id"/>
+                            <field name="segment_id"/>
+                            <field name="rating"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Guest History Search view -->
+    <record id="view_guest_history_line_search" model="ir.ui.view">
+        <field name="name">hospitality.guest.history.line.search</field>
+        <field name="model">hospitality.guest.history.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Stay History">
+                <field name="partner_id" string="Guest"/>
+                <field name="property_id"/>
+                <field name="reservation_ref"/>
+                <filter string="Has Rating"
+                        name="filter_rated"
+                        domain="[('rating', '!=', False)]"/>
+                <separator/>
+                <filter string="Property"
+                        name="group_property"
+                        context="{'group_by': 'property_id'}"/>
+                <filter string="Guest"
+                        name="group_guest"
+                        context="{'group_by': 'partner_id'}"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

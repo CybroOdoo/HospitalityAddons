@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ═══════════════════ WO Aging Pivot View ═══════════════════
+             Rows: category. Columns: age_bucket (the zero-padded
+             Selection keys on the model sort alphabetically into the
+             correct < 1 day ... > 14 days order — see the field comment
+             on hospitality.work.order.age_bucket).
+             Measure: count only (no monetary/hours measure requested).
+        ══════════════════════════════════════════════════════════════ -->
+        <record id="view_hospitality_work_order_pivot_aging" model="ir.ui.view">
+            <field name="name">hospitality.work.order.pivot.aging</field>
+            <field name="model">hospitality.work.order</field>
+            <field name="arch" type="xml">
+                <pivot string="WO Aging" disable_linking="1">
+                    <field name="category" type="row"/>
+                    <field name="age_bucket" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- ═══════════════════ WO Aging Action ═══════════════════
+             Domain restricts to non-terminal work orders — age_bucket
+             is False (blank) for done/cancelled orders anyway, but
+             filtering here keeps them out of the pivot's totals/row
+             count instead of showing as an empty "no bucket" slice.
+        ══════════════════════════════════════════════════════════════ -->
+        <record id="action_hospitality_work_order_aging" model="ir.actions.act_window">
+            <field name="name">WO Aging</field>
+            <field name="res_model">hospitality.work.order</field>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="view_hospitality_work_order_pivot_aging"/>
+            <field name="domain">[('state', 'not in', ['done', 'cancelled'])]</field>
+            <field name="context">{'pivot_measures': ['__count']}</field>
+        </record>
+
+    </data>
+</odoo>

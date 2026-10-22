@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ═══════════════════ PPM Template List View ═══════════════════ -->
+        <record id="view_hospitality_ppm_template_list" model="ir.ui.view">
+            <field name="name">hospitality.ppm.template.list</field>
+            <field name="model">hospitality.ppm.template</field>
+            <field name="arch" type="xml">
+                <list string="PPM Templates">
+                    <field name="name"/>
+                    <field name="asset_category"/>
+                    <field name="asset_id"/>
+                    <field name="frequency"/>
+                    <field name="last_run_at"/>
+                    <field name="next_run_at"/>
+                    <field name="active" column_invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ═══════════════════ PPM Template Form View ═══════════════════ -->
+        <record id="view_hospitality_ppm_template_form" model="ir.ui.view">
+            <field name="name">hospitality.ppm.template.form</field>
+            <field name="model">hospitality.ppm.template</field>
+            <field name="arch" type="xml">
+                <form string="PPM Template">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Template name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="asset_id"/>
+                                <field name="asset_category"
+                                       invisible="asset_id"
+                                       required="not asset_id"/>
+                                <field name="frequency"/>
+                                <field name="custom_days"
+                                       invisible="frequency != 'custom_days'"
+                                       required="frequency == 'custom_days'"/>
+                            </group>
+                            <group>
+                                <field name="last_run_at" readonly="1"/>
+                                <field name="next_run_at" readonly="1"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Work Order Description Template">
+                            <field name="task_template_text" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ═══════════════════ PPM Template Calendar View ═══════════════════ -->
+        <record id="view_hospitality_ppm_template_calendar" model="ir.ui.view">
+            <field name="name">hospitality.ppm.template.calendar</field>
+            <field name="model">hospitality.ppm.template</field>
+            <field name="arch" type="xml">
+                <calendar string="Upcoming PPM Due Dates" date_start="next_run_at"
+                          mode="month" color="asset_category">
+                    <field name="name"/>
+                    <field name="frequency"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- ═══════════════════ PPM Template Search View ═══════════════════ -->
+        <record id="view_hospitality_ppm_template_search" model="ir.ui.view">
+            <field name="name">hospitality.ppm.template.search</field>
+            <field name="model">hospitality.ppm.template</field>
+            <field name="arch" type="xml">
+                <search string="Search PPM Templates">
+                    <field name="name"/>
+                    <field name="asset_id"/>
+                    <field name="asset_category"/>
+                    <filter string="Frequency" name="group_frequency"
+                            context="{'group_by': 'frequency'}"/>
+                    <filter string="Asset Category" name="group_asset_category"
+                            context="{'group_by': 'asset_category'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ═══════════════════ PPM Template Action ═══════════════════ -->
+        <record id="action_hospitality_ppm_template" model="ir.actions.act_window">
+            <field name="name">PPM Templates</field>
+            <field name="res_model">hospitality.ppm.template</field>
+            <field name="view_mode">list,form,calendar</field>
+            <field name="search_view_id" ref="view_hospitality_ppm_template_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a preventive maintenance template
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

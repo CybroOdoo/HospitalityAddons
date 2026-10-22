@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.allowance — List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_allowance_list" model="ir.ui.view">
+        <field name="name">hospitality.allowance.list</field>
+        <field name="model">hospitality.allowance</field>
+        <field name="arch" type="xml">
+            <list string="Allowances">
+                <field name="approved_at"/>
+                <field name="approved_by"/>
+                <field name="folio_id"/>
+                <field name="folio_line_id"/>
+                <field name="amount"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="reason"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.allowance — Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_allowance_form" model="ir.ui.view">
+        <field name="name">hospitality.allowance.form</field>
+        <field name="model">hospitality.allowance</field>
+        <field name="arch" type="xml">
+            <form string="Allowance">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="folio_line_id"
+                                   domain="[('folio_id', '!=', False)]"/>
+                            <field name="folio_id"/>
+                            <field name="amount"/>
+                        </group>
+                        <group>
+                            <field name="approved_by"/>
+                            <field name="approved_at"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.allowance — Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_hospitality_allowance_search" model="ir.ui.view">
+        <field name="name">hospitality.allowance.search</field>
+        <field name="model">hospitality.allowance</field>
+        <field name="arch" type="xml">
+            <search string="Search Allowances">
+                <field name="folio_id"/>
+                <field name="approved_by"/>
+                <filter name="group_folio" string="Folio" context="{'group_by': 'folio_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Action + Menu (Supervisor only)
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_hospitality_allowance" model="ir.actions.act_window">
+        <field name="name">Allowances</field>
+        <field name="res_model">hospitality.allowance</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hospitality_allowance_search"/>
+    </record>
+
+    <menuitem
+        id="menu_hospitality_allowance"
+        name="Allowances"
+        action="action_hospitality_allowance"
+        parent="hospitality_base.menu_hm_finance"
+        sequence="56"
+        groups="hospitality_folio.group_folio_supervisor"/>
+
+</odoo>

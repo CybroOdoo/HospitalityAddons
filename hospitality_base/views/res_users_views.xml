@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--  res.users form view -->
+        <record id="view_users_form_hospitality" model="ir.ui.view">
+            <field name="name">res.users.form.hospitality</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Properties" name="hospitality_properties"
+                          groups="hospitality_base.group_hospitality_admin">
+                        <group>
+
+                        </group>
+                            <group string="Allowed Properties">
+                                <field name="property_ids"
+                                       nolabel="1"
+                                       widget="many2many_tags"
+                                       options="{'no_create': True}"/>
+                            </group>
+                        <group string="Allowed Properties (Detail)">
+                            <field name="property_ids" nolabel="1">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="brand_id"/>
+                                    <field name="property_type"/>
+                                    <field name="business_date"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group string="Current Property">
+                                <field name="property_id"
+                                       domain="[('id', 'in', property_ids)]"
+                                       options="{'no_create': True}"
+                                       help="The property this user is currently working in."/>
+                            </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Post Charge Wizard - Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_folio_post_charge_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.folio.post.charge.wizard.form</field>
+        <field name="model">hospitality.folio.post.charge.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Post Charge">
+                <group>
+                    <group string="Charge Details">
+                        <field name="folio_id" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="transaction_code_id"
+                               options="{'no_create': True}"
+                               required="1"/>
+                        <field name="qty"/>
+                        <field name="unit_price"/>
+                        <field name="reference"/>
+                        <field name="window_seq"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_post"
+                            string="Post Charge"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Post Charge Wizard - Action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_folio_post_charge_wizard" model="ir.actions.act_window">
+        <field name="name">Post Charge</field>
+        <field name="res_model">hospitality.folio.post.charge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_folio_id': active_id}</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Post Payment Wizard - Form
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_folio_post_payment_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.folio.post.payment.wizard.form</field>
+        <field name="model">hospitality.folio.post.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Post Payment">
+                <group>
+                    <group string="Payment Details">
+                        <field name="folio_id" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="transaction_code_id"
+                               options="{'no_create': True}"
+                               required="1"/>
+                        <field name="amount"/>
+                        <field name="payment_ref"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_post"
+                            string="Post Payment"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Post Payment Wizard - Action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_folio_post_payment_wizard" model="ir.actions.act_window">
+        <field name="name">Post Payment</field>
+        <field name="res_model">hospitality.folio.post.payment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_folio_id': active_id}</field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Transfer Line Wizard - Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_folio_transfer_line_wizard_form" model="ir.ui.view">
+        <field name="name">hospitality.folio.transfer.line.wizard.form</field>
+        <field name="model">hospitality.folio.transfer.line.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Transfer Line">
+                <group>
+                    <group string="Source">
+                        <field name="folio_id" readonly="1"/>
+                        <field name="line_id"
+                               options="{'no_create': True}"
+                               required="1"/>
+                    </group>
+                    <group string="Destination">
+                        <field name="transfer_mode" widget="radio"/>
+                        <field name="target_window_seq"
+                               invisible="transfer_mode != 'window'"
+                               required="transfer_mode == 'window'"/>
+                        <field name="target_folio_id"
+                               invisible="transfer_mode != 'folio'"
+                               required="transfer_mode == 'folio'"
+                               options="{'no_create': True}"/>
+                        <field name="target_folio_window_seq"
+                               invisible="transfer_mode != 'folio'"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_transfer"
+                            string="Transfer"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Transfer Line Wizard - Action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_folio_transfer_line_wizard" model="ir.actions.act_window">
+        <field name="name">Transfer Line</field>
+        <field name="res_model">hospitality.folio.transfer.line.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_folio_id': active_id}</field>
+    </record>
+
+</odoo>

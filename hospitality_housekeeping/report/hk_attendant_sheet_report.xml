@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- PDF report action for the Housekeeping Attendant Sheet. -->
+    <record id="report_hk_attendant_sheet" model="ir.actions.report">
+        <field name="name">Attendant Sheet</field>
+        <field name="model">hospitality.housekeeping.task</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hospitality_housekeeping.report_hk_attendant_sheet_document</field>
+        <field name="report_file">hospitality_housekeeping.report_hk_attendant_sheet_document</field>
+        <field name="print_report_name">'Attendant Sheet - %s' % (object.business_date or '')</field>
+        <field name="binding_model_id" ref="model_hospitality_housekeeping_task"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

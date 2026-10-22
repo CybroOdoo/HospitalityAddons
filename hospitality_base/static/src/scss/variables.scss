@@ -1,0 +1,181 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Design tokens. Prepended to web._assets_primary_variables, which Odoo
+// includes in both the backend and the frontend bundle, so these are
+// visible to every other SCSS file in this addon.
+//
+// Nothing here overrides an Odoo variable. The theme styles the chrome
+// only; views, buttons, inputs and typography stay Odoo's own.
+
+// ── Brand palette ─────────────────────────────────────────────────────
+$ht-ink:        #16233B;   // navbar, rail, drawer, login brand panel
+$ht-ivory:      #F6F3EC;   // login desk, drawer surfaces
+$ht-brass:      #B58A45;   // logo tile, active markers, accents
+
+// Supporting shades derived from the three above.
+$ht-ink-raise:  #1B2947;   // stats column, raised surfaces on ink
+$ht-ink-field:  #28324C;   // search inputs on ink
+$ht-ink-hover:  rgba(255, 255, 255, .06);
+$ht-ink-line:   rgba(255, 255, 255, .08);
+$ht-ink-line-2: rgba(255, 255, 255, .14);
+
+$ht-surface:    #FFFFFF;
+$ht-line:       #E4DFD4;
+
+$ht-text:       #1C1F26;
+$ht-text-2:     #4A4D55;
+$ht-text-3:     #6B6F78;
+$ht-text-4:     #8A8F98;
+
+$ht-on-ink:     #FFFFFF;
+$ht-on-ink-2:   rgba(255, 255, 255, .72);
+$ht-on-ink-3:   rgba(255, 255, 255, .50);
+$ht-on-ink-4:   rgba(255, 255, 255, .34);
+
+$ht-ok:         #1F8A4C;   // live dot on the business-date pill
+
+// ── App tile tints ────────────────────────────────────────────────────
+// Used for the monogram plate when a root menu carries no web_icon.
+// Sampled from the drawer design.
+$ht-app-tints: (
+    brass:   (plate: #DDBC77, glyph: #16233B),
+    blue:    (plate: #E2EBF7, glyph: #314F9F),
+    cream:   (plate: #F0E8D2, glyph: #8F6520),
+    mint:    (plate: #DDF5E8, glyph: #007443),
+    teal:    (plate: #D3F2F0, glyph: #006F6D),
+    lilac:   (plate: #F0E3F6, glyph: #772A9C),
+    peach:   (plate: #FCDFD9, glyph: #C23A18),
+    neutral: (plate: #E8E9EC, glyph: #4D515B),
+);
+
+// ── App plate material ────────────────────────────────────────────────
+// One switch for the material shared by the drawer tiles and the rail
+// plates. Change $ht-plate-material to any key of the map below and the
+// background, the borders and the monogram colour all move together;
+// nothing else has to be touched.
+//
+//   glass  translucent pane, the icon floating above it
+//   ivory  light mount, per-app monogram colours
+//   brass  brand mount, one ink monogram colour (see glyph-fixed)
+//   ink    the original dark plates
+$ht-plate-material: glass;
+
+// `border`      hairline on the small rail plates
+// `tile-border` the 2px edge the drawer tiles carry AT REST
+// `hover-border` the same edge at full strength under the pointer
+// `image`       optional second background layer, e.g. a glass sheen
+// `glass`       true turns on the pane treatment: backdrop blur, an
+//               inner light line along the top edge, and a drop shadow
+//               under the artwork so it floats rather than sits flat
+// `icon`        artwork size inside the 80px plate
+$ht-plate-materials: (
+    glass: (
+        // Translucent, so the drawer's own light and the brass pool
+        // behind it come through the pane instead of being covered by
+        // it. This is the whole point of the material and the reason it
+        // cannot be expressed as a flat colour.
+        bg:           rgba(255, 255, 255, .055),
+        image:        linear-gradient(
+                          158deg,
+                          rgba(255, 255, 255, .13) 0%,
+                          rgba(255, 255, 255, .02) 48%,
+                          rgba(255, 255, 255, .06) 100%
+                      ),
+        glass:        true,
+        blur:         10px,
+        // Smaller than on an opaque plate: the artwork has to sit INSIDE
+        // the pane with room around it, or it reads as the tile itself
+        // and the glass disappears.
+        icon:         52px,
+        border:       rgba(255, 255, 255, .13),
+        tile-border:  rgba(181, 138, 69, .42),
+        hover-border: rgba(181, 138, 69, .92),
+        // A dark pane, so the monogram takes the LIGHT member of the
+        // tint pair, as on ink.
+        glyph-key:    plate,
+        glyph-fixed:  null,
+    ),
+    ivory: (
+        bg:           $ht-ivory,
+        image:        null,
+        glass:        false,
+        blur:         null,
+        icon:         62px,
+        border:       rgba(22, 35, 59, .09),
+        tile-border:  rgba(181, 138, 69, .55),
+        hover-border: rgba(181, 138, 69, .95),
+        glyph-key:    glyph,
+        glyph-fixed:  null,
+    ),
+    brass: (
+        bg:           $ht-brass,
+        image:        null,
+        glass:        false,
+        blur:         null,
+        icon:         62px,
+        border:       rgba(22, 35, 59, .16),
+        // Brass already carries the accent, so its own edge has to come
+        // from the other end of the palette or it cannot be seen.
+        tile-border:  rgba(255, 255, 255, .45),
+        hover-border: rgba(255, 255, 255, .85),
+        glyph-key:    glyph,
+        // On brass the per-app glyph colours fall apart: mint (#007443)
+        // lands at roughly 1.6:1 against it and simply is not there. The
+        // plate is already the brand colour, so every monogram takes ink
+        // and the differentiation moves to the plate rather than the
+        // letter.
+        glyph-fixed:  $ht-ink,
+    ),
+    ink: (
+        bg:           $ht-ink-raise,
+        image:        null,
+        glass:        false,
+        blur:         null,
+        icon:         62px,
+        border:       transparent,
+        tile-border:  rgba(181, 138, 69, .45),
+        hover-border: rgba(181, 138, 69, .95),
+        // On an ink plate the glyph has to be the LIGHT member of the
+        // tint pair, or it disappears into its own background.
+        glyph-key:    plate,
+        glyph-fixed:  null,
+    ),
+);
+
+$ht-plate:             map-get($ht-plate-materials, $ht-plate-material);
+$ht-plate-bg:          map-get($ht-plate, bg);
+$ht-plate-image:       map-get($ht-plate, image);
+$ht-plate-glass:       map-get($ht-plate, glass);
+$ht-plate-blur:        map-get($ht-plate, blur);
+$ht-plate-icon:        map-get($ht-plate, icon);
+$ht-plate-border:      map-get($ht-plate, border);
+$ht-plate-tile-border: map-get($ht-plate, tile-border);
+$ht-plate-hover:       map-get($ht-plate, hover-border);
+$ht-plate-glyph-key:   map-get($ht-plate, glyph-key);
+$ht-plate-glyph-fixed: map-get($ht-plate, glyph-fixed);
+
+// ── Shape and metrics ─────────────────────────────────────────────────
+$ht-radius-tile:    16px;
+$ht-radius-card:    14px;
+$ht-radius-control: 12px;
+$ht-radius-pill:    999px;
+
+$ht-apps-btn-size:      32px;   // brass plate in the navbar
+$ht-rail-width:         72px;   // collapsed, icon only
+$ht-rail-width-open:   248px;   // expanded on hover
+$ht-navbar-height:      46px;
+$ht-stats-width:       300px;
+
+$ht-shadow-tile:  0 10px 24px -14px rgba(0, 0, 0, .55);
+$ht-focus-ring:   0 0 0 3px rgba(181, 138, 69, .28);
+
+$ht-glow-brass: radial-gradient(circle, rgba(217, 183, 122, .22), transparent 68%);
+$ht-glow-blue:  radial-gradient(circle, rgba(47, 93, 158, .30), transparent 68%);
+
+
+// Mono is used only for the small caption labels inside the two
+// surfaces this theme owns; no global font is imposed.
+$ht-font-mono: 'SF Mono', 'JetBrains Mono', 'Consolas', 'Liberation Mono',
+               monospace;

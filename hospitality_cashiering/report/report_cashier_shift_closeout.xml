@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Cashier Shift Closeout Report.
+
+        Generates a PDF summarizing a cashier shift, including opening and
+        closing drawer balances, payments grouped by transaction code,
+        witnessed cash drops, reconciliation totals, variance, and
+        signature sections for cashier and supervisor approval.
+    -->
+    <record id="action_report_cashier_shift_closeout" model="ir.actions.report">
+        <field name="name">Cashier Shift Closeout</field>
+        <field name="model">hospitality.cashier.shift</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hospitality_cashiering.report_cashier_shift_closeout_document</field>
+        <field name="report_file">hospitality_cashiering.report_cashier_shift_closeout_document</field>
+        <field name="print_report_name">'Shift Closeout - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_hospitality_cashier_shift"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_cashier_shift_closeout_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <h2>Cashier Shift Closeout</h2>
+
+                        <!-- Shift header -->
+                        <table class="table table-sm" style="margin-bottom: 20px;">
+                            <tr>
+                                <td><strong>Shift Reference</strong></td>
+                                <td><span t-field="doc.name"/></td>
+                                <td><strong>Cashier</strong></td>
+                                <td><span t-field="doc.user_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Property</strong></td>
+                                <td><span t-field="doc.property_id.name"/></td>
+                                <td><strong>Status</strong></td>
+                                <td><span t-field="doc.state"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Started At</strong></td>
+                                <td><span t-field="doc.started_at"/></td>
+                                <td><strong>Ended At</strong></td>
+                                <td>
+                                    <span t-field="doc.ended_at"
+                                          t-options='{"widget": "datetime"}'
+                                          t-if="doc.ended_at"/>
+                                    <span t-else="">—</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Opening balance per currency -->
+                        <h4>Opening Balance</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Currency</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.opening_amount_ids" t-as="opening">
+                                    <td><span t-field="opening.currency_id.name"/></td>
+                                    <td class="text-end">
+                                        <span t-esc="opening.amount"
+                                              t-options='{"widget": "monetary", "display_currency": opening.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="not doc.opening_amount_ids">
+                                    <td colspan="2" class="text-muted">No opening amounts recorded.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Payments during shift, grouped by transaction code -->
+                        <h4>Payments Posted During Shift</h4>
+                        <t t-set="payment_groups" t-value="doc._get_closeout_payments_by_code()"/>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Transaction Code</th>
+                                    <th>Description</th>
+                                    <th>Posted At</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="payment_groups" t-as="group">
+                                    <tr t-foreach="group['lines']" t-as="line">
+                                        <td>
+                                            <span t-if="line_first" t-field="group['transaction_code'].code"/>
+                                        </td>
+                                        <td><span t-field="line.description"/></td>
+                                        <td><span t-field="line.create_date"/></td>
+                                        <td class="text-end">
+                                            <span t-esc="-line.amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr class="table-light">
+                                        <td colspan="3" class="text-end">
+                                            <strong>
+                                                Subtotal —
+                                                <span t-field="group['transaction_code'].name"/>
+                                            </strong>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong>
+                                                <span t-esc="group['total']"
+                                                      t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr t-if="not payment_groups">
+                                    <td colspan="4" class="text-muted">No payments posted during this shift.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Drops -->
+                        <h4>Drops</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Dropped At</th>
+                                    <th>Witness</th>
+                                    <th>Notes</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.drop_ids" t-as="drop">
+                                    <td><span t-field="drop.dropped_at"/></td>
+                                    <td><span t-field="drop.witness_user_id.name"/></td>
+                                    <td><span t-field="drop.notes"/></td>
+                                    <td class="text-end">
+                                        <span t-esc="drop.amount"
+                                              t-options='{"widget": "monetary", "display_currency": drop.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="not doc.drop_ids">
+                                    <td colspan="4" class="text-muted">No drops recorded.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Closing balance -->
+                        <h4>Closing Balance</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Currency</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.closing_amount_ids" t-as="closing">
+                                    <td><span t-field="closing.currency_id.name"/></td>
+                                    <td class="text-end">
+                                        <span t-esc="closing.amount"
+                                              t-options='{"widget": "monetary", "display_currency": closing.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="not doc.closing_amount_ids">
+                                    <td colspan="2" class="text-muted">No closing amounts recorded.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Summary -->
+                        <table class="table table-sm" style="margin-top: 10px;">
+                            <tr>
+                                <td><strong>Expected Total (Payments)</strong></td>
+                                <td class="text-end">
+                                    <span t-esc="doc.expected_total"
+                                          t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Variance</strong></td>
+                                <td class="text-end">
+                                    <span t-esc="doc.variance"
+                                          t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Signature lines -->
+                        <table class="table table-borderless" style="margin-top: 60px;">
+                            <tr>
+                                <td style="width: 50%; border-top: 1px solid #000; padding-top: 4px;">
+                                    Cashier Signature — <span t-field="doc.user_id.name"/>
+                                </td>
+                                <td style="width: 50%; border-top: 1px solid #000; padding-top: 4px;">
+                                    Supervisor Signature
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

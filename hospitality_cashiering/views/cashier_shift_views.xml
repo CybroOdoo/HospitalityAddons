@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="hospitality_cashier_shift_view_list" model="ir.ui.view">
+        <field name="name">hospitality.cashier.shift.view.list</field>
+        <field name="model">hospitality.cashier.shift</field>
+        <field name="arch" type="xml">
+            <list string="Cashier Shifts" decoration-danger="variance != 0 and state != 'open'">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="started_at"/>
+                <field name="ended_at"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'open'"
+                       decoration-warning="state == 'closed'"
+                       decoration-success="state == 'audited'"/>
+                <field name="variance"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="hospitality_cashier_shift_view_form" model="ir.ui.view">
+        <field name="name">hospitality.cashier.shift.view.form</field>
+        <field name="model">hospitality.cashier.shift</field>
+        <field name="arch" type="xml">
+            <form string="Cashier Shift">
+                <header>
+                    <button name="action_close_shift" type="object"
+                            string="Close" class="oe_highlight"
+                            invisible="state != 'open'"/>
+                    <button name="action_audit" type="object"
+                            string="Audit" class="oe_highlight"
+                            invisible="state != 'closed'"
+                            groups="hospitality_cashiering.group_cashier_supervisor"/>
+                    <button name="action_print_shift_closeout" type="object"
+                            string="Print Closeout"
+                            invisible="state == 'open'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="open,closed,audited"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id"
+                                   readonly="state != 'open'"/>
+                            <field name="property_id"
+                                   readonly="state != 'open'"/>
+                        </group>
+                        <group>
+                            <field name="started_at" readonly="1"/>
+                            <field name="ended_at" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="expected_total" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="variance" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Opening" name="opening">
+                            <field name="opening_amount_ids"
+                                   readonly="state != 'open'">
+                                <list editable="bottom">
+                                    <field name="currency_id"/>
+                                    <field name="amount"/>
+                                    <field name="kind" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Closing" name="closing">
+                            <field name="closing_amount_ids"
+                                   readonly="state != 'open'">
+                                <list editable="bottom">
+                                    <field name="currency_id"/>
+                                    <field name="amount"/>
+                                    <field name="kind" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Drops" name="drops">
+                            <field name="drop_ids"
+                                   readonly="state != 'open'">
+                                <list editable="bottom">
+                                    <field name="dropped_at"/>
+                                    <field name="currency_id"/>
+                                    <field name="amount"/>
+                                    <field name="witness_user_id"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes about this shift..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hospitality_cashier_shift_action" model="ir.actions.act_window">
+        <field name="name">Cashier Shifts</field>
+        <field name="res_model">hospitality.cashier.shift</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No cashier shifts yet.
+            </p>
+            <p>
+                A shift opens automatically when a cashier posts their
+                first payment, or you can open one manually here.
+            </p>
+        </field>
+    </record>
+
+</odoo>

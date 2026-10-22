@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        The drawer renders inside Odoo's action container, beneath Odoo's
+        own navbar. It draws no top bar of its own: the apps button,
+        breadcrumbs and the whole systray - including the user menu -
+        live in that navbar.
+    -->
+    <t t-name="hospitality_base.Home">
+        <div class="ht_home">
+
+            <aside t-if="hasStats" class="ht_stats">
+                <div class="ht_stats_now">
+                    <div t-if="state.clock" class="ht_stats_time"
+                         t-out="state.clock"/>
+                    <div class="ht_stats_date" t-out="state.data.date_label"/>
+                </div>
+                <h1 class="ht_stats_greeting">
+                    <t t-out="state.data.greeting"/>,<br/>
+                    <t t-out="state.data.user_name"/>
+                </h1>
+
+                <div class="ht_stat" t-foreach="stats" t-as="stat"
+                     t-key="stat.key">
+                    <div class="ht_stat_label" t-out="stat.label"/>
+                    <div class="ht_stat_value" t-out="stat.value"/>
+                    <div class="ht_stat_sub" t-out="stat.sub"/>
+                </div>
+            </aside>
+
+            <main class="ht_apps">
+                <div class="ht_apps_inner">
+
+                    <div class="ht_search">
+                        <input type="text" class="ht_search_input"
+                               placeholder="Search apps..."
+                               t-ref="search"
+                               t-model="state.query"
+                               t-on-keydown="onSearchKeydown"/>
+                        <span class="ht_search_key">Ctrl K</span>
+                    </div>
+
+                    <div t-if="!apps.length" class="ht_apps_empty">
+                        <span class="ht_label">No apps match that search</span>
+                    </div>
+
+                    <div t-else="" class="ht_app_grid">
+                        <button class="ht_app" t-foreach="apps" t-as="app"
+                                t-key="app.id"
+                                t-on-click="() => this.openApp(app)">
+                            <!-- One plate for every tile, whether the app
+                                 brought artwork or gets a monogram, so the
+                                 grid reads as a single set rather than a
+                                 mix of floating icons and coloured chips. -->
+                            <span t-attf-class="ht_app_plate {{ app.icon ? 'ht_app_plate_art' : 'ht_tint_' + app.tint }}">
+                                <img t-if="app.icon" class="ht_app_icon"
+                                     t-att-src="app.icon"
+                                     t-att-alt="app.name"/>
+                                <t t-else="" t-out="app.monogram"/>
+                            </span>
+                            <span class="ht_app_name" t-out="app.name"/>
+                        </button>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </t>
+
+</templates>

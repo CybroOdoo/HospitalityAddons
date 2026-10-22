@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="hospitality_void_request_view_list" model="ir.ui.view">
+        <field name="name">hospitality.void.request.view.list</field>
+        <field name="model">hospitality.void.request</field>
+        <field name="arch" type="xml">
+            <list string="Void Requests" decoration-warning="state == 'requested'"
+                  decoration-success="state == 'approved'"
+                  decoration-danger="state == 'rejected'">
+                <field name="requested_at"/>
+                <field name="folio_id"/>
+                <field name="property_id"/>
+                <field name="transaction_code_id"/>
+                <field name="amount"/>
+                <field name="requested_by"/>
+                <field name="approved_by"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'requested'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="hospitality_void_request_view_form" model="ir.ui.view">
+        <field name="name">hospitality.void.request.view.form</field>
+        <field name="model">hospitality.void.request</field>
+        <field name="arch" type="xml">
+            <form string="Void Request">
+                <header>
+                    <button name="action_approve" type="object"
+                            string="Approve" class="oe_highlight"
+                            invisible="state != 'requested'"
+                            groups="hospitality_cashiering.group_cashier_supervisor"
+                            confirm="Approving this request will immediately void the folio line. Continue?"/>
+                    <button name="action_reject" type="object"
+                            string="Reject"
+                            invisible="state != 'requested'"
+                            groups="hospitality_cashiering.group_cashier_supervisor"/>
+                    <field name="state"
+                       widget="statusbar"
+                       statusbar_visible="requested,approved,rejected"
+                       invisible="state != 'requested'"/>
+
+                    <field name="state"
+                       widget="statusbar"
+                       statusbar_visible="approved"
+                       invisible="state != 'approved'"/>
+
+                    <!-- Rejected -->
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="rejected"
+                           invisible="state != 'rejected'"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="folio_line_id" options="{'no_create': True}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="folio_id" readonly="1"/>
+                            <field name="property_id" readonly="1"/>
+                            <field name="transaction_code_id" readonly="1"/>
+                            <field name="amount" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="requested_by" readonly="1"/>
+                            <field name="requested_at" readonly="1"/>
+                            <field name="approved_by" readonly="1"
+                                   invisible="not approved_by"/>
+                            <field name="approved_at" readonly="1"
+                                   invisible="not approved_at"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason" readonly="state != 'requested'"
+                               placeholder="Why is this line being voided?"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Standard action: all void requests -->
+    <record id="hospitality_void_request_action" model="ir.actions.act_window">
+        <field name="name">Void Requests</field>
+        <field name="res_model">hospitality.void.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No void requests yet.
+            </p>
+            <p>
+                Cashiers raise a request here to void a posted folio line;
+                a Cashier Supervisor must approve it before the line is
+                actually voided.
+            </p>
+        </field>
+    </record>
+
+    <!-- Supervisor inbox: only pending requests -->
+    <record id="hospitality_void_request_action_inbox" model="ir.actions.act_window">
+        <field name="name">Void Request Inbox</field>
+        <field name="res_model">hospitality.void.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'requested')]</field>
+        <field name="context">{'search_default_state': 'requested'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No pending void requests.
+            </p>
+            <p>
+                This inbox only shows requests awaiting supervisor
+                decision.
+            </p>
+        </field>
+    </record>
+
+</odoo>

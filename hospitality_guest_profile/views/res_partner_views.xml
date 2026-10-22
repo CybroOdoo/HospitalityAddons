@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================
+        res.partner form view
+    ================================================================ -->
+    <record id="view_partner_form_guest_tab" model="ir.ui.view">
+        <field name="name">res.partner.form.guest.tab</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Guest Profile"
+                      name="guest_profile_page"
+                      groups="hospitality_guest_profile.group_guest_user,hospitality_base.group_hospitality_admin"
+                      invisible="not is_guest">
+                    <group>
+                        <field name="is_guest" widget="boolean_toggle"/>
+                        <field name="guest_no"/>
+                    </group>
+                    <group>
+                        <group string="Guest Details">
+                            <field name="nationality_id"/>
+                            <field name="birth_date"/>
+                            <field name="gender"/>
+                            <field name="preferred_language_id"/>
+                            <field name="preferred_currency_id"/>
+                            <field name="vip_level"/>
+                        </group>
+                        <group string="Preferences &amp; Consent">
+                            <field name="dietary_restriction_ids"
+                                   widget="many2many_tags"/>
+                            <field name="preference_ids"
+                                   widget="many2many_tags"/>
+                            <field name="marketing_consent_email"/>
+                            <field name="marketing_consent_sms"/>
+                            <field name="gdpr_consent_at"/>
+                            <field name="gdpr_consent_ip"/>
+                        </group>
+                    </group>
+                    <group string="Blacklist">
+                        <field name="blacklist"/>
+                        <field name="blacklist_reason"
+                               invisible="not blacklist"
+                               required="blacklist"
+                               placeholder="Mandatory reason for blacklisting this guest…"/>
+                    </group>
+                    <group string="Right to Be Forgotten (RTBF)"
+                           invisible="not is_guest">
+                        <field name="rtbf_requested_at" readonly="1"/>
+                        <field name="rtbf_requested_by" readonly="1"/>
+                        <field name="rtbf_anonymized_at" readonly="1"/>
+                    </group>
+                    <div class="o_field_widget" invisible="not is_guest">
+                        <button name="action_request_rtbf"
+                                string="Request RTBF"
+                                type="object"
+                                class="btn-warning"
+                                groups="hospitality_guest_profile.group_guest_user"
+                                invisible="rtbf_anonymized_at != False"
+                                confirm="This will log a Right-To-Be-Forgotten request for this guest. Continue?"/>
+                        <button name="action_open_rtbf_wizard"
+                                string="Execute RTBF"
+                                type="object"
+                                class="btn-danger"
+                                groups="hospitality_guest_profile.group_guest_pii"
+                                invisible="rtbf_anonymized_at != False"
+                                confirm="This will permanently erase all personal data. Are you sure?"/>
+                    </div>
+                    <group string="Stay Statistics">
+                        <field name="total_stays" readonly="1"/>
+                        <field name="total_nights" readonly="1"/>
+                        <field name="total_revenue"
+                               readonly="1"
+                               widget="monetary"/>
+                        <field name="last_stay_date" readonly="1"/>
+                    </group>
+                    <field name="history_line_ids" readonly="1"
+                           string="Stay History"
+                           mode="list">
+                        <list string="Stay History"
+                              editable="bottom" >
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="nights" readonly="1"/>
+                            <field name="property_id"/>
+                            <field name="source_id"/>
+                            <field name="segment_id"/>
+                            <field name="currency_id" optional="hide"/>
+                            <field name="revenue" widget="monetary"/>
+                            <field name="rating"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ================================================================
+           is_guest toggle on the partner form header (optional shortcut)
+    ================================================================ -->
+    <record id="view_partner_form_guest_header" model="ir.ui.view">
+        <field name="name">res.partner.form.guest.header</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_guest" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================
+           Guests — Kanban view
+    ================================================================ -->
+    <record id="view_guests_kanban" model="ir.ui.view">
+        <field name="name">res.partner.guests.kanban</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <!--
+                A guest is a person, not a room, so this is an AVATAR card
+                rather than the 16:9 media card the room and room-type
+                kanbans use.
+
+                avatar_128 rather than image_128: Odoo generates an
+                initial-based avatar when a guest has no photograph, so
+                the card never falls back to an empty grey box - and most
+                guest records will never have a photograph.
+            -->
+            <kanban default_group_by="vip_level" class="o_hm_guest_kanban">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="guest_no"/>
+                <field name="vip_level"/>
+                <field name="nationality_id"/>
+                <field name="blacklist"/>
+                <field name="total_stays"/>
+                <field name="total_nights"/>
+                <field name="last_stay_date"/>
+                <field name="dietary_restriction_ids"/>
+                <field name="preference_ids"/>
+                <field name="guest_has_photo"/>
+                <field name="guest_initials"/>
+                <templates>
+                    <t t-name="card" class="o_hm_guest_card p-0">
+                        <!-- Blacklist is the one thing a front-desk agent
+                             must not miss, so it is a full-width strip
+                             rather than a badge among badges. -->
+                        <div t-if="record.blacklist.raw_value"
+                             class="o_hm_guest_flag">
+                            <i class="fa fa-ban me-1" aria-hidden="true"/>
+                            Blacklisted
+                        </div>
+
+                        <div class="o_hm_guest_head">
+                            <!-- Only ask /web/image for a REAL photo.
+                                 Odoo's generated fallback avatar is
+                                 served as application/octet-stream in
+                                 this build and renders as a broken
+                                 image, so a guest without a photograph
+                                 gets a monogram drawn here instead. -->
+                            <img t-if="record.guest_has_photo.raw_value"
+                                 class="o_hm_guest_avatar"
+                                 t-attf-src="/web/image/res.partner/#{record.id.raw_value}/avatar_128"
+                                 t-att-alt="record.name.value"/>
+                            <span t-else=""
+                                  class="o_hm_guest_avatar o_hm_guest_mono"
+                                  t-out="record.guest_initials.value"/>
+
+                            <div class="o_hm_guest_ident">
+                                <div class="o_hm_guest_name"
+                                     t-out="record.name.value"/>
+                                <div class="o_hm_guest_no"
+                                     t-out="record.guest_no.value"/>
+                                <!-- Always rendered, even when unknown:
+                                     collapsing this line made the
+                                     identity block a different height on
+                                     every card, and it is the top of the
+                                     card the eye lines up. -->
+                                <div class="o_hm_guest_nat">
+                                    <i class="fa fa-globe me-1" title="Nationality"
+                                       aria-hidden="true"/>
+                                    <t t-if="record.nationality_id.raw_value"
+                                       t-out="record.nationality_id.value"/>
+                                    <span t-else="" class="o_hm_guest_unknown">
+                                        Nationality not set
+                                    </span>
+                                </div>
+                            </div>
+
+                            <span t-if="record.vip_level.raw_value != 'none'"
+                                  t-attf-class="o_hm_guest_tier o_hm_tier_#{record.vip_level.raw_value}"
+                                  t-out="record.vip_level.value"/>
+                        </div>
+
+                        <div class="o_hm_guest_stats">
+                            <div class="o_hm_guest_stat">
+                                <span class="o_hm_guest_val"
+                                      t-out="record.total_stays.value"/>
+                                <span class="o_hm_guest_lbl">Stays</span>
+                            </div>
+                            <div class="o_hm_guest_stat">
+                                <span class="o_hm_guest_val"
+                                      t-out="record.total_nights.value"/>
+                                <span class="o_hm_guest_lbl">Nights</span>
+                            </div>
+                            <div class="o_hm_guest_stat">
+                                <span class="o_hm_guest_val">
+                                    <t t-if="record.last_stay_date.raw_value"
+                                       t-out="record.last_stay_date.value"/>
+                                    <t t-else="">—</t>
+                                </span>
+                                <span class="o_hm_guest_lbl">Last stay</span>
+                            </div>
+                        </div>
+
+                        <!-- Dietary needs and preferences are what turns a
+                             repeat guest into a recognised one, so they
+                             sit on the card rather than inside the form. -->
+                        <div t-if="record.dietary_restriction_ids.raw_value.length or record.preference_ids.raw_value.length"
+                             class="o_hm_guest_foot">
+                            <field name="dietary_restriction_ids"
+                                   widget="many2many_tags"
+                                   class="o_hm_guest_tags"/>
+                            <field name="preference_ids"
+                                   widget="many2many_tags"
+                                   class="o_hm_guest_tags"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ================================================================
+           Guests — List view
+    ================================================================ -->
+    <record id="view_guests_list" model="ir.ui.view">
+        <field name="name">res.partner.guests.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="Guests" decoration-danger="blacklist == True">
+                <field name="name"/>
+                <field name="guest_no"/>
+                <field name="nationality_id"/>
+                <field name="vip_level"/>
+                <field name="last_stay_date" optional="show"/>
+                <field name="total_stays" optional="hide"/>
+                <field name="blacklist" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================
+           Guests — Search view
+    ================================================================ -->
+    <record id="view_guests_search" model="ir.ui.view">
+        <field name="name">res.partner.guests.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search string="Search Guests">
+                <field name="name" string="Guest Name"/>
+                <field name="guest_no" string="Guest Number"/>
+                <field name="nationality_id"/>
+                <filter string="VIPs Only"
+                        name="filter_vip"
+                        domain="[('vip_level', '!=', 'none')]"/>
+                <filter string="Blacklisted"
+                        name="filter_blacklisted"
+                        domain="[('blacklist', '=', True)]"/>
+                <separator/>
+                <filter string="Nationality"
+                        name="group_nationality"
+                        context="{'group_by': 'nationality_id'}"/>
+                <filter string="VIP Level"
+                        name="group_vip"
+                        context="{'group_by': 'vip_level'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================
+           Guests — Window Action
+    ================================================================ -->
+    <record id="action_guests" model="ir.actions.act_window">
+        <field name="name">Guests</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('is_guest', '=', True)]</field>
+        <field name="context">{'default_is_guest': True}</field>
+        <field name="search_view_id" ref="view_guests_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No guests found. Create your first guest!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_guests_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_guests_kanban"/>
+        <field name="act_window_id" ref="action_guests"/>
+    </record>
+
+    <record id="action_guests_view_list" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_guests_list"/>
+        <field name="act_window_id" ref="action_guests"/>
+    </record>
+
+    <!-- ================================================================
+          Profiles Menus
+    ================================================================ -->
+    <menuitem id="menu_guests_profiles"
+              name="Profiles"
+              parent="hospitality_base.menu_hospitality_guests"
+              action="action_guests"
+              sequence="10"
+              groups="hospitality_guest_profile.group_guest_user,hospitality_base.group_hospitality_admin"/>
+
+</odoo>

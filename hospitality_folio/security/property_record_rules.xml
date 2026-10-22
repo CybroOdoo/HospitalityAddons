@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!--    <data noupdate="1">-->
+<!--        &lt;!&ndash; Global rules intersect role rules, so supervisor/corporate-->
+<!--             groups cannot accidentally widen a user's allowed properties. &ndash;&gt;-->
+<!--        <record id="rule_folio_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Folio: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_folio"/>-->
+<!--            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--        <record id="rule_folio_line_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Folio Line: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_folio_line"/>-->
+<!--            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--        <record id="rule_deposit_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Deposit: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_deposit"/>-->
+<!--            <field name="domain_force">[('folio_id.property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--        <record id="rule_folio_window_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Folio Window: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_folio_window"/>-->
+<!--            <field name="domain_force">[('folio_id.property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--        <record id="rule_allowance_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Allowance: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_allowance"/>-->
+<!--            <field name="domain_force">[('folio_line_id.property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--        <record id="rule_routing_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Routing Instruction: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_routing_instruction"/>-->
+<!--            <field name="domain_force">['|', ('reservation_id.property_id', 'in', user.property_ids.ids), ('target_folio_id.property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--        <record id="rule_ar_account_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">AR Account: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_ar_account"/>-->
+<!--            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--        <record id="rule_ar_line_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">AR Line: allowed properties</field>-->
+<!--            <field name="model_id" ref="model_hospitality_ar_line"/>-->
+<!--            <field name="domain_force">[('account_id.property_id', 'in', user.property_ids.ids)]</field>-->
+<!--        </record>-->
+<!--    </data>-->
+<!--    <data noupdate="1">-->
+<!--        &lt;!&ndash; Folio readers need to resolve the linked reservation, but only-->
+<!--             reservations from their explicitly allowed properties. &ndash;&gt;-->
+<!--        <record id="rule_reservation_folio_user_allowed_properties" model="ir.rule">-->
+<!--            <field name="name">Folio User: linked reservations in allowed properties</field>-->
+<!--            <field name="model_id" ref="hospitality_reservation.model_hospitality_reservation"/>-->
+<!--            <field name="groups" eval="[(4, ref('hospitality_folio.group_folio_user'))]"/>-->
+<!--            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>-->
+<!--            <field name="perm_read" eval="True"/>-->
+<!--            <field name="perm_write" eval="False"/>-->
+<!--            <field name="perm_create" eval="False"/>-->
+<!--            <field name="perm_unlink" eval="False"/>-->
+<!--        </record>-->
+<!--    </data>-->
+</odoo>

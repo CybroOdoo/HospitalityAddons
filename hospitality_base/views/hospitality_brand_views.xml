@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ================================================================
+             BRAND — Tree View
+        ================================================================ -->
+        <record id="view_hospitality_brand_tree" model="ir.ui.view">
+            <field name="name">hospitality.brand.tree</field>
+            <field name="model">hospitality.brand</field>
+            <field name="arch" type="xml">
+                <list string="Brands">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="parent_id"/>
+                    <field name="property_count"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             BRAND — Form View
+        ================================================================ -->
+        <record id="view_hospitality_brand_form" model="ir.ui.view">
+            <field name="name">hospitality.brand.form</field>
+            <field name="model">hospitality.brand</field>
+            <field name="arch" type="xml">
+                <form string="Brand">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Brand Name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="parent_id"/>
+                                <field name="property_count"/>
+                            </group>
+                        </group>
+                        <field name="description" placeholder="Description..."/>
+                        <notebook invisible="id == 0">
+                            <page string="Child Brands">
+                                <field name="child_ids">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="code"/>
+                                        <field name="property_count"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Properties">
+                                <field name="property_ids">
+                                    <list>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="property_type"/>
+                                        <field name="company_id"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             BRAND — Search View
+        ================================================================ -->
+        <record id="view_hospitality_brand_search" model="ir.ui.view">
+            <field name="name">hospitality.brand.search</field>
+            <field name="model">hospitality.brand</field>
+            <field name="arch" type="xml">
+                <search string="Search Brands">
+                    <field name="name" string="Brand"/>
+                    <field name="code"/>
+                <filter name="active" string="Active"
+                            domain="[('active','=',True)]"/>
+                    <filter name="archived" string="Archived"
+                            domain="[('active','=',False)]"/>
+                <filter name="group_parent" string="Parent Brand"
+                            context="{'group_by': 'parent_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ================================================================
+             BRAND — Window Action
+        ================================================================ -->
+        <record id="action_hospitality_brand" model="ir.actions.act_window">
+            <field name="name">Brands</field>
+            <field name="res_model">hospitality.brand</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_hospitality_brand_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first brand!
+                </p>
+                <p>Brands group properties into chains or collections.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

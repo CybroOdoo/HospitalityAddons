@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Booking Engine Manager -->
+        <record id="group_be_manager" model="res.groups">
+            <field name="name">Booking Engine Manager</field>
+            <field name="implied_ids" eval="[
+                (6, 0, [ref('base.group_user')])
+            ]"/>
+            <!-- Same grant the other hospitality modules make. Without it
+                 nobody holds this group on a fresh install, nothing implies
+                 it, and the Distribution menu is visible but every entry
+                 under it raises an access error. -->
+            <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">
+                Can configure Booking Engine settings, promo codes and upsells.
+            </field>
+        </record>
+
+    </data>
+</odoo>

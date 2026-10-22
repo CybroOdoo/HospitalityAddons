@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for linen inventory counts, displaying property,
+     count date, counted-by user, and current posting status
+     for each count record. -->
+    <record id="view_hk_linen_count_list" model="ir.ui.view">
+        <field name="name">hospitality.linen.count.list</field>
+        <field name="model">hospitality.linen.count</field>
+        <field name="arch" type="xml">
+            <list string="Linen Counts">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="count_date"/>
+                <field name="counted_by"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for creating and managing linen inventory
+     counts, including count lines, posting workflow, and
+     quantity variance calculations. -->
+    <record id="view_hk_linen_count_form" model="ir.ui.view">
+        <field name="name">hospitality.linen.count.form</field>
+        <field name="model">hospitality.linen.count</field>
+        <field name="arch" type="xml">
+            <form string="Linen Count">
+                <header>
+                    <button name="action_post" type="object"
+                            string="Post" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state != 'posted'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"
+                                   readonly="state == 'posted'"/>
+                            <field name="count_date"
+                                   readonly="state == 'posted'"/>
+                        </group>
+                        <group>
+                            <field name="counted_by"
+                                   readonly="state == 'posted'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lines">
+                            <field name="line_ids"
+                                   readonly="state == 'posted'">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="expected_qty"/>
+                                    <field name="counted_qty"/>
+                                    <field name="variance_qty" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view for linen counts, providing search fields,
+     state-based filters, and grouping options by property
+     and workflow state. -->
+    <record id="view_hk_linen_count_search" model="ir.ui.view">
+        <field name="name">hospitality.linen.count.search</field>
+        <field name="model">hospitality.linen.count</field>
+        <field name="arch" type="xml">
+            <search string="Linen Counts">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="counted_by"/>
+                <filter string="Draft" name="filter_draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Posted" name="filter_posted"
+                        domain="[('state', '=', 'posted')]"/>
+                <separator/>
+                <filter string="Property" name="group_by_property"
+                        context="{'group_by': 'property_id'}"/>
+                <filter string="State" name="group_by_state"
+                        context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window action for managing linen inventory counts through
+     list and form views, with access to search and filtering
+     capabilities. -->
+    <record id="action_hk_linen_count" model="ir.actions.act_window">
+        <field name="name">Linen Counts</field>
+        <field name="res_model">hospitality.linen.count</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hk_linen_count_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No linen counts recorded yet.
+            </p>
+        </field>
+    </record>
+
+</odoo>

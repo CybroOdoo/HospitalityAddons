@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ============================================================
+             BUILDING record rules
+        ============================================================ -->
+        <record id="rule_building_property_user" model="ir.rule">
+            <field name="name">Building: property scoping (user)</field>
+            <field name="model_id" ref="model_hospitality_building"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_building_property_manager" model="ir.rule">
+            <field name="name">Building: property scoping (manager)</field>
+            <field name="model_id" ref="model_hospitality_building"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_building_corporate_bypass" model="ir.rule">
+            <field name="name">Building: corporate bypass</field>
+            <field name="model_id" ref="model_hospitality_building"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_corporate'))]"/>
+        </record>
+
+        <!-- Admin implies Corporate and Manager. This allow-all group rule is
+             ORed with those scoped group rules so administrators can manage
+             inventory records across properties. -->
+        <record id="rule_building_admin_all" model="ir.rule">
+            <field name="name">Building: administrator all properties</field>
+            <field name="model_id" ref="model_hospitality_building"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_admin'))]"/>
+        </record>
+
+        <!-- ============================================================
+             FLOOR record rules
+        ============================================================ -->
+        <record id="rule_floor_property_user" model="ir.rule">
+            <field name="name">Floor: property scoping (user)</field>
+            <field name="model_id" ref="model_hospitality_floor"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_floor_property_manager" model="ir.rule">
+            <field name="name">Floor: property scoping (manager)</field>
+            <field name="model_id" ref="model_hospitality_floor"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_floor_corporate_bypass" model="ir.rule">
+            <field name="name">Floor: corporate bypass</field>
+            <field name="model_id" ref="model_hospitality_floor"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_corporate'))]"/>
+        </record>
+
+        <record id="rule_floor_admin_all" model="ir.rule">
+            <field name="name">Floor: administrator all properties</field>
+            <field name="model_id" ref="model_hospitality_floor"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_admin'))]"/>
+        </record>
+
+        <!-- ============================================================
+             SECTION record rules
+        ============================================================ -->
+        <record id="rule_section_property_user" model="ir.rule">
+            <field name="name">Section: property scoping (user)</field>
+            <field name="model_id" ref="model_hospitality_section"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_section_property_manager" model="ir.rule">
+            <field name="name">Section: property scoping (manager)</field>
+            <field name="model_id" ref="model_hospitality_section"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_section_corporate_bypass" model="ir.rule">
+            <field name="name">Section: corporate bypass</field>
+            <field name="model_id" ref="model_hospitality_section"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_corporate'))]"/>
+        </record>
+
+        <record id="rule_section_admin_all" model="ir.rule">
+            <field name="name">Section: administrator all properties</field>
+            <field name="model_id" ref="model_hospitality_section"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_admin'))]"/>
+        </record>
+
+        <!-- ============================================================
+             SPACE record rules
+        ============================================================ -->
+<!--        New rule-->
+        <record id="rule_space_type_property_scope" model="ir.rule">
+            <field name="name">Space Type: shared or assigned property</field>
+            <field name="model_id" ref="model_hospitality_space_type"/>
+            <field name="groups" eval="[
+                (4, ref('hospitality_property.group_property_user')),
+                (4, ref('hospitality_property.group_property_manager')),
+            ]"/>
+            <field name="domain_force">['|', ('property_id', '=', False), ('property_id', 'in', user.property_ids.ids)]</field>
+        </record>
+<!--        New rule-->
+        <record id="rule_space_type_corporate_all" model="ir.rule">
+            <field name="name">Space Type: Corporate sees all types</field>
+            <field name="model_id" ref="model_hospitality_space_type"/>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_corporate'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="rule_space_type_admin_all" model="ir.rule">
+            <field name="name">Space Type: administrator all properties</field>
+            <field name="model_id" ref="model_hospitality_space_type"/>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Gallery images follow the space type they hang off. Record
+             rules do NOT cascade from a parent model to its children in
+             Odoo, so without these a property user could read the images
+             of a type belonging to a property they cannot see. The
+             domains mirror rule_space_type_* above, including the
+             property_id = False case for a globally shared type. -->
+
+        <record id="rule_space_type_image_property_scope" model="ir.rule">
+            <field name="name">Space Type Image: shared or assigned property</field>
+            <field name="model_id" ref="model_hospitality_space_type_image"/>
+            <field name="groups" eval="[
+                (4, ref('hospitality_property.group_property_user')),
+                (4, ref('hospitality_property.group_property_manager')),
+            ]"/>
+            <field name="domain_force">['|', ('space_type_id.property_id', '=', False), ('space_type_id.property_id', 'in', user.property_ids.ids)]</field>
+        </record>
+
+        <record id="rule_space_type_image_all" model="ir.rule">
+            <field name="name">Space Type Image: corporate and administrator see all</field>
+            <field name="model_id" ref="model_hospitality_space_type_image"/>
+            <field name="groups" eval="[
+                (4, ref('hospitality_base.group_hospitality_corporate')),
+                (4, ref('hospitality_base.group_hospitality_admin')),
+            ]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="rule_space_property_user" model="ir.rule">
+            <field name="name">Space: property scoping (user)</field>
+            <field name="model_id" ref="model_hospitality_space"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_space_property_manager" model="ir.rule">
+            <field name="name">Space: property scoping (manager)</field>
+            <field name="model_id" ref="model_hospitality_space"/>
+            <field name="domain_force">[('property_id', 'in', user.property_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_property.group_property_manager'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_space_corporate_bypass" model="ir.rule">
+            <field name="name">Space: corporate bypass</field>
+            <field name="model_id" ref="model_hospitality_space"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_corporate'))]"/>
+        </record>
+
+        <record id="rule_space_admin_all" model="ir.rule">
+            <field name="name">Space: administrator all properties</field>
+            <field name="model_id" ref="model_hospitality_space"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>

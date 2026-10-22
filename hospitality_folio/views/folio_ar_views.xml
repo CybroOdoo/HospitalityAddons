@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.ar.account — List View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_ar_account_list" model="ir.ui.view">
+        <field name="name">hospitality.ar.account.list</field>
+        <field name="model">hospitality.ar.account</field>
+        <field name="arch" type="xml">
+            <list string="AR Accounts" decoration-muted="status == 'closed'"
+                  decoration-warning="dunning_level in ('2nd_notice','final','collection')">
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="balance" widget="monetary"/>
+                <field name="dunning_level"
+                       decoration-success="dunning_level == 'none'"
+                       decoration-warning="dunning_level in ('1st_notice','2nd_notice')"
+                       decoration-danger="dunning_level in ('final','collection')"/>
+                <field name="status"
+                       decoration-success="status == 'open'"
+                       decoration-muted="status == 'on_hold'"
+                       decoration-danger="status == 'closed'"/>
+                <field name="opened_at"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.ar.account — Form View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_ar_account_form" model="ir.ui.view">
+        <field name="name">hospitality.ar.account.form</field>
+        <field name="model">hospitality.ar.account</field>
+        <field name="arch" type="xml">
+            <form string="AR Account">
+                <header>
+                    <button name="action_put_on_hold"
+                            string="Put On Hold"
+                            type="object"
+                            invisible="status != 'open'"/>
+                    <button name="action_reopen"
+                            string="Re-open"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="status != 'on_hold'"/>
+                    <button name="action_close"
+                            string="Close Account"
+                            type="object"
+                            groups="hospitality_folio.group_folio_supervisor"
+                            confirm="Close this AR account? Requires zero balance."
+                            invisible="status == 'closed'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="open,on_hold,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="partner_id"/>
+                        <h1>
+                            <field name="partner_id"
+                                   options="{'no_create': True}"
+                                   readonly="status == 'closed'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Account Details">
+                            <field name="property_id"
+                                   options="{'no_create': True}"
+                                   readonly="status == 'closed'"/>
+                            <field name="currency_id"
+                                   options="{'no_create': True}"
+                                   readonly="status == 'closed'"/>
+                            <field name="opened_at"/>
+                            <field name="dunning_level"
+                                   readonly="status == 'closed'"/>
+                        </group>
+                        <group string="Balances">
+                            <field name="balance" widget="monetary"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="AR Lines" name="ar_lines">
+                            <field name="line_ids"
+                                   context="{'default_account_id': id}"
+                                   readonly="status == 'closed'">
+                                <list string="AR Lines"
+                                      decoration-muted="state in ('paid','written_off')"
+                                      decoration-danger="state == 'written_off'"
+                                      editable="bottom">
+                                    <field name="folio_id"
+                                           options="{'no_create': True}"/>
+                                    <field name="description"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="amount" widget="monetary"/>
+                                    <field name="paid_amount" widget="monetary"/>
+                                    <field name="outstanding" widget="monetary"/>
+                                    <field name="due_date"/>
+                                    <field name="state"
+                                           decoration-success="state == 'paid'"
+                                           decoration-warning="state == 'partial'"
+                                           decoration-danger="state == 'written_off'"/>
+                                    <button name="action_write_off"
+                                            string="Write Off"
+                                            type="object"
+                                            icon="fa-times-circle"
+                                            groups="hospitality_folio.group_folio_supervisor"
+                                            invisible="state in ('paid','written_off')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         hospitality.ar.account — Search View
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="view_ar_account_search" model="ir.ui.view">
+        <field name="name">hospitality.ar.account.search</field>
+        <field name="model">hospitality.ar.account</field>
+        <field name="arch" type="xml">
+            <search string="AR Accounts">
+                <field name="partner_id"/>
+                <field name="property_id"/>
+                <filter string="Open" name="open"
+                        domain="[('status','=','open')]"/>
+                <filter string="On Hold" name="on_hold"
+                        domain="[('status','=','on_hold')]"/>
+                <filter string="Has Balance" name="has_balance"
+                        domain="[('balance','&gt;',0)]"/>
+                <filter string="In Collection" name="collection"
+                        domain="[('dunning_level','=','collection')]"/>
+                <separator/>
+                    <filter string="Partner" name="by_partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Property" name="by_property"
+                            context="{'group_by': 'property_id'}"/>
+                    <filter string="Dunning Level" name="by_dunning"
+                            context="{'group_by': 'dunning_level'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Window action
+    ═══════════════════════════════════════════════════════════════ -->
+    <record id="action_ar_account" model="ir.actions.act_window">
+        <field name="name">City Ledger</field>
+        <field name="res_model">hospitality.ar.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ar_account_search"/>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No AR accounts yet. Transfer a folio balance to AR to create one.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Menu — Partners > City Ledger
+    ═══════════════════════════════════════════════════════════════ -->
+    <menuitem
+        id="menu_hospitality_city_ledger"
+        name="City Ledger"
+        parent="hospitality_base.menu_hospitality_partners"
+        action="action_ar_account"
+        sequence="60"/>
+
+</odoo>

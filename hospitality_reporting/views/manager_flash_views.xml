@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             Manager Flash — live OWL dashboard. No context is
+             set here; the JS component resolves the default property
+             itself via get_manager_flash_data(False), which falls
+             back to the current user's property_id server-side (see
+             _resolve_dashboard_property on hospitality.kpi.daily).
+        ============================================================ -->
+        <record id="action_manager_flash" model="ir.actions.client">
+            <field name="name">Manager Flash</field>
+            <field name="tag">hospitality_reporting.manager_flash</field>
+        </record>
+
+        <menuitem id="menu_manager_flash"
+                  name="Manager Flash"
+                  parent="menu_hospitality_reporting_dashboards"
+                  action="action_manager_flash"
+                  sequence="5"
+                  groups="hospitality_reporting.group_reporting_user,hospitality_reporting.group_reporting_manager"/>
+
+    </data>
+</odoo>

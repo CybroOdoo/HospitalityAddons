@@ -1,0 +1,176 @@
+// Copyright (C) 2026-Today Cybrosys Technologies(<https://www.cybrosys.com>).
+// Author: Cybrosys Techno Solutions(<https://www.cybrosys.com>)
+// See LICENSE file for full copyright and licensing details.
+//
+// Property kanban: a media card rather than a thumbnail beside text.
+//
+// Scoped under .o_hm_property_kanban so nothing here reaches any other
+// kanban in the database.
+
+// WIDTH. Properties are few and visual - a cover is the point of the
+// card - so they get a wider measure than Odoo's 16rem default.
+//
+// Two things had to be understood to make this work at all:
+//
+//   1. The class on <kanban> lands on the CONTROLLER (.o_kanban_view),
+//      while Odoo declares --KanbanRecord-width on the RENDERER beneath
+//      it. Setting the variable on the controller is inherited but then
+//      overridden by the renderer's own declaration, so it must be set
+//      ON the renderer. (Specificity here is 0,2,0 against Odoo's 0,1,0,
+//      so no !important is needed.)
+//
+//   2. The rule is
+//      `.o_kanban_renderer.o_kanban_ungrouped .o_kanban_record {
+//           width: var(--KanbanRecord-width); flex-grow: 1; }`
+//      - the variable is only a STARTING BASIS. Cards then grow to fill
+//      the row, which is why a 320px variable measured 428px per card.
+//      So this value sets how many cards fit per row; each one ends up
+//      wider than the number itself.
+.o_hm_property_kanban .o_kanban_renderer {
+    --KanbanRecord-width: 400px;
+}
+
+.o_hm_property_kanban {
+    // Brass hairline and an ivory tray under the cover. On a white page
+    // the stock card border is near-invisible, so the card had no edge
+    // at all; brass gives it one that belongs to the palette rather than
+    // a generic grey.
+    //
+    // Specificity note: this lands on .o_kanban_record.o_hm_prop_card,
+    // two classes deep under the scope, so it wins against Odoo's own
+    // single-class .o_kanban_record border without !important.
+    .o_hm_prop_card {
+        overflow: hidden;
+        border-radius: 12px;
+        border: 1px solid rgba(181, 138, 69, .42);
+        box-shadow: 0 1px 2px rgba(22, 35, 59, .05);
+        transition: box-shadow .16s ease-in-out, transform .16s ease-in-out,
+                    border-color .16s ease-in-out;
+
+        &:hover {
+            transform: translateY(-2px);
+            border-color: rgba(181, 138, 69, .95);
+            // Warm shadow rather than a neutral one, so the lift reads as
+            // the same material as the edge.
+            box-shadow: 0 12px 26px -12px rgba(140, 102, 40, .55);
+        }
+    }
+
+    // ── Cover ─────────────────────────────────────────────────────────
+    .o_hm_prop_media {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        // Neutral, not warm: this shows only behind Odoo's placeholder
+        // when a property has no cover, and a warm tint there would be
+        // the ivory coming back by another name.
+        background: #EDEDED;
+        overflow: hidden;
+    }
+
+    .o_hm_prop_img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        // Cropped, not letterboxed: covers arrive at every aspect ratio
+        // and a gallery of mixed shapes has to sit on one grid.
+        object-fit: cover;
+    }
+
+    // The name sits ON the image, so it needs a scrim to stay legible
+    // over a pale shot as well as a dark one.
+    .o_hm_prop_scrim {
+        position: absolute;
+        inset: auto 0 0 0;
+        padding: 26px 12px 10px;
+        background: linear-gradient(
+            to top,
+            rgba(22, 35, 59, .92) 0%,
+            rgba(22, 35, 59, .62) 45%,
+            rgba(22, 35, 59, 0) 100%
+        );
+        color: #FFFFFF;
+        pointer-events: none;
+    }
+
+    .o_hm_prop_name {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -.01em;
+        // Two lines maximum, so a long property name cannot push the
+        // card taller than its neighbours.
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .o_hm_prop_sub {
+        margin-top: 2px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, .82);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .o_hm_prop_code {
+        font-weight: 600;
+        letter-spacing: .04em;
+    }
+
+    .o_hm_prop_dot {
+        margin: 0 5px;
+        opacity: .6;
+    }
+
+    .o_hm_prop_count {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(22, 35, 59, .72);
+        color: #FFFFFF;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.6;
+    }
+
+    // ── Facts ─────────────────────────────────────────────────────────
+    // No fill on the lower half: the card stays on the page's own white
+    // and brass does the work on the edge alone. The hairline dividers
+    // below keep their brass tint, which is what still ties the facts
+    // row and the brand row to the border.
+    .o_hm_prop_body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 12px;
+        font-size: 12px;
+        border-top: 1px solid rgba(181, 138, 69, .28);
+    }
+
+    .o_hm_prop_stars {
+        color: #B58A45;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+
+    .o_hm_prop_unrated,
+    .o_hm_prop_date {
+        color: #6B6F78;
+        white-space: nowrap;
+    }
+
+    .o_hm_prop_foot {
+        padding: 7px 12px;
+        border-top: 1px solid rgba(181, 138, 69, .22);
+        font-size: 12px;
+        color: #4A4D55;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

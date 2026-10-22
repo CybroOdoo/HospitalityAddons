@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="rule_hospitality_property_user" model="ir.rule">
+            <field name="name">Hospitality: User sees own property only</field>
+            <field name="model_id" ref="model_hospitality_property"/>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_user'))]"/>
+            <field name="domain_force">
+                [('id', 'in', user.property_ids.ids)]
+            </field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_hospitality_property_manager" model="ir.rule">
+            <field name="name">Hospitality: Manager sees all properties</field>
+            <field name="model_id" ref="model_hospitality_property"/>
+            <field name="groups"
+                   eval="[(4, ref('hospitality_base.group_hospitality_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+<!--        New rule for corporate-->
+
+        <record id="rule_hospitality_property_corporate" model="ir.rule">
+            <field name="name">Hospitality: Corporate sees all properties</field>
+            <field name="model_id" ref="model_hospitality_property"/>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_corporate'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Gallery images follow the property they hang off. Record
+             rules do NOT cascade from a parent model to its children in
+             Odoo, so without these a hospitality user who may see one
+             property could read every other property's images. -->
+
+        <record id="rule_hospitality_property_image_user" model="ir.rule">
+            <field name="name">Hospitality: User sees own property images only</field>
+            <field name="model_id" ref="model_hospitality_property_image"/>
+            <field name="groups" eval="[(4, ref('hospitality_base.group_hospitality_user'))]"/>
+            <field name="domain_force">
+                [('property_id', 'in', user.property_ids.ids)]
+            </field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_hospitality_property_image_manager" model="ir.rule">
+            <field name="name">Hospitality: Manager sees all property images</field>
+            <field name="model_id" ref="model_hospitality_property_image"/>
+            <field name="groups"
+                   eval="[(4, ref('hospitality_base.group_hospitality_manager')),
+                          (4, ref('hospitality_base.group_hospitality_corporate')),
+                          (4, ref('hospitality_base.group_hospitality_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_hospitality_property_admin" model="ir.rule">
+            <field name="name">Hospitality: Administrator sees all properties</field>
+            <field name="model_id" ref="model_hospitality_property"/>
+            <field name="groups"
+                   eval="[(4, ref('hospitality_base.group_hospitality_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+
+    </data>
+</odoo>
