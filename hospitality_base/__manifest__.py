@@ -21,7 +21,7 @@
 #############################################################################
 {
     'name': "Hospitality Management",
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'category': 'Hospitality',
     'summary': "Hotel PMS foundation for Odoo: multi-property setup, brands, business date, policies and the backend theme.",
     'description': """

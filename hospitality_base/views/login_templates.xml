@@ -61,17 +61,44 @@
             <button type="submit" class="btn btn-primary">Sign in</button>
         </xpath>
 
+        <!--
+            Always show the email + password form.
+
+            Odoo 19 now renders it as
+                t-attf-class="oe_login_form #{'' if login else 'd-none'}"
+            so on a first visit the form is display:none and an owl
+            `web.user_switch` component is the only control that
+            reveals it. That two-step flow is not the design here, and
+            login.scss additionally hides .o_user_switch_btn, which
+            would leave no way to reach the form at all. Pinning the
+            class drops the d-none; the switcher is removed so the two
+            do not compete for the same slot.
+        -->
+        <xpath expr="//form[contains(@t-attf-class, 'oe_login_form')]"
+               position="attributes">
+            <attribute name="t-attf-class">oe_login_form</attribute>
+        </xpath>
+
+        <xpath expr="//owl-component[@name='web.user_switch']" position="replace"/>
+
     </template>
 
     <!--
-        "Reset Password" -> "Forgot?", matching the design. auth_signup
-        injects that link into label[@for='password'], so this inherits
-        auth_signup.login; the module is in depends so it always resolves.
+        "Reset Password" -> "Forgot?", matching the design.
+
+        Anchored on the link's own href, not on its position in the DOM.
+        Odoo 19 used to nest this anchor inside label[@for='password'];
+        current revisions attach it as a SIBLING after that label
+        (position="after" in auth_signup.login), which breaks a
+        descendant xpath like //label[@for='password']//a. The href is
+        the one part of the element that identifies it wherever
+        auth_signup chooses to hang it.
     -->
     <template id="login_forgot_label"
               inherit_id="auth_signup.login"
               name="Hospitality Login - Forgot label">
-        <xpath expr="//label[@for='password']//a" position="replace">
+        <xpath expr="//a[contains(@t-attf-href, '/web/reset_password')]"
+               position="replace">
             <a t-if="reset_password_enabled" class="ht_login_forgot"
                tabindex="1"
                t-attf-href="/web/reset_password?{{ keep_query() }}">Forgot?</a>
